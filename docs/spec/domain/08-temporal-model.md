@@ -166,7 +166,7 @@ Member CohortはMember個人そのものではない。Rule適用の対象範囲
 
 ### Counterexamples
 
-Productの新規受付停止をProduct利用不可と扱うと、既存会員の継続利用状態を誤る。
+Offeringの新規受付停止をProduct利用不可と扱うと、既存会員の継続利用状態を誤る。
 
 ### Temporal Behavior
 

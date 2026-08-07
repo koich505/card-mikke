@@ -4,37 +4,37 @@
 
 ### Definition
 
-Memberは、カードまたは決済サービスの会員として契約、申込、利用、請求、特典の対象になるRoleである。
+Memberは、カードまたは決済サービスとの有効な会員関係においてActorが担うMember Roleである。
 
 ### Responsibility
 
-Memberは申込資格、契約状態、Issuance、利用権限、Reward受領、コホート別Rule適用の対象となる。
+Member Roleは、会員としての利用資格、Reward受領、コホート別Rule適用の対象を説明する。申込資格はApplicant、契約上の当事者性はContract Party、カードの保有・利用はCardholder/User、発行状態はIssuanceがそれぞれ担う。
 
 ### Identity
 
-個人、法人、法人代表者、家族会員、社員利用者など、契約上の単位で同一性を判断する。本人確認、契約主体、利用者、受益者が一致するとは限らない。
+Member Role自体をActorのIdentityや契約単位にしない。誰がMember Roleを担うかはActor、対象Productまたはサービス、会員関係、期間、Evidenceで判断する。個人、法人、法人代表者、家族・追加カード利用者、社員利用者のどれがMember Roleまたは別Roleを担うかは、確認済みの契約関係を超えて確定しない。
 
 ### Lifecycle
 
-申込、審査、入会、発行、利用中、停止、退会、解約、自動解約、既存会員のみ継続がありうる。
+Member Roleは入会による開始、停止、退会・解約による終了、既存会員のみ継続がありうる。申込・審査はApplicantを対象とする過程、発行・利用停止・再発行はIssuanceの状態遷移として分離する。
 
 ### Relationships
 
-MemberはIssuance、Offering、Eligibility Rule、External Membership、Account、Reward、Payment Scheme、Evidenceと関係する。
+Member RoleはActor、Contract Party、Cardholder/User、Issuance、Offering、External Membership、Account、Reward、Evidenceと関係する。
 
 ### Invariants
 
-- Memberを常に個人と固定しない。
+- Member RoleをActor、Applicant、Contract Party、Cardholder/User、Issuanceと同一視しない。
+- Member Roleを常に個人が担うと固定しない一方、法人・代表者・家族・社員のいずれが担うかをEvidenceなしに確定しない。
 - Member本人へのRewardと、外部団体へのEconomic Flowを混同しない。
 - 本会員、家族会員、法人、社員利用者の責務差を潰さない。
 
 ### Boundaries
 
-MemberはActorと同一とは限らない。外部団体所属者、ホテル会員、bitFlyerアカウント保有者はExternal MembershipまたはAccountであり、カードMemberとは別に扱う。
+Member RoleはActorそのものでも、契約や発行の状態保持対象でもない。外部団体所属、ホテル会員、bitFlyerアカウントはExternal MembershipまたはAccountであり、カードのMember Roleとは別に扱う。
 
 ### Examples
 
-- JCBゴールド ザ・プレミアでは本会員向け招待条件と家族会員年会費の扱いが区別される。
 - bitFlyer クレカでは個人のみ対象で、bitFlyerアカウントが申込前提となる。
 - 全弁協カードでは弁護士協同組合員資格が申込条件となる。
 
@@ -52,7 +52,7 @@ MemberはActorと同一とは限らない。外部団体所属者、ホテル会
 
 ### Open Questions
 
-- 法人代表者と社員カード利用者をMemberのSubtypeとするか、別Roleとするか。
+- 法人、法人代表者、家族・追加カード利用者、社員利用者のうち誰がMember Role、Contract Party、Cardholder/Userを担うか。
 - 外部団体が受益者になる場合、Memberとは別のBeneficiary Roleが必要か。
 
 ## Concept: External Membership And Account
@@ -144,7 +144,6 @@ Issuanceは契約そのものの全体ではない。契約、カード券面、
 
 ### Examples
 
-- 三井住友カードのVisa/Mastercardデュアル発行は、同一会員に複数ブランドのIssuanceが並ぶ例である。
 - Kyash Card Virtualは物理カードではないPayment Instrumentの利用可能化を示す。
 - 法人カードやパーチェシングサービスでは、法人契約と利用者単位の支払権限が分かれる可能性がある。
 
@@ -200,7 +199,7 @@ Application RouteはProductでもMemberでもない。申込可否そのもの�
 ### Examples
 
 - アメックス・ゴールド・プリファードは直接Web申込と既存会員切替が並存する。
-- JCBゴールド ザ・プレミアやイオンゴールドカードは招待による取得が中心である。
+- イオンゴールドカードは利用実績と審査に基づく招待による取得例である。
 - 全弁協カードは組合員向けの専用申込経路を持つ。
 
 ### Counterexamples
@@ -209,7 +208,7 @@ Application RouteはProductでもMemberでもない。申込可否そのもの�
 
 ### Temporal Behavior
 
-Application Routeは期間限定で開閉する。2026年のJCBゴールド ザ・プレミア招待終了、次回予定のように、予定と現在状態を分ける。
+Application Routeは期間限定で開閉する。現在の受付状態と、将来の受付予定は分ける。
 
 ### Evidence Requirements
 

@@ -10,7 +10,7 @@ Sourceは、Domain Factの根拠となる情報源である。
 
 ### Responsibility
 
-Sourceは発行主体、URL、Source type、取得日、公開日、信頼Tier、Disclosure Statusを説明する。
+Sourceは発行主体、URL、Source type、取得日、公開日、信頼Tier等の出典メタデータを説明する。Disclosure StatusはSource全体ではなく、Sourceから得る個別claim、Observation、Extracted Fact、Domain Factに対して評価する。
 
 ### Identity
 
@@ -32,6 +32,7 @@ SourceはSource Document、Evidence、Observation、Domain Factと関係する�
 ### Boundaries
 
 SourceはFactそのものではない。Sourceに書かれている内容からObservationやExtracted Factを分ける。
+同一Sourceは、明示されたclaim、詳細が不足するclaim、非公開と記載されたclaim、調査で確認できないclaimを同時に含みうるため、Sourceに単一のDisclosure Statusを付けない。
 
 ### Examples
 
@@ -50,7 +51,7 @@ retrieved_at、published_at、announced_atを保持する。Sourceの現在取�
 
 ### Evidence Requirements
 
-Sourceには最低限、発行主体、タイトル、取得日、URLまたは識別子、Source type、信頼度、Disclosure Statusが必要である。
+Sourceには最低限、発行主体、タイトル、取得日、URLまたは識別子、Source type、信頼度が必要である。Sourceの公開・取得可否やアクセス条件はSource metadataとして扱い、claimのDisclosure Statusとは分ける。
 
 ### Open Questions
 
@@ -105,7 +106,7 @@ Evidenceにはretrieved_atを持つ。Domain Factには別途effective_from等�
 
 ### Evidence Requirements
 
-EvidenceにはFact claim、Source reference、Source type、confidence、disclosure status、observed_atまたはretrieved_atが必要である。
+EvidenceにはFact claim、Source reference、Source type、confidence、claim単位のdisclosure status、observed_atまたはretrieved_atが必要である。
 
 ### Open Questions
 
@@ -157,7 +158,7 @@ Observationはretrieved_atに依存する。Source更新後の内容とは異な
 
 ### Evidence Requirements
 
-観測内容、取得日、Source、confidenceを残す。
+観測内容、取得日、Source、confidence、対象claimのDisclosure Statusを残す。
 
 ### Open Questions
 
@@ -209,7 +210,7 @@ Extracted FactはSource上の有効日と取得日を分ける。
 
 ### Evidence Requirements
 
-抽出値、Source、抽出根拠、信頼度、適用条件を残す。
+抽出値、Source、抽出根拠、信頼度、適用条件、対象claimのDisclosure Statusを残す。
 
 ### Open Questions
 
@@ -271,9 +272,11 @@ Domain Factには最低限、Evidence、Confidence、Disclosure Status、Tempora
 
 ## Disclosure Status
 
+Disclosure Statusの評価単位は、個別claim、Observation、Extracted Fact、Domain Factである。複合claimは、開示状態が異なる部分を識別できる粒度に分ける。Sourceはこれらの根拠とメタデータを持つが、Source全体を代表する単一Statusは持たない。
+
 | Status | Definition | Domain Behavior |
 |---|---|---|
 | disclosed | Source上で明示されている | Factとして採用候補にできる |
-| partially_disclosed | 一部は明示されるが条件や詳細が不足 | 不足部分をUnknownまたはundisclosedで分ける |
+| partially_disclosed | 個別claimの一部は明示されるが条件や詳細が不足 | 分解可能な不足部分を別claimとしてunknownまたはundisclosedに分ける。分解粒度が不明な場合はOpen Questionに残す |
 | undisclosed | 存在は示されるが非公開 | 推測しない |
 | unknown | 調査で確認できない | 「存在しない」とは扱わない |

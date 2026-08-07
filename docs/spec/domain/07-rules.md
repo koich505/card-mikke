@@ -143,7 +143,6 @@ Fee RuleはRewardではない。Fee免除はBenefitと関連するが、費用�
 
 ### Examples
 
-- JCBゴールド ザ・プレミアのサービス年会費はJCBゴールド年会費とは別建てで、条件達成により免除がある。
 - Paidyの分割あと払いは口座振替・銀行振込では手数料無料、コンビニ払いでは手数料が発生する。
 - Kyash Cardにはカード種別ごとの発行手数料がある。
 
@@ -167,7 +166,7 @@ Fee改定はpublished_atとeffective_fromを分ける。将来改定を現在値
 
 ### Definition
 
-Reward Ruleは、Member RewardやBenefitの発生、計算、付与、失効、変換、移行を決めるRuleである。
+Reward Ruleは、Member Rewardの発生、計算、付与、失効、変換、移行を決めるRuleである。非Reward Benefitの成立条件はEligibility Ruleまたは対象Benefitに結びつく一般Ruleとして扱う。
 
 ### Responsibility
 
@@ -183,7 +182,7 @@ Reward Ruleは、Member RewardやBenefitの発生、計算、付与、失効、�
 
 ### Relationships
 
-Member Reward、Benefit、Asset Conversion、Product Feature、External Membership、Evidenceと関係する。
+Member Reward、Asset Conversion、Product Feature、External Membership、Evidenceと関係する。
 
 ### Invariants
 
@@ -193,14 +192,11 @@ Member Reward、Benefit、Asset Conversion、Product Feature、External Membersh
 
 ### Boundaries
 
-Reward RuleはPartner Revenue Shareではない。
+Reward Ruleは非Reward Benefitの資格・サービス提供Ruleでも、Partner Revenue Shareでもない。
 
 ### Examples
 
 - bitFlyer クレカのアプラスポイントからBTCへの変換。
-- Marriott Bonvoy Amexの年間400万円以上利用による無料宿泊特典。
-- Hilton Honors Amexプレミアムの年間利用額によるダイヤモンドステータス付与。
-- 複数段階のReward算定は、Marriott Bonvoy AmexやHilton Honors Amexの年間利用額特典、bitFlyer クレカのポイントからBTCへの変換で確認できる。ただし基本還元率や端数処理は追加Evidenceが必要である。
 
 ### Counterexamples
 
@@ -302,7 +298,7 @@ Dual IssuanceとCross Card Synergyをすぐ別Conceptに分けるかは未決定
 
 ### Examples
 
-三井住友カードのVisa/Mastercardデュアル発行は、同一会員に複数Issuanceが並ぶ例である。
+現行Research baselineでは、Multi Card Relationship Ruleの具体条件を確認済みDomain Factとして置くための十分な例がない。
 
 ### Counterexamples
 

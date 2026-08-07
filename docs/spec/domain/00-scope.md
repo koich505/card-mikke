@@ -62,7 +62,7 @@ Research baseline: 2026-08-07
 | Decision | Supporting Observation | Concrete Product Example | Evidence | Counterevidence | Confidence |
 |---|---|---|---|---|---|
 | ActorとActor Roleを分離する | 1社が複数Roleを持ち、1商品に複数Actorが関与する | bitFlyer クレカ、Kyash、Paidy、全弁協カード | 02 §7.1、03 EC-1、03 EC-3、03 EC-4 | Role名の完全一覧は未確定 | high |
-| Product、Offering、Variant、Issuance、Memberを分ける | デュアル発行、家族カード、外部団体限定ルートが同時に存在する | 三井住友カード、全弁協カード、JCBゴールド ザ・プレミア | 02 §7.1、03 §7 | セゾンゲーミングカードDigitalの粒度判断は未確定 | medium |
+| Actor、Applicant、Contract Party、Cardholder/User、Member Role、Issuanceを分ける | 申込資格、会員関係、契約主体、利用者、発行状態は同一責務ではない | bitFlyer クレカ、全弁協カード、法人購買決済候補 | 02 §3、02 §6.2、03 §7 | 法人・家族・社員利用者の具体境界は未確定 | medium |
 | Payment Instrument、Payment Scheme、Funding Methodを分ける | カードそのものと後払いチャージ、支払方式が別契約・別Actorになる | Kyash、Paidy | 02 §1.1、02 §7.1、03 EC-4 | Kyash提供元の登録状況はUnknown | medium-high |
 | Actor-level Regulatory RegistrationとTransaction-level Legal Classificationを分ける | Paidyは登録事業者だが、支払スキーム別の法的分類は登録事実から導けない | Paidy一括あと払い、3・6・12回あと払い | 02 §1.1、03 EC-4 | 具体的な取引分類の一次確認は不足 | high |
 | Product LifecycleとFeature Lifecycleを分ける | 新規停止、特典終了、クレジット機能限定、自動解約が異なる日付で起きる | セゾンゲーミングカードDigital | 02 §5.2、03 EC-2 | 同型の独立事例は未確認 | high for separation, medium for generalization |

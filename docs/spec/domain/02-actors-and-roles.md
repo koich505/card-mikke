@@ -90,7 +90,7 @@ Roleは法人情報ではない。Role typeの一覧は固定列挙ではなく�
 
 ### Examples
 
-- Issuer、Credit Provider、Billing Entity、International Brand、Partner Organization、Reward Operator、Asset Operator、Funding Provider、External Membership Operator。
+- Issuer、Credit Provider、Billing Entity、Partner Organization、Reward Operator、Asset Operator、Funding Provider、External Membership Operator。
 - Kyash CardのPayment Instrument提供と、AGペイメントサービスによる後払い型Funding Method。
 
 ### Counterexamples
@@ -108,7 +108,15 @@ Roleを事実として扱うには、公式商品説明、規約、FAQ、行政�
 ### Open Questions
 
 - Role typeをどこまで細分化するか。
-- International BrandをActor Roleとして扱うか、ブランドネットワークという別Conceptとして扱うか。
+- ブランド／ネットワーク識別値、Payment Network / Scheme、運営ActorのRoleをどう対応づけるか。
+
+## Provisional Boundary: Brand, Network, And Operator
+
+Visa、Mastercard、JCB、Amex等の表示は、現時点では`Brand / Network Identifier`という暫定的な識別値として扱う。これをActor Roleとは確定しない。
+
+Payment Instrumentが接続するネットワークまたはスキームは`Payment Network / Scheme`候補として識別値と分ける。また、その運営主体が担う責務は`Network Operator Role`候補としてActorに割り当てうるが、現行Research baselineでは名称、粒度、識別値との対応関係を確定するEvidenceが不足している。
+
+したがって、ブランド表示だけから運営Actor、ネットワーク上の責務、法的分類を推論しない。この未解決境界は`12-open-questions.md`に残す。
 
 ## Concept: Partnership
 

@@ -20,7 +20,7 @@ Payment Instrumentは、利用場面、ブランド、発行形態、利用可�
 
 ### Relationships
 
-Payment InstrumentはProduct、Variant、Issuance、International Brand Role、Payment Scheme、Funding Method、Credit Providerと関係する。
+Payment InstrumentはProduct、Variant、Issuance、Brand / Network Identifier、Payment Network / Scheme候補、Payment Scheme、Funding Method、Credit Providerと関係する。
 
 ### Invariants
 
@@ -118,7 +118,7 @@ Funding Methodは、Payment Instrumentや残高に資金を供給する方法で
 
 ### Responsibility
 
-Funding Methodは、前払い、銀行口座、後払いチャージ、クレジット供与、保証金等を、InstrumentやSchemeから分離する。
+Funding Methodは、前払い入金、銀行口座からの入金、後払いチャージ、クレジット供与等を、InstrumentやSchemeから分離する。信用リスクを補完する保証金は含めない。
 
 ### Identity
 
@@ -140,6 +140,7 @@ Funding MethodはPayment Instrument、Account、Credit Provider、Billing Entity
 ### Boundaries
 
 Funding MethodはPayment Schemeとも異なる。残高へ後払い入金することと、加盟店取引の支払回数は別問題である。
+また、Depositは支払や残高への資金供給ではなく、信用リスク軽減または発行条件として預け入れる担保的な保証金であり、Funding Methodから分離する。
 
 ### Examples
 

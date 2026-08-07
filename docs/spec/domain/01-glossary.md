@@ -13,7 +13,9 @@
 | Billing Entity | Role | 請求・精算の主体となるRole。 | ブランドや提携団体ではない場合がある。 | Paidy、アプラス |
 | Processor | Role | 決済処理を担うRole。 | 本Researchでは詳細未調査。 | 01 actor分類 |
 | Acquirer | Role | 加盟店契約を担うRole。 | Issuerと同一会社の場合も別会社の場合もある。 | 01 actor分類 |
-| International Brand | Role | Visa、Mastercard、JCB、Amex等のネットワーク・ブランドRole。 | 法的与信分類を決める軸ではない。 | UCSカードmajica、bitFlyer クレカ |
+| Brand / Network Identifier | Value (provisional) | Visa、Mastercard、JCB、Amex等として表示されるブランドまたはネットワークの識別値。 | 運営ActorやそのRoleと同一視せず、法的与信分類を決める軸にも置かない。 | UCSカードmajica、bitFlyer クレカ |
+| Payment Network / Scheme | Concept (provisional) | Payment Instrumentが接続する決済ネットワークまたはスキームの候補概念。 | Payment Scheme（支払回数・支払時期）とは別であり、運営Actor Roleの粒度は未解決。 | Visaプリペイド型Instrument、Mastercard表示 |
+| Network Operator Role | Role (provisional) | Payment Network / Schemeを運営するActorが担う可能性のあるRole。 | ブランド識別値だけから運営Actorや責務を推定しない。 | 現行ResearchではRole境界の確定に不足 |
 | Partner Organization | Role | ProductやOfferingに提携する外部団体Role。 | 会員本人へのReward受益者とは限らない。 | 全弁協、東京税理士協同組合 |
 | Reward Operator | Role | ポイント等のMember Rewardを運営するRole。 | Asset Operatorと分ける。 | bitFlyer クレカのアプラス |
 | Asset Operator | Role | 暗号資産、ホテルポイント等の外部資産・資格を管理するRole。 | Reward計算主体とは限らない。 | bitFlyer、ホテル会員プログラム |
@@ -22,9 +24,12 @@
 | External Membership Operator | Role | カード外の会員資格やアカウントを運営するRole。 | Eligibility、Application Route、Reward Destinationのいずれにも作用しうる。 | 全弁協、bitFlyer、Marriott、Hilton |
 | Product | Product | 市場に提供され、規約・申込・利用条件のまとまりを持つ商品またはサービス。 | OfferingやVariantをすべてProduct化しない。 | 三井住友カード、Paidy、Kyash Card |
 | Offering | Product boundary | Productを誰に、どの経路で、どの期間、どの条件で提供するか。 | Productの本質的同一性とは分ける。 | Amex切替、全弁協限定申込 |
-| Variant | Product boundary | 同一Product内のブランド、デザイン、券面、グレード等の差異候補。 | 国際ブランド差が常にVariantとは限らない。 | 三井住友デュアル、UCSカードmajica |
-| Product Feature | Product boundary | Productに含まれる機能、特典、受付、クレジット機能などの部分。 | Product全体の状態と混同しない。 | セゾンゲーミングカードDigital |
-| Member | Membership | カードやサービスの会員Role。 | 外部団体や法人受益者を自動的にMember扱いしない。 | 家族カード、法人カード、全弁協 |
+| Variant | Product boundary | 同一Product内のブランド、デザイン、券面、グレード等の差異候補。 | 国際ブランド差が常にVariantとは限らない。 | UCSカードmajicaの複数ブランド表示 |
+| Product Feature | Product boundary | Productに含まれる決済機能、特典、ポイント付与等の機能的な部分。 | Product全体の状態、OfferingやApplication Routeの受付可否と混同しない。 | セゾンゲーミングカードDigital |
+| Applicant | Role | 特定OfferingまたはApplication Routeで申込を行うActorの文脈上のRole。 | Member Role、契約主体、Cardholder/User、Issuance状態とは分ける。 | 一般申込、外部団体限定申込 |
+| Contract Party | Role | カードまたはサービス契約の当事者となるActorの文脈上のRole。 | Applicant、利用者、受益者と一致するとは限らない。 | 法人・追加利用者の境界は未解決 |
+| Cardholder / User | Role | 発行・利用可能化されたPayment Instrumentを保有または利用するActorのRole。 | 契約主体やMember Roleと一致するとは限らない。 | 法人カード・追加カードの詳細は未解決 |
+| Member Role | Role | 有効な会員関係の文脈でActorが担う会員Role。 | Actor、申込プロセス、契約主体、Issuanceの状態保持対象ではない。 | カード会員、サービス会員 |
 | External Membership | Membership | カード外部の団体所属、ホテル会員、マイレージ会員、サービスアカウント。 | 単なるEligibilityフラグではない。 | 全弁協、bitFlyer、Marriott、Hilton |
 | Account | Membership | 外部サービスまたはカードサービスにおける利用者単位。 | 法人格・会員契約・資産保有の同一性はEvidenceで確認する。 | bitFlyerアカウント、Kyashアカウント |
 | Issuance | Issuance | Memberに対して支払手段が発行または利用可能化された状態。 | Productそのものではない。 | 本カード、家族カード、社員カード、Virtual |
@@ -34,11 +39,11 @@
 | Funding Method | Payment | 支払手段や残高へ資金を供給する方法。 | Payment Instrumentそのものではない。 | Kyash「イマすぐ入金」 |
 | Regulatory Registration | Evidence/Legal fact | 事業者単位の登録・許認可に関するDomain Fact。 | 個別取引の法的分類を自動決定しない。 | Paidyの包括信用購入あっせん業者登録 |
 | Legal Classification | Evidence/Legal fact | Product、Scheme、Transaction等に対する法的性質の分類。 | Unknownを推測で埋めない。 | Paidy、Kyash、atone |
-| Reward | Benefit | Memberへ還元されるポイント、マイル、キャッシュバック、資産変換前の価値。 | Partner Revenue Shareとは分ける。 | bitFlyer、ホテル提携、航空提携 |
-| Benefit | Benefit | Reward以外も含む会員への便益。 | 経済フロー全般とは限らない。 | ホテルステータス、無料宿泊、招待日和 |
+| Reward | Benefit subtype | 利用等に応じてMemberへ発生・付与され、残高・数量・金額等として算定または蓄積される還元価値。 | 非蓄積型の資格・サービス便益およびPartner Revenue Shareとは分ける。 | アプラスポイント、BTC変換前の価値 |
+| Benefit | Benefit | Rewardを含む会員向け便益の総称。無料宿泊やホテルステータスは現時点では非Reward Benefitとして扱う。 | Rewardとの下位境界に未解決部分を残し、Economic Flow全般とはしない。 | ホテルステータス、無料宿泊 |
 | Economic Flow | Flow | Member以外のActorも含む価値・収益・寄付・手数料の流れ。 | 1事例だけで独立構造を固定しない。 | 全弁協手数料収入、大学寄付候補 |
 | Partner Revenue Share | Flow candidate | 提携先団体への利用連動収益分配候補。 | Member Rewardに吸収しない。 | 全弁協 |
 | Rule | Rule | 条件、算定、適用期間、対象範囲を持つ判断単位。 | すべてを専用Entity化しない。 | 年会費、Eligibility、Reward、Deposit |
 | Lifecycle Event | Event | Product、Feature、Rule、Partnership、Issuanceの状態変化。 | 観測日や掲載日と有効日を混同しない。 | セゾンゲーミング、弁護士VISA提携終了 |
 | Evidence | Evidence | Domain Factの根拠。Source、Observation、Extracted Factを追跡する。 | 表示値だけを保存する発想は不可。 | v1監査の誤り群 |
-| Disclosure Status | Value | disclosed、partially_disclosed、undisclosed、unknownの区別。 | unknownとundisclosedを同一視しない。 | 02 §4、03 §6 |
+| Disclosure Status | Value | 個別claim、Observation、Extracted Fact、Domain Factに対するdisclosed、partially_disclosed、undisclosed、unknownの区別。 | Source全体へ単一Statusを付けず、unknownとundisclosedを同一視しない。 | 02 §4、03 §6 |

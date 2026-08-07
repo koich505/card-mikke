@@ -45,7 +45,7 @@ Productは申込経路そのものではない。国際ブランド、券面、�
 
 ### Temporal Behavior
 
-ProductはFeatureごとに異なる時間軸を持つ。セゾンゲーミングカードDigitalでは、新規入会停止、特典終了、クレジット機能のみ利用可能期間、自動解約が段階的に発生している。
+ProductはFeatureごとに異なる時間軸を持つ。セゾンゲーミングカードDigitalでは、Offeringの新規入会停止、特典終了、クレジット機能のみ利用可能期間、自動解約が段階的に発生している。
 
 ### Evidence Requirements
 
@@ -132,13 +132,12 @@ Variantの追加、受付停止、条件変更、終了がありうる。
 
 ### Relationships
 
-VariantはProduct、Offering、Payment Instrument、Rule、Issuer Role、International Brand Roleと関係する。
+VariantはProduct、Offering、Payment Instrument、Rule、Issuer Role、Brand / Network Identifierと関係する。Payment Network / Schemeや運営Actor Roleとの対応は暫定である。
 
 ### Invariants
 
 - 国際ブランド差を常に単なる属性として潰さない。
 - あるVariantにだけ適用されるRuleをProduct共通Ruleにしない。
-- デュアル発行では、複数VariantのIssuance関係を表現できる必要がある。
 
 ### Boundaries
 
@@ -146,7 +145,6 @@ VariantはOfferingではない。申込経路差や会員コホート差はOffer
 
 ### Examples
 
-- 三井住友カードではVisa/Mastercardのデュアル発行が確認されている。
 - UCSカードmajicaはVisa/Mastercard/JCBブランド付きであり、ブランドなしハウスカードの例ではない。
 - bitFlyer クレカにはスタンダードとプラチナがある。
 
@@ -171,7 +169,7 @@ Variantごとに受付可否、年会費、特典、ブランド提供状況が�
 
 ### Definition
 
-Product Featureは、Productに含まれる機能、特典、受付、ポイント付与、クレジット機能などの部分的な能力である。
+Product Featureは、Productに含まれる決済機能、特典、ポイント付与等の部分的な能力である。申込受付の可否はProduct Featureではなく、OfferingまたはApplication RouteのAvailabilityとして扱う。
 
 ### Responsibility
 
@@ -192,15 +190,16 @@ FeatureはProduct、Rule、Lifecycle Event、Member Cohort、Reward、Evidence�
 ### Invariants
 
 - Feature終了をProduct終了として扱わない。
-- Productが継続中でも、特典や新規受付が終了している場合がある。
+- Productが継続中でも、特典等のFeatureが終了している場合がある。
+- OfferingまたはApplication Routeの受付停止をFeature終了として重複記録しない。
 
 ### Boundaries
 
-FeatureはProductの同一性そのものではない。ただし中核Featureの消滅によりProduct終了と評価される可能性はある。
+FeatureはProductの同一性そのものではない。ただし中核Featureの消滅によりProduct終了と評価される可能性はある。申込可能性はOfferingに、個別の申込入口の公開・停止はApplication Routeに置き、同一の受付停止Eventを両方に記述する場合は、Offering全体の提供可否とRoute別の利用可否という対象差を明示する。
 
 ### Examples
 
-セゾンゲーミングカードDigitalでは、ゲーム関連特典、ポイント付与、クレジット機能、新規受付が別々のLifecycleを持つ。
+セゾンゲーミングカードDigitalでは、ゲーム関連特典、ポイント付与、クレジット機能が別々のFeature Lifecycleを持つ。新規受付停止はOffering availabilityのLifecycleである。
 
 ### Counterexamples
 

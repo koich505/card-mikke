@@ -8,9 +8,9 @@ Given: 一般申込可能なProduct Offeringが公式ページで確認されて
 
 When: 申込者が当該Offeringから申し込む。
 
-Then: Product、Offering、Application Route、Eligibility Rule、Member候補、Issuer Roleを分けて扱う。審査ロジックが非公開ならundisclosedとする。
+Then: Product、Offering、Application Route、Eligibility Rule、Applicant Role、将来のMember Role候補、Issuer Roleを分けて扱う。審査ロジックが非公開ならundisclosedとする。
 
-Evidence: アメックス・ゴールド・プリファードの直接Web申込可能性、三井住友カード等の一般CoreカードObservation。
+Evidence: アメックス・ゴールド・プリファードの直接Web申込可能性。
 
 ## 2. 同一Productで国際ブランドごとに条件が異なる
 
@@ -20,27 +20,27 @@ When: ブランドごとに年会費、特典、発行可否、デュアル可�
 
 Then: Variant固有Ruleとして保持し、Product共通Ruleへ上書きしない。ブランド有無からLegal Classificationを推論しない。
 
-Evidence: 三井住友カードのデュアル発行、UCSカードmajicaのブランド付き訂正。
+Evidence: UCSカードmajicaのVisa/Mastercard/JCBブランド付き訂正。ブランド別条件の具体例は現行baselineでは未確認。
 
-## 3. Visa/Mastercardデュアル発行
+## 3. 複数ブランドIssuance（未確認シナリオ）
 
-Given: 同一会員がVisaとMastercardの2枚を発行できるProductがある。
+Given: 同一Actorに複数ブランドのPayment Instrumentが発行される構造を検討する。
 
-When: 新規申込または既存会員の追加申込でデュアル発行になる。
+When: 複数Issuanceの関係を表す必要が生じる。
 
-Then: 1つのProduct保有ではなく、複数IssuanceまたはVariant-linked Issuanceとして扱う。2枚目年会費等はFee Ruleとして扱う。
+Then: Product、Variant、Issuanceを分ける候補とする。ただし発行条件や追加費用を確認済みFactとして置かない。
 
-Evidence: 三井住友カードのデュアル発行Observation。
+Evidence: v1由来の例は現行Research baselineで直接再確認されていないため、Research gapとして扱う。
 
-## 4. 家族カード
+## 4. 家族・追加カード（未解決シナリオ）
 
-Given: 本会員に紐づく家族会員の扱いが公式資料で確認されている。
+Given: 本人以外の利用者に追加のPayment Instrumentが発行される構造を検討する。
 
-When: 家族会員に追加カードが発行される。
+When: Actor、Applicant、Contract Party、Cardholder/User、Member Role、Issuanceの関係を区別する必要が生じる。
 
-Then: 本会員Memberと家族会員MemberまたはAttached Card利用者を分ける。年会費や利用権限はEvidenceが確認できる範囲に限定する。
+Then: 追加利用者を自動的にMember RoleまたはContract Partyと確定せず、Issuanceと利用権限を分ける。具体的な契約・請求・権限はUnknownにする。
 
-Evidence: 03のExisting Model Assessmentでは家族カード等の確認事例がSupporting evidenceに挙げられている。詳細権限は追加Evidenceが必要。
+Evidence: 03のExisting Model Assessmentの一般的言及だけでは具体構造を確定できないため、OQ-8のResearch gapとして扱う。
 
 ## 5. 法人カード＋社員追加カード
 
@@ -60,7 +60,7 @@ When: 既存Memberが条件達成またはカード会社判断で招待され�
 
 Then: Product、Offering、Application Route、Eligibility Rule、Member Cohortを分ける。非公開判定ロジックはundisclosedとする。
 
-Evidence: イオンゴールドカードの年間カードショッピング50万円（税込）以上・審査あり、JCBゴールド ザ・プレミアの招待条件。
+Evidence: イオンゴールドカードの年間カードショッピング50万円（税込）以上・審査あり。
 
 ## 7. 外部団体所属者限定の申込経路
 
@@ -110,7 +110,7 @@ When: Memberが対象期間の利用条件を満たす、または満たさな�
 
 Then: Fee Ruleとして条件、対象期間、対象Member、免除有無を扱う。非公開判定条件はundisclosedとする。
 
-Evidence: JCBゴールド ザ・プレミアのサービス年会費免除条件はv1由来の補助Observationであり、v2/03で反証されていないが、Architecture前に一次再確認が必要。三井住友デュアル発行時の2枚目年会費Observationも補助Evidenceとして扱う。
+Evidence: 現行Research baselineには条件付き年会費の具体条件をDomain Factとして確定できる十分な例がない。v1由来例はOQ-18の再調査対象とする。
 
 ## 12. 複数段階のポイント計算
 
@@ -140,15 +140,15 @@ When: BenefitやFeeが複数カード状態に依存する。
 
 Then: Multi Card Relationship Rule候補として扱う。ただしResearchでは統合すべき確定反証はないため、Rule名や構造はProvisionalに留める。
 
-Evidence: 三井住友デュアル発行、03のDualIssuanceRuleとCrossCardSynergyRuleの重複可能性指摘。
+Evidence: 03のDualIssuanceRuleとCrossCardSynergyRuleの重複可能性指摘のみであり、具体的市場Factは未確認。
 
 ## 15. 商品の新規受付停止
 
-Given: ProductまたはOfferingが新規入会停止を告知する。
+Given: Offeringが新規入会停止を告知する。
 
 When: 新規申込受付が終了する。
 
-Then: application_available_toを持つLifecycle Eventとして扱い、Product終了や既存会員利用停止とは分ける。
+Then: Offering availabilityのLifecycle Eventとして扱い、Product Feature終了、Product終了、既存会員利用停止とは分ける。特定Application Routeだけが停止する場合はRoute availabilityとし、Offering全体の停止と区別する。
 
 Evidence: セゾンゲーミングカードDigitalの2024-09-10新規入会停止。
 
@@ -198,6 +198,6 @@ Given: カードProductがホテル会員プログラムと連動する。
 
 When: Memberが対象年間利用額を満たし、ホテルステータスや無料宿泊特典を受ける。
 
-Then: Card Member、External Membership、Benefit、Reward Rule、Member Cohortを分ける。ホテル会員資格とカード会員資格の契約上の分離度は追加調査事項として残す。
+Then: Card Member Role、External Membership、非Reward Benefit、Benefitに適用されるRule、Member Cohortを分ける。無料宿泊・ホテルステータスをMember Rewardにも重複所属させない。ホテル会員資格とカード会員資格の契約上の分離度は追加調査事項として残す。
 
 Evidence: Marriott Bonvoy Amex、Hilton Honors Amex。

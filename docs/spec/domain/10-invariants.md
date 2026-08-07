@@ -9,9 +9,9 @@ Research Evidenceから導くDomain Invariantを以下に定義する。Invarian
 | 3 | Source取得日と有効開始日を混同しない | 2026-08-07に取得したセゾンゲーミング終了告知は、2025-03-31終了Factを示す | Temporal | high |
 | 4 | 将来適用Ruleを現在Ruleとして返さない | Marriott Bonvoy Amexの2025-08-21改定のように、告知と適用日を分ける必要がある | Rule、Temporal | high |
 | 5 | 同じ対象・条件・期間で矛盾するRuleを無条件にCurrentとしない | v1とv2のPaidy、UCSカードmajica、JCA会員数の訂正 | Evidence、Rule | high |
-| 6 | Variant差をProduct共通値として潰さない | 三井住友カードのVisa/Mastercardデュアル発行、UCSカードmajicaのブランド付き事例 | Product、Variant | medium |
+| 6 | Variant差をProduct共通値として潰さない | UCSカードmajicaではVisa/Mastercard/JCBのブランド表示が確認されるが、各差異のRuleはEvidence単位で扱う | Product、Variant | medium |
 | 7 | 国際ブランド有無と法的与信分類を同軸に置かない | Paidyはブランド非依存だが登録事業者、UCSカードmajicaはブランド付き、Kyashはプリペイド | Payment、Legal | high |
-| 8 | ActorとActor Roleを同一視しない | bitFlyer クレカではアプラス、Mastercard、bitFlyerのRoleが分離する | Actor | high |
+| 8 | ActorとActor Roleを同一視しない | bitFlyer クレカではアプラスとbitFlyerの責務が分離する。Mastercard表示は暫定的なBrand / Network Identifierであり、Roleと確定しない | Actor | high |
 | 9 | Actorの登録区分からTransaction Legal Classificationを自動導出しない | Paidyは包括信用購入あっせん業者登録済みだが、個別Scheme分類は登録Factだけでは確定しない | Legal、Payment | high |
 | 10 | Payment Instrument、Payment Scheme、Funding Methodを混同しない | Kyash CardはVisaプリペイド型Instrument、「イマすぐ入金」は後払い型Funding Method | Payment | high |
 | 11 | Product LifecycleとFeature Lifecycleを混同しない | セゾンゲーミングカードDigitalは新規停止、Feature終了、クレジット機能限定、自動解約が段階的 | Product、Temporal | high |

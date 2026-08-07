@@ -4,7 +4,7 @@
 
 ### Definition
 
-Member Rewardは、カード会員または対象利用者へ還元されるポイント、マイル、キャッシュバック、無料宿泊、会員ステータス等の便益である。
+Member Rewardは、カード会員または対象利用者へ利用等に応じて発生・付与され、残高、数量、金額等として算定または蓄積される還元価値である。現時点のworking boundaryではポイント、マイル、キャッシュバック、資産変換前の価値を含む。
 
 ### Responsibility
 
@@ -30,13 +30,11 @@ Member RewardはMember、Reward Operator、Product Feature、Reward Rule、Exter
 
 ### Boundaries
 
-Member RewardはEconomic Flow全体ではない。提携先団体への手数料収入、寄付、加盟店手数料、Issuer間精算は別Concept候補である。
+Member RewardはBenefitの下位概念だが、Benefit全体でもEconomic Flow全体でもない。無料宿泊、ホテルステータス、ラウンジ等の資格・サービス便益は現時点では非Reward Benefitとして扱う。提携先団体への手数料収入、寄付、加盟店手数料、Issuer間精算は別Concept候補である。
 
 ### Examples
 
 - bitFlyer クレカでは、カード利用でアプラスポイントが発生し、BTCへ変換されbitFlyerアカウントへ付与される。
-- Marriott Bonvoy Amexでは年間利用額に応じた無料宿泊特典や宿泊実績付与が確認されている。
-- Hilton Honors Amexでは年間利用額に応じたエリートステータス付与が確認されている。
 
 ### Counterexamples
 
@@ -53,6 +51,7 @@ RewardはProductやFeatureより細かい期間を持つ。付与期間、失効
 ### Open Questions
 
 - Rewardと外部資産の境界。
+- マイル、宿泊ポイント、交換可能な無料宿泊証書等をRewardと非Reward Benefitのどちらに置くか。
 - ポイント、マイル、ホテルポイント、暗号資産を同じReward familyで扱うか。
 
 ## Concept: Asset Conversion
@@ -112,7 +111,7 @@ bitFlyer クレカでは、アプラスポイントが市場レートでBTCに�
 
 ### Definition
 
-Benefitは、Member Rewardを含む会員向け便益の総称である。ポイント以外に、ラウンジ、コンシェルジュ、無料宿泊、ホテルステータス、ダイニング優待等を含む。
+Benefitは、Member Rewardを含む会員向け便益の総称である。現時点のworking boundaryでは、ラウンジ、コンシェルジュ、無料宿泊、ホテルステータス、ダイニング優待等の資格・サービス便益を非Reward Benefitとして扱う。
 
 ### Responsibility
 
@@ -138,6 +137,7 @@ BenefitはProduct Feature、Member、External Membership、Rule、Evidenceと関
 ### Boundaries
 
 BenefitはPartner Revenue Shareではない。Memberに直接返らない価値移転はEconomic Flowとして扱う。
+RewardはBenefitの下位概念である。同じ便益をRewardと非Reward Benefitの双方へ所属させない。交換可能な証書や外部ポイントなど境界が判断できないものは個別にUnknownとして扱う。
 
 ### Examples
 
