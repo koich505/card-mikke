@@ -42,7 +42,11 @@ Decision date: 2026-08-09
 ├── requirements/
 │   ├── requirements-agent.md
 │   ├── requirements-reviewer.md
-│   └── requirements-checklist.md
+│   ├── create-requirements.md
+│   └── checklists/
+│       ├── requirements-readiness-checklist.md
+│       ├── domain-traceability-checklist.md
+│       └── non-functional-requirements-checklist.md
 ├── ui/
 │   ├── ui-mock-agent.md
 │   ├── ui-reviewer.md
