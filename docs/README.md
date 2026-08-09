@@ -38,6 +38,7 @@ docs/
 ├── reviews/
 │   ├── domain/
 │   ├── requirements/
+│   ├── ui/
 │   └── features/
 └── process/
 ```
@@ -85,7 +86,7 @@ Concept、責務、境界、関係、不変条件、Scenario、Open Questionを�
 
 ### `docs/design/ui/`
 
-User Flow、High-fidelity Mock、状態別表示、承認記録を置く。ユーザー向けfeatureの実装計画は、該当Mockの承認後に開始する。
+User Flow、High-fidelity Mock、状態別表示、承認記録を置く。実行可能なUIコードは`docs/`へ置かず、`docs/process/04-ui-first-implementation.md`に従って本番候補ApplicationをUI-only modeで構築する。ユーザー向けfeatureの実装計画は、該当Mockの承認後に開始する。
 
 ### `docs/architecture/`
 

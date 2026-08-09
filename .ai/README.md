@@ -50,7 +50,8 @@ Decision date: 2026-08-09
 ├── ui/
 │   ├── ui-mock-agent.md
 │   ├── ui-reviewer.md
-│   └── ui-approval-checklist.md
+│   ├── ui-approval-checklist.md
+│   └── create-ui-mock.md
 ├── architecture/
 │   ├── architecture-agent.md
 │   ├── architecture-reviewer.md

@@ -39,6 +39,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 3. **User Flow and High-fidelity UI Mock**
    - AIとの対話を用い、主要画面と状態を実装前に具体化する。
    - RequirementsとMockは相互に反復してよい。
+   - `docs/process/04-ui-first-implementation.md`に従い、本番候補ApplicationをUI-only modeで構築する。
 4. **UI Mock Approval Gate**
    - 人間がMockを承認し、`UI Mock Approved`を記録する。
    - ユーザー向け機能は、この承認前に実装計画へ進めない。
