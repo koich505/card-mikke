@@ -9,13 +9,19 @@
 - `AGENTS.md`
 - `docs/README.md`
 - `.ai/README.md`
+- `.ai/shared/evidence-policy.md`
 - `.ai/ui/ui-mock-agent.md`
 - `.ai/ui/ui-approval-checklist.md`
+- `docs/process/02-quality-gates.md`
 - `docs/process/04-ui-first-implementation.md`
 - `docs/spec/requirements/`
+- `docs/spec/domain/`
+- `docs/reviews/domain/`の最新Domain Review結果
 - `docs/design/ui/`
 - 対象Frontend Application
 - `quality` Commandの結果
+
+UI成果物だけでなくUI工程・Agent・Checklist・成果物配置の整合性を評価するWorkflow meta-reviewの場合に限り、`.ai/ui/ui-workflow-consistency-checklist.md`も必須入力として参照する。通常のUI Mock Reviewでは必須入力にしない。
 
 ## レビュー観点
 
@@ -24,13 +30,17 @@
 - 主要User Flowの完結性
 - 画面間、Component間、文言の一貫性
 - Desktop / MobileのResponsive
-- Loading、Empty、Error、Partial、Unknown状態
+- Loading、Empty、Error、Partial、Unknown等の一般画面状態
 - Keyboard、Focus、Semantic HTML、Label、Contrast、Reduced motion
-- Evidence、確認日、Disclosure Statusの理解しやすさ
+- Evidence、確認日、Disclosure Status（`unknown`、`undisclosed`、`partially_disclosed`、`disclosed`）の理解しやすさと、一般画面状態のUnknownとの区別
 - 日本語文言、情報量、可読性、誤認リスク
 - Metadata、見出し、Link等のUIに関係するSEO
 - FixtureとUI Componentの分離
 - UI-only境界を越えた本番処理の混入
+- Fixtureが合成データだけで、PII、Credential、Secretを含まないこと
+- 仮Form、Analytics、外部通信・Link・埋込Content、永続化の識別と意図しない送信・保存がないこと
+- User input、HTML表示、URL schemeの基本的安全性
+- Secret scanと依存脆弱性確認の結果
 - `quality` Commandと主要Browser Testの結果
 
 ## 出力形式
@@ -59,6 +69,7 @@ UI Mock Approval前に修正すべき主要画面・状態・Responsive・Access
 - Majorが0件である。
 - Minorの扱いが記録されている。
 - Open Questionの戻し先と期限が識別されている。
+- 主要Flow、誤認、安全性、Requirements適合をblockするOpen Questionが0件であり、持越事項にはOwner、期限、解決Gateがある。
 - UI Approval Checklistの結果が説明されている。
 
 ## 制約
@@ -67,5 +78,6 @@ UI Mock Approval前に修正すべき主要画面・状態・Responsive・Access
 - RequirementsにないUIを暗黙に正当化しない。
 - 見た目だけでAccessibilityを通過扱いにしない。
 - Fixtureを本番Data Modelとして評価しない。
+- Domain SpecificationとDomain Reviewは表示意味の検証にだけ使用し、UI ReviewerがDomain Factや本番Data Contractを新たに確定しない。
 - DB、API、認証等の本番Architectureを提案してUIを固定しない。
 - `UI Mock Approved`を記録しない。

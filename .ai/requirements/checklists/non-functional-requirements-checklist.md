@@ -44,7 +44,7 @@
 - [ ] 情報の鮮度、再確認周期、期限切れ時の扱いが定義されている。
 - [ ] Source消失時のEvidence保持方針が定義またはOpen Question化されている。
 - [ ] Fact変更時の履歴、訂正、監査可能性が検討されている。
-- [ ] unknown、undisclosed、partially_disclosedの表示要求が検討されている。
+- [ ] Disclosure Statusの`unknown`、`undisclosed`、`partially_disclosed`、`disclosed`の表示要求が検討され、一般画面状態のUnknownと区別されている。
 
 ## Availability and Operations
 

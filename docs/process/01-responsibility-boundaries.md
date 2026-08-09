@@ -8,6 +8,7 @@ Decision date: 2026-08-08
 人間は最終的な意思決定とリポジトリへの反映責任を持つ。
 
 - 要件、UI Mock、Architecture上の重要判断を承認する。
+- UI Bootstrap用の暫定Frontend判断を承認し、暫定ADRの固定範囲、再評価範囲、再評価Gateを確定する。本番Architecture判断は後工程で別に承認する。
 - ローカルLLMやCodexの指摘が競合した場合に採否を決定する。
 - UX、視覚品質、事業上の妥当性を最終確認する。
 - commit、push、Pull Request作成、CI確認、mergeを行う。

@@ -40,6 +40,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
    - AIとの対話を用い、主要画面と状態を実装前に具体化する。
    - RequirementsとMockは相互に反復してよい。
    - `docs/process/04-ui-first-implementation.md`に従い、本番候補ApplicationをUI-only modeで構築する。
+   - このUI-only codeは承認前の設計検証成果物であり、本番機能、本番Data Contract、Gate 3 / Gate 4の本番実装ではない。承認前に本番利用しない。
 4. **UI Mock Approval Gate**
    - 人間がMockを承認し、`UI Mock Approved`を記録する。
    - ユーザー向け機能は、この承認前に実装計画へ進めない。
@@ -47,6 +48,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
    - 承認済みRequirementsとMockを入力に、機能スライス単位の`spec.md`を作成する。
    - `/speckit.clarify`と要件チェックリストで曖昧さを減らす。
    - UIに影響する曖昧さが判明した場合はMockへ戻り、再承認する。
+   - `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行い、結果を`plan.md`と`tasks.md`の入力にする。
 6. **Technical Plan and Task Breakdown**
    - `/speckit.plan`で機能スライス全体の技術計画・テスト方針を作る。
    - `/speckit.tasks`で依存順の実装Taskへ分割する。
@@ -92,4 +94,4 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 
 ## Current Boundary
 
-現時点ではフローの文書化のみ完了している。Requirements、UI Mock、Architecture、アプリ実装、Spec Kit/OpenCode/Ollama/CIの初期化・設定はまだ行わない。
+現時点ではDomain Specificationと開発・UI工程方針が文書化され、次の工程はRequirements作成である。Requirements、UI Mock、Architecture、本番実装、およびSpec Kit / OpenCode / Ollama / CIの初期化・設定は、各Entry Conditionと明示的な作業依頼を満たすまで開始しない。

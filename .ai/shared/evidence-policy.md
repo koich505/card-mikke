@@ -13,6 +13,16 @@
 
 unknownとundisclosedを同一視しない。
 
+この4状態はDomain上のDisclosure Statusの正式表記である。Loading、Empty、Error、Partial、Unknown等の一般画面状態と混同しない。
+
+## UI-onlyでのEvidence Data
+
+- UI MockのFixtureは合成データだけを使い、実在個人情報、Credential、Secretを含めない。
+- Source、確認日、適用期間、Disclosure Statusの表示意味はDomain Specificationと最新Domain Reviewに照合する。
+- UI検証の都合でUnknownを確定Factへ変えたり、FixtureをEvidenceや本番Data Sourceとして扱ったりしない。
+- 仮Form、Analytics、外部通信・Link・埋込ContentによってEvidence Dataや入力を外部送信・永続化しない。承認例外は送信先と送信Dataを明示する。
+- User inputやSource由来の文字列を無加工のHTMLとして表示せず、危険なURL schemeと注入を防ぐ。
+
 ## 時点の区別
 
 以下を混同しない。

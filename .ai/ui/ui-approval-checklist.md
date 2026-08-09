@@ -28,7 +28,7 @@ High-fidelity UI Mockが独立レビューと人間による承認へ進める�
 - [ ] Empty状態がある。
 - [ ] ErrorとRetry状態がある。
 - [ ] Partial Data状態がある。
-- [ ] unknown、undisclosed、partially_disclosedが必要に応じて表現されている。
+- [ ] Disclosure Statusの`unknown`、`undisclosed`、`partially_disclosed`、`disclosed`が必要に応じて表現され、一般画面状態のUnknownと区別されている。
 - [ ] 長文、長い商品名、多数項目等の現実的なEdge Caseを確認している。
 
 ## Responsive and Browser Interaction
@@ -71,7 +71,8 @@ High-fidelity UI Mockが独立レビューと人間による承認へ進める�
 
 ## UI-only Implementation Boundary
 
-- [ ] Fixtureが専用Directoryへ隔離されている。
+- [ ] UI-only codeが承認前の設計検証成果物であり、本番機能、本番契約、Gate 3 / Gate 4の実装として利用されていない。
+- [ ] 合成Fixtureだけが専用Directoryへ隔離され、PII、Credential、Secretを含まない。
 - [ ] Presentational ComponentへFixtureを直接埋め込んでいない。
 - [ ] 暫定View ModelをDomain Entity、DB Model、API Contractとして扱っていない。
 - [ ] DB、ORM、本番API、認証、CMS等を先取りしていない。
@@ -79,11 +80,21 @@ High-fidelity UI Mockが独立レビューと人間による承認へ進める�
 - [ ] `quality` Commandが成功している。
 - [ ] 主要User FlowのBrowser Testが成功している。
 
+## Security and Privacy
+
+- [ ] 仮Formは外部送信・永続化せず、模擬処理はMemory内の合成データだけで完結する。
+- [ ] Analytics、外部通信、外部Link、埋込Contentが識別され、原則無効化されている。承認例外には送信先と送信Dataが記録されている。
+- [ ] User inputを無加工のHTMLとして表示せず、危険なURL schemeと注入を防いでいる。
+- [ ] Secret scanが成功している。
+- [ ] Bootstrap時およびLockfile変更時の依存脆弱性確認が成功している。
+
 ## Approval Record
 
 - [ ] UI ReviewerのCriticalが0件である。
 - [ ] UI ReviewerのMajorが0件である。
 - [ ] MinorとOpen Questionの扱いが記録されている。
+- [ ] 主要Flow、誤認、安全性、Requirements適合に影響するOpen Questionが0件である。
+- [ ] 持越可能なOpen QuestionにOwner、期限、解決Gate、戻し先がある。
 - [ ] 承認対象のRequirementsとUI VersionまたはCommitが識別されている。
 - [ ] 本実装で`As-is reuse`、`Refactor`、`Replace`、`Remove`を評価することが記録されている。
-- [ ] 人間が承認日、承認者、対象範囲を記録している。
+- [ ] Agent準備時は承認者、承認日、承認状態が空欄であり、人間だけが対象範囲とともに`UI Mock Approved`を確定している。

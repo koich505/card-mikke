@@ -30,7 +30,7 @@ Researchだけでは決められない事項を隠さず残す。Requirements作
 |---|---|---|
 | Actor / Actor Role separation | Adopted as working decision | bitFlyer、Kyash、Paidy、全弁協でRole分離が繰り返し必要になる |
 | Evidence chain: Domain Fact -> Evidence -> Source | Adopted as working decision | v1監査で一次確認不足の誤りが多数発見された |
-| Claim-level Disclosure Status | Adopted as working decision | unknown、undisclosed、partially_disclosedの区別が個別claim、Observation、Extracted Fact、Domain Factで必要。Source全体の単一Statusにはしない |
+| Claim-level Disclosure Status | Adopted as working decision | `unknown`、`undisclosed`、`partially_disclosed`、`disclosed`の区別が個別claim、Observation、Extracted Fact、Domain Factで必要。Source全体の単一Statusにはしない |
 | Product Lifecycle / Feature Lifecycle separation | Adopted as working decision | セゾンゲーミングカードDigitalが具体的な段階的終了を示す |
 | Regulatory Registration / Legal Classification separation | Adopted as working decision | Paidyの登録FactからScheme別分類を導出できない |
 | Payment Instrument / Funding Method separation | Adopted as working decision | Kyashのカードと後払い入金で契約主体・責務が異なる |

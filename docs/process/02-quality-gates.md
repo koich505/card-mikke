@@ -25,7 +25,7 @@ Decision date: 2026-08-08
 - **Performance**: ページ速度、Bundle、画像、Query、Cache、外部API呼出しを確認する。
 - **Accessibility**: Keyboard操作、Focus、Semantic HTML、Label、Contrast、Reduced motion等を確認する。
 - **SEO**: Index制御、Metadata、Canonical、Structured Data、内部リンク等を確認する。
-- **Evidence and freshness**: 出典、確認日、更新履歴、Unknown / Disclosure Statusを壊さない。
+- **Evidence and freshness**: 出典、確認日、更新履歴、Disclosure Status（`unknown`、`undisclosed`、`partially_disclosed`、`disclosed`）を壊さない。一般画面状態のUnknownとは区別する。
 - **Operations**: 可観測性、障害時挙動、Rollback、設定差、復旧可能性を確認する。
 - **Cost**: Hosting、Build、Storage、外部API、モデル推論等を計測し、承認済み上限内に保つ。
 
@@ -45,19 +45,27 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 
 - 主要画面と画面遷移
 - Desktop / Mobile
-- Loading / Empty / Error / Partial / Unknown状態
+- Loading / Empty / Error / Partial / Unknown等の一般画面状態
 - Filter、Sort、Search等の主要操作
-- Evidence、確認日、Disclosure Statusの見せ方
+- Evidence、確認日、Disclosure Status（`unknown`、`undisclosed`、`partially_disclosed`、`disclosed`）の見せ方
 - Keyboard、Focus、Label等の主要アクセシビリティ
 - 実際に近い日本語文言とデータ量
+- UI-only codeが承認前の設計検証成果物として隔離され、本番機能・本番契約・本番Data Sourceに利用されていないこと
+- Fixtureが合成データのみで、PII、Credential、Secretを含まず、仮Form、Analytics、外部通信・Link・埋込、永続化、入力・HTML表示の安全性が確認されていること
+- UI Bootstrap / Review用に決定した最小`quality` Command（format check、lint、typecheck、build、および追加済みのTest）が成功していること
+- UI-only codeへのSecret scanが成功し、Bootstrap時およびLockfile変更時の依存脆弱性監査が成功していること
+- 主要Flow、誤認、安全性、Requirements適合に影響するOpen Questionが0件であること。持越可能な事項にはOwner、期限、解決Gateがあること
 
 ### Gate 3: Specification Ready
 
-- `spec.md`、`plan.md`、`tasks.md`が相互に整合する。
+- `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行っている。
+- Promotion分類が`plan.md`と`tasks.md`へ反映され、`spec.md`、`plan.md`、`tasks.md`が相互に整合する。
 - 受入条件が検証可能である。
 - Taskの依存順、並列可否、テストが明示されている。
 
 ### Gate 4: Local Implementation Ready
+
+Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従う本番実装である。UI Mock Approval前のUI-only codeや未評価のFixture・暫定型・仮処理を、そのまま本番実装として扱わない。
 
 - 必須のformat、lint、typecheck、test、buildが成功する。
 - Secret scan、採用するSecurity scanner、依存監査が成功する。
@@ -67,7 +75,7 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 - MinorとOpen Questionの扱いが記録されている。
 - feature slice完了時にconvergeを通過している。
 
-具体的なコマンドとツールは技術Stack決定後に定め、最終的に単一の品質コマンドから再現可能にする。
+本実装用の具体的なコマンドと追加Security Toolは技術Stack決定後に定め、最終的に単一の品質コマンドから再現可能にする。Gate 2で使うUI用最小品質コマンド、Secret scan、依存脆弱性監査はUI Bootstrap前に決定する。
 
 ### Gate 5: Codex Final Review Ready
 

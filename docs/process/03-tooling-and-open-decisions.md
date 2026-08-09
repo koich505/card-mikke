@@ -33,16 +33,19 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 
 | ID | Decision | Required before | Notes |
 |---|---|---|---|
-| WF-1 | UI Mockの作成Tool、保存形式、Versioning方法 | 最初のUI Mock作成 | Code、Figma等を比較し、レビュー可能な保存形式を選ぶ |
-| WF-2 | Web技術Stack、Hosting、Package Manager | Architecture / `speckit.plan` | Requirementsと非機能要件を先に確定する |
+| WF-1 | Code Mockを補助するDesign Tool、Screenshot、Mock Versioning方法 | 最初のUI Mock承認 | 実行可能なCode Mockは採用済み。補助成果物は`docs/design/ui/mocks/`から対象Code Versionを追跡可能にする |
+| WF-2A | UI Bootstrap用の暫定Frontend Stack、Package Manager、Application配置 | 最初のUI Mock作成 | Humanが承認し、`docs/architecture/decisions/`の暫定ADRへ固定範囲と再評価範囲を記録する。特定Frameworkを未承認の既定値にしない |
+| WF-2B | 本番Web Stack、Hosting、Package Managerの最終判断 | Architecture承認 / `speckit.plan`確定 | Requirements、非機能要件、暫定ADRを再評価し、本番ArchitectureとしてHumanが承認する |
 | WF-3 | Ollamaの具体Model、Quantization、Context長 | 最初のローカル実装 | 実機の品質・速度・メモリBenchmarkで決める |
 | WF-4 | Spec Kit、OpenCode、Ollama等の固定Version | Tool初期化 | 再現可能性とUpgrade方針を記録する |
-| WF-5 | format / lint / typecheck / test / buildのコマンド | 最初の実装Task | 最終的に単一の品質コマンドへ統合する |
-| WF-6 | SAST、Secret scan、依存脆弱性監査のTool | 最初のPR | ローカルとCIの双方で再現可能にする |
+| WF-5A | UI Bootstrap / Review用の最小品質コマンド（`format:check`、`lint`、`typecheck`、`build`およびそれらをまとめる`quality`） | UI Bootstrap前 | Gate 2まで継続して再現可能にし、UI Mock Approval時に成功結果を確認する。UIでTestを追加した場合は`quality`へ含める |
+| WF-5B | 本実装Task用に`test`等を含めて拡張する品質コマンド | 最初の本実装Task | Gate 4で必要なformat / lint / typecheck / test / buildを単一の品質コマンドから再現可能にする |
+| WF-6A | UI-only code用のSecret scanと依存脆弱性監査Toolおよび実行方法 | UI Bootstrap前 | Gate 2まで継続して再現可能にし、Secret scanはUI-only工程、依存監査はBootstrap時とLockfile変更時に実行する |
+| WF-6B | 本実装 / PR用のSAST等の追加Security scannerとCI実行方法 | 最初の本実装Task（CI設定は最初のPR） | Gate 4のLocal GateとGate 6のCIの双方で再現可能にする |
 | WF-7 | Hosting、外部API、LLM等の費用上限と警告閾値 | Architecture承認 | 月額上限とfeature単位の増分確認方法を決める |
 | WF-8 | 並列実行数を1から増やす条件 | 並列化開始 | メモリ、レビュー品質、競合率を測定する |
 | WF-9 | GitHub Actionsの必須JobとBranch protection | 最初のPR | Local Gateと同一内容を基本とする |
-| WF-10 | レビュー結果とUI Mock承認の記録場所・Template | 最初のfeature spec | 生ログではなく決定と結果を残す |
+| WF-10 | UIレビュー・承認記録のTemplate、Versioning、相互Link方式 | 最初のUI Mock承認 | 保存場所はレビュー=`docs/reviews/ui/`、承認=`docs/design/ui/approvals/`で決定済み |
 | WF-11 | Codexへ渡す最小Contextと再レビュー条件 | 最初のCodex review | Token使用量と検出品質を測定して調整する |
 
 ## Deferred Alternatives
@@ -51,4 +54,4 @@ Goose、Aider、OpenHands等は現時点では採用しない。OpenCode + Ollam
 
 ## Next Resume Point
 
-次回は機能・非機能要件の作成へ進む。WF-1以外のTool詳細を先にすべて決定する必要はない。RequirementsとUI Mockで必要な情報が揃った後、Architectureと最初のfeature sliceに必要な項目から順に解決する。
+次回は機能・非機能要件の作成へ進む。UI開始前にWF-2A、WF-5A、WF-6Aを解決するが、その他のTool詳細を先にすべて決定する必要はない。RequirementsとUI Mockで必要な情報が揃った後、Architectureと最初のfeature sliceに必要な項目から順に解決する。

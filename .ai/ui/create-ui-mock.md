@@ -16,7 +16,7 @@
 2. Requirementsから主要User、Goal、Flow、UI Open Questionを抽出する。
 3. ユーザーとInformation Architecture、Navigation、Screen Inventoryを決める。
 4. 本番候補ApplicationをUI-only modeでBootstrapまたは確認する。
-5. 実データに近いFixtureと主要状態を用意する。
+5. PII、Credential、Secretを含まない合成Fixtureと主要状態を用意する。
 6. 主要FlowからHigh-fidelity UIを実装する。
 7. Desktop / Mobile、Keyboard、Accessibilityを反復確認する。
 8. ユーザーの操作確認と修正を繰り返す。
@@ -29,17 +29,19 @@
 - 本番候補Frontend Application内のUI-only実装
 - `docs/design/ui/00-ui-scope.md`
 - `docs/design/ui/01-information-architecture.md`
-- `docs/design/ui/02-user-flows.md`
+- `docs/design/ui/user-flows/<flow-id>.md`
 - `docs/design/ui/03-screen-inventory.md`
 - `docs/design/ui/04-ui-requirements.md`
+- `docs/design/ui/mocks/<mock-version>.md`と必要な`docs/design/ui/mocks/screenshots/<mock-version>/`
 - `docs/reviews/ui/`のレビュー結果
-- 人間承認後の`docs/design/ui/approvals/ui-mock-approval.md`
+- 未承認の`docs/design/ui/approvals/ui-mock-approval.md` Template（承認者、承認日、`UI Mock Approved`はHumanだけが確定）
 
 ## 完了条件
 
 - UI Approval Checklistを満たしている。
 - UI ReviewerのCritical / Majorが0件である。
-- 人間が対象RequirementsとUI Versionを指定して`UI Mock Approved`を記録している。
+- Agentの引渡し時点では未承認Templateの承認者、承認日、承認状態が空欄である。
+- 工程完了時には、人間が対象RequirementsとUI Versionを指定して`UI Mock Approved`を記録している。
 - 本実装で再利用・再評価する境界が明示されている。
 
 ## 最初のAction
