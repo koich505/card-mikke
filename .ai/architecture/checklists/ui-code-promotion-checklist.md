@@ -1,5 +1,7 @@
 # UI Code Promotion Checklist
 
+## Applicableの場合
+
 - [ ] 対象UI VersionまたはCommitが明示されている。
 - [ ] 対象ファイルまたはComponentを漏れなく列挙している。
 - [ ] 各対象をAs-is reuse / Refactor before reuse / Replace / Removeへ分類している。
@@ -10,3 +12,9 @@
 - [ ] Refactor / Replace / Removeに対応するTaskがある。
 - [ ] 未評価のUI-only codeを本番へ昇格しない。
 - [ ] 分類結果をPlanとTasksへ追跡できる。
+- [ ] 分類結果の正本が`plan.md`の`UI Code Promotion Assessment` sectionにある。
+
+## Not Applicableの場合
+
+- [ ] UI影響と対象UI-only codeの有無を確認している。
+- [ ] `plan.md`の同sectionにN/A理由、承認者、承認日がある。

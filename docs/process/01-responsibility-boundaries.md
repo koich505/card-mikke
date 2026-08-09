@@ -28,6 +28,19 @@ Spec Kitは仕様駆動開発の成果物と手順を整える。自律的に実
 
 OpenCodeはCoding Agentの実行環境、Ollamaはローカル推論Providerとして使用する。
 
+### Implementation Orchestrator
+
+Implementation Orchestratorは、各Taskの実行直前にPlanning上の並列候補を現在の作業状態と照合する実行調整Roleである。
+
+- 依存Taskの完了、予定変更範囲、共有Contract、Worker間の編集競合、Test、Local resourceを確認する。
+- `Parallel: Candidate`を実行時の`Approved`または`No`へ判定する。
+- `tasks.md`の該当Taskにある`Parallel Execution`項目へ、判定結果、判定者、判定日時、根拠、同時実行Groupを記録する。
+- 編集権限は上記`Parallel Execution`項目だけに限定する。Application code、Test、Spec、Plan、Task本文は変更しない。
+- Reviewerの選択、finding統合、品質通過判定はReview Orchestratorへ委ねる。
+- commit、push、PR作成、mergeを行わない。
+
+このRoleのOpenCode用Agent / Command等の実装資材はまだ作成しない。最初の本実装TaskがGate 4へ入る前に定義し、この責任、権限、記録先を維持する。
+
 ### Local Implementer
 
 - 承認済みの仕様、計画、Task、Mockの範囲でコードとテストを変更する。
@@ -41,14 +54,14 @@ OpenCodeはCoding Agentの実行環境、Ollamaはローカル推論Providerと�
 - Correctness Reviewerを原則すべての実装Taskで必須とする。
 - 専門Reviewerのfindingを統合し、重複を除き、通過可否を判定する。
 - 自身ですべての品質観点を再レビューする万能Reviewerにはしない。
-- 原則read-onlyとし、直接修正せず指摘をImplementerへ返す。
+- 例外なくread-onlyとし、ファイルを編集・修正しない。指摘をImplementerへ返す。
 
 ### Local Reviewers
 
 - Correctness、Security、Frontend Quality、Performance / Cost、Evidence / Contentの責任を分離する。
 - Correctness以外は変更内容とリスクに応じて実行し、関連しないReviewerを毎回起動しない。
 - 各ReviewerはImplementerと別のコンテキストで差分をレビューする。
-- 原則read-onlyとし、Critical、Major、Minor、Open Questionでfindingを返す。
+- 例外なくread-onlyとし、ファイルを編集・修正しない。Critical、Major、Minor、Open QuestionでfindingをPlanning AgentまたはImplementerへ返す。
 - 機械的に判定できるコード規約はlint等へ委ね、専用LLM Reviewerを作らない。
 
 同じモデルを利用する場合でも、Implementer、Review Orchestrator、各Reviewerの指示・コンテキスト・権限を分離する。
@@ -59,7 +72,7 @@ Codexはローカルゲート通過後の外部最終レビューを担当する
 
 - feature slice全体の差分を、仕様・計画・Task・テストと照合する。
 - ローカルレビューの見落とし、とくにCritical/Majorを検出する。
-- 原則としてレビューのみを行い、明示的に修正を依頼されない限りファイルを変更しない。
+- Final Reviewerとして例外なくread-onlyとし、ファイルを編集・修正しない。指摘をHumanとImplementerへ返す。
 - commit、push、PR作成、mergeは行わない。
 
 Codexはローカル品質工程の代替ではない。ローカル側で可能な限り収束させ、Codexのトークン利用を最終確認に集中させる。

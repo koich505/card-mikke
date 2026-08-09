@@ -19,8 +19,9 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 
 ## Initial Operating Assumptions
 
-- 実装用Agent、Review Orchestrator、専門Reviewerを分離する。
-- Implementerは編集可能、Review OrchestratorとReviewerは原則read-onlyとする。
+- Implementation Orchestrator、実装用Agent、Review Orchestrator、専門Reviewerを分離する。
+- ImplementerはApplication codeとTestを編集可能とする。Implementation OrchestratorはReviewerではない別Roleとして`tasks.md`の`Parallel Execution`項目だけを編集可能とする。Review OrchestratorとすべてのReviewerは例外なくread-onlyとし、編集・修正は禁止する。
+- Implementation OrchestratorはTask実行直前に依存、予定変更範囲、Worker競合、共有Contract、Test、Local resourceを再確認し、Parallel Candidateを`Approved`または`No`へ確定する。
 - Correctness Reviewerは原則常時実行し、その他の専門Reviewerは差分とリスクに応じて選択する。
 - すべてのAgentでcommit、push、PR作成、mergeを禁止する。
 - OpenCodeで実用的な長文Contextを扱うため、まず64k tokens以上を候補条件とし、実機Benchmarkで確定する。
@@ -47,6 +48,7 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 | WF-9 | GitHub Actionsの必須JobとBranch protection | 最初のPR | Local Gateと同一内容を基本とする |
 | WF-10 | UIレビュー・承認記録のTemplate、Versioning、相互Link方式 | 最初のUI Mock承認 | 保存場所はレビュー=`docs/reviews/ui/`、承認=`docs/design/ui/approvals/`で決定済み |
 | WF-11 | Codexへ渡す最小Contextと再レビュー条件 | 最初のCodex review | Token使用量と検出品質を測定して調整する |
+| WF-12 | Implementation OrchestratorのOpenCode用Agent / Commandと実行手順 | 最初の本実装TaskがGate 4へ入る前 | `tasks.md`の`Parallel Execution`項目だけを編集可能とし、Application code変更は禁止する。Review Orchestrator / Reviewerのread-only権限を維持する |
 
 ## Deferred Alternatives
 
@@ -54,4 +56,4 @@ Goose、Aider、OpenHands等は現時点では採用しない。OpenCode + Ollam
 
 ## Next Resume Point
 
-次回は機能・非機能要件の作成へ進む。UI開始前にWF-2A、WF-5A、WF-6Aを解決するが、その他のTool詳細を先にすべて決定する必要はない。RequirementsとUI Mockで必要な情報が揃った後、Architectureと最初のfeature sliceに必要な項目から順に解決する。
+次回は機能・非機能要件の作成へ進む。UI開始前にWF-2A、WF-5A、WF-6Aを解決するが、その他のTool詳細を先にすべて決定する必要はない。RequirementsとUI Mockで必要な情報が揃った後、Architectureと最初のfeature sliceに必要な項目から順に解決する。WF-12は最初の本実装TaskがGate 4へ入る前までに解決する。

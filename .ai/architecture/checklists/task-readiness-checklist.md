@@ -7,9 +7,11 @@
 - [ ] Requirement / Acceptance Criterionを追跡できる。
 - [ ] Promotion分類を必要なTaskへ追跡できる。
 - [ ] Required checksとTestsがある。
+- [ ] 各TaskにCompletion / Acceptance Criteriaとして期待結果と検証方法がある。
 - [ ] 完了条件が単独で判定可能である。
 - [ ] Riskがある。
-- [ ] Parallel statusがNoまたはCandidateである。
+- [ ] Parallel planning statusがNoまたはCandidateである。
+- [ ] `Parallel Execution`項目がImplementation Orchestrator用として確保され、Planning段階では未記入である。
 - [ ] Single Agentで安全に実行できる順序がある。
 - [ ] 共有Contract、Migration、統合Taskが先に直列化されている。
 - [ ] Acceptance CriteriaのTask / Test Coverageに漏れがない。

@@ -87,7 +87,7 @@ Concept、責務、境界、関係、不変条件、Scenario、Open Questionを�
 
 ### `docs/design/ui/`
 
-UI Scopeと要件対応は`docs/design/ui/`直下、User Flowは`docs/design/ui/user-flows/`、Mockの説明・Version・Screenshotは`docs/design/ui/mocks/`、人間による承認記録は`docs/design/ui/approvals/`へ置く。実行可能なUIコードは`docs/`へ置かず、`docs/process/04-ui-first-implementation.md`に従って本番候補ApplicationをUI-only modeで構築する。UIレビュー結果は`docs/reviews/ui/`へ置く。ユーザー向けfeatureの実装計画は、該当Mockの承認後に開始する。
+UI Scopeと要件対応は`docs/design/ui/`直下、User Flowは`docs/design/ui/user-flows/`、Mockの説明・Version・Screenshotは`docs/design/ui/mocks/`、人間による承認記録は`docs/design/ui/approvals/`へ置く。実行可能なUIコードは`docs/`へ置かず、`docs/process/04-ui-first-implementation.md`に従って本番候補ApplicationをUI-only modeで構築する。UIレビュー結果は`docs/reviews/ui/`へ置く。ユーザー向けfeatureの実装計画は、該当Mockの承認後に開始する。UI影響がないfeatureは、理由と承認者を記録してUI MockをN/Aにできる。feature単位のUI Code Promotion Assessment（承認済みN/Aを含む）の正本は`specs/<feature>/plan.md`とする。
 
 ### `docs/architecture/`
 

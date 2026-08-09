@@ -5,15 +5,16 @@ Decision date: 2026-08-09
 
 ## Purpose
 
-本書は、承認済みRequirementsとUI Mockを、独立して受入・Review・Deliveryできるfeature sliceへ分割し、Spec Kitの`spec.md`、`plan.md`、`tasks.md`およびArchitecture Decisionへ変換する手順を定める。
+本書は、承認済みRequirementsと、UI影響がある場合の承認済みUI Mockを、独立して受入・Review・Deliveryできるfeature sliceへ分割し、Spec Kitの`spec.md`、`plan.md`、`tasks.md`およびArchitecture Decisionへ変換する手順を定める。
 
 この工程は実装内容を計画するが、Application codeを実装せず、Local Agentを起動しない。Task実行と並列可否の最終判定はImplementation工程の責任とする。
 
 ## Entry Conditions
 
 - RequirementsがHumanに承認されている。
-- 対象UI MockがHumanにより`UI Mock Approved`と記録されている。
-- Requirements ReviewerとUI ReviewerのCritical / Majorが0件である。
+- UI影響があるfeatureでは、対象UI MockがHumanにより`UI Mock Approved`と記録されている。
+- UI影響がないbackend、operations、enabling featureでは、UI Mockを`Not Applicable`とする理由と承認者が記録されている。
+- Requirements Reviewer、およびUI影響がある場合はUI ReviewerのCritical / Majorが0件である。
 - 持越Open QuestionにOwner、期限、解決Gate、戻し先がある。
 - 対象Requirements Version、UI Version、関連Domain文書を追跡できる。
 - Spec Kitを使用する場合、導入Versionと管理領域が確認されている。
@@ -21,12 +22,13 @@ Decision date: 2026-08-09
 ## Standard Flow
 
 ```text
-Approved Requirements and UI
+Approved Requirements and applicable UI
     -> Feature slice candidates
-    -> Human scope approval
+    -> Human provisional slice selection
     -> spec.md
     -> Clarify / Checklist
-    -> UI code promotion assessment
+    -> Human final scope approval
+    -> UI code promotion assessment or approved N/A
     -> Architecture decisions / ADR
     -> plan.md
     -> tasks.md and dependency graph
@@ -35,7 +37,7 @@ Approved Requirements and UI
     -> Implementation handoff
 ```
 
-重大なArchitecture判断がない小規模featureでは、HumanのScope承認とPlanning承認を一回にまとめられる。Security、Cost、外部Contract、Domain境界へ影響する場合は分離する。
+小規模featureでも、Final Scope ApprovalとPlanning Approvalは意味と時点を分離する。Final Scope ApprovalはClarify完了後かつArchitecture、Promotion Assessment、`plan.md`、`tasks.md`の確定着手前に記録する。後のPlanning Approvalを同一の会議または連続した操作で扱うことはできるが、Planning成果物を根拠にFinal Scope Approvalを遡及記録したり、両者を一つの承認へ統合したりしない。
 
 ## Feature Slice
 
@@ -51,9 +53,11 @@ feature sliceは次を満たす単位とする。
 
 大きすぎるfeatureは垂直に分割し、UI、Data、Test等の技術層だけを別featureとして分離しない。共有Contractや基盤を先に確定する必要がある場合は、価値・利用者・完了条件を持つ明示的なenabling featureとして扱う。
 
-## Human Scope Approval
+## Human Scope Decisions
 
-Feature Planning Agentは候補を提示し、Humanは以下だけを判断する。
+Feature Planning Agentは候補を提示し、HumanはSpecification作成前に`Provisional Slice Selection`として対象候補を選ぶ。この判断は詳細Scopeの最終承認ではない。
+
+`spec.md`とClarify完了後、Humanは`Final Scope Approval`として以下を判断する。
 
 - User value
 - ScopeとNon-goals
@@ -63,6 +67,8 @@ Feature Planning Agentは候補を提示し、Humanは以下だけを判断す�
 - 主要RiskとOpen Question
 
 Humanが個別Taskを書くことは要求しない。
+
+Final Scope Approval後にScopeまたはNon-goalsが実質的に変わる場合、Architecture、Promotion Assessment、`plan.md`、`tasks.md`の作成・更新を止め、`spec.md`へ反映してClarifyとFinal Scope Approvalを再実行する。表現修正等、受入範囲を変えない変更は変更理由を記録して継続できる。
 
 ## Feature Specification
 
@@ -87,11 +93,11 @@ specs/<feature-id>-<feature-name>/
 - Dependencies
 - Open Questions
 
-UI、Requirements、Domainの変更が必要と判明した場合、先へ進まず該当工程へ戻す。
+UI、Requirements、Domainの変更が必要と判明した場合、先へ進まず該当工程へ戻す。Clarify後のScopeをHumanが承認するまでArchitectureとTask Breakdownを確定しない。
 
 ## UI Code Promotion Assessment
 
-`spec.md`が明確になった後、Technical Plan確定前に対象UI-only codeを評価する。
+`spec.md`が明確になった後、Technical Plan確定前に対象UI-only codeを評価する。正本は対象featureの`plan.md`にある`UI Code Promotion Assessment` sectionとし、別紙を作る場合も同sectionから参照する。
 
 | Classification | Meaning |
 |---|---|
@@ -101,6 +107,8 @@ UI、Requirements、Domainの変更が必要と判明した場合、先へ進ま
 | Remove | Fixture、Debug、仮Interaction等として削除 |
 
 対象ファイルまたはComponent、判断理由、関連Requirement、必要なTaskを記録する。未評価のUI-only code、Fixture、暫定View Model、仮Interactionを本番へ昇格しない。
+
+UI影響がなく、再利用・置換・削除を判断するUI-only codeもないbackend、operations、enabling featureでは、同sectionを`Not Applicable`にできる。その場合は対象確認結果、N/A理由、承認者、承認日を`plan.md`へ記録する。
 
 ## Architecture Decisions
 
@@ -132,7 +140,7 @@ Domain Open QuestionをEvidenceなしで解決せず、固定的なDB、API、�
 - Components and responsibilities
 - Data and external contract boundaries
 - Files or areas expected to change
-- Security / Privacy / Performance / Cost considerations
+- Quality considerations table。Security、Privacy、Error handling、Performance、Cache、Accessibility、SEO、Evidence、Freshness、Operations、Observability、Costの各観点を`Applicable`または`Not Applicable`で判定し、対応またはN/A理由を記録する
 - Test strategy and quality commands
 - Migration / rollback / compatibility
 - Implementation phases and dependencies
@@ -153,11 +161,13 @@ Dependencies
 Planned files or ownership area
 Out-of-scope files
 Related Requirement / Acceptance Criterion
-Promotion classification
+Completion / Acceptance Criteria (expected result and verification method)
+Promotion classification or approved N/A
 Required checks and tests
 Risk
-Parallel status
-Parallel group
+Parallel planning status (No / Candidate)
+Parallel candidate group
+Parallel Execution (Implementation Orchestrator reserved; blank during Planning)
 Integration or merge order
 ```
 
@@ -173,7 +183,7 @@ Task Planningでは依存Graphを作り、並列状態を次の3値で管理す�
 | Candidate | Planning上は独立して見えるが、実行前確認が必要 |
 | Approved | Implementation工程の実行直前Checkを通過した |
 
-Planning Agentが付けられるのは`No`または`Candidate`までである。`Approved`はImplementation Orchestratorが現在のRepository状態、依存Task、編集範囲、Contract、Test、Local resourceを再確認した後だけ付ける。
+Planning Agentが付けられるのは`No`または`Candidate`までである。`Approved`または実行時の`No`はImplementation Orchestratorだけが、現在のRepository状態、依存Task、予定変更範囲、Worker間競合、Contract、Test、Local resourceを実行直前に再確認した後に付ける。正本は`tasks.md`の該当Taskにある`Parallel Execution`項目とし、判定結果、判定者、判定日時、根拠、同時実行Groupを記録する。Implementation Orchestratorの編集権限はこの項目だけに限定し、Application codeやその他のPlanning内容を変更しない。実装レイヤーの詳細設計時にも、この更新権限と記録先を変更しない。
 
 初期運用のImplementation laneは1とし、`Candidate`であってもSingle Agentで直列実行できる。並列化をTask分割の目的にしない。
 
@@ -195,7 +205,7 @@ Planning Agentが付けられるのは`No`または`Candidate`までである。
 
 独立Reviewerは以下を確認する。
 
-- Spec / Plan / Tasks / ADR / Promotion Assessmentの整合
+- Spec / Plan / Tasks / ADR / `plan.md`内のPromotion Assessmentまたは承認済みN/Aの整合
 - 全Acceptance CriteriaのTaskとTestへのCoverage
 - Domain / Requirements / UI Traceability
 - Task dependencyの循環と欠落
@@ -233,8 +243,8 @@ Humanは重要判断、Risk、実装開始を承認する。Task本文を一行�
 
 ## Exit Conditions
 
-- Humanがfeature ScopeとPlanning Summaryを承認している。
-- `spec.md`、Promotion Assessment、ADR、`plan.md`、`tasks.md`が整合している。
+- HumanによるProvisional Slice SelectionとFinal Scope Approval、およびPlanning Summary承認を追跡できる。
+- `spec.md`、`plan.md`内のPromotion Assessment（または承認済みN/A）、ADR、`tasks.md`が整合している。
 - Planning ReviewerのCritical / Majorが0件である。
 - MinorとOpen Questionの扱いが記録されている。
 - 全Acceptance CriteriaをTaskとTestへ追跡できる。

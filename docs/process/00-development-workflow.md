@@ -44,17 +44,20 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 4. **UI Mock Approval Gate**
    - 人間がMockを承認し、`UI Mock Approved`を記録する。
    - ユーザー向け機能は、この承認前に実装計画へ進めない。
+   - UI影響がないbackend、operations、enabling featureは、理由と承認者を記録してUI Mockを`Not Applicable`にできる。
 5. **Feature Specification with Spec Kit**
    - 承認済みRequirementsとMockを入力に、機能スライス単位の`spec.md`を作成する。
+   - Humanが候補からProvisional Sliceを選択した後に仕様化し、Clarify後のFinal Scopeを承認する。
    - `/speckit.clarify`と要件チェックリストで曖昧さを減らす。
    - UIに影響する曖昧さが判明した場合はMockへ戻り、再承認する。
-   - `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行い、結果を`plan.md`と`tasks.md`の入力にする。
-   - Humanがfeature Scopeを承認する。重大なArchitecture判断がなければPlanning承認とまとめてよい。
+   - `spec.md`作成後、Technical Plan確定前に`plan.md`へUI code promotion assessment、またはUI影響なしの承認済みN/Aを記録する。
+   - 小規模featureでもFinal Scope ApprovalをArchitecture着手前に記録し、Planning Approvalと意味・時点を分離する。同一会議または連続操作で扱えても統合・遡及承認しない。
+   - Final Scope Approval後に実質的なScope変更が生じた場合はPlanningを止め、`spec.md`、Clarify、Final Scope Approvalへ戻る。
 6. **Technical Plan and Task Breakdown**
    - `/speckit.plan`で機能スライス全体の技術計画・テスト方針を作る。
    - `/speckit.tasks`で依存順の実装Taskへ分割する。
    - `/speckit.analyze`で`spec.md`、`plan.md`、`tasks.md`の整合性を確認する。
-   - Task Planningでは並列状態を`No`または`Candidate`まで判定し、実行時の`Approved`判定はImplementation工程へ委ねる。
+   - Task Planningでは並列状態を`No`または`Candidate`まで判定する。Implementation Orchestratorだけが実行直前に依存、予定変更範囲、Worker競合等を確認し、`tasks.md`の`Parallel Execution`項目へ`Approved`または`No`を根拠付きで記録できる。
    - HumanがPlanning Summaryと実装開始を承認する。
 7. **Local Implementation and Review Loop**
    - OpenCodeからOllamaのローカルモデルへ実装Taskを渡す。

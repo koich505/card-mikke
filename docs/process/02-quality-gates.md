@@ -43,6 +43,8 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 
 ユーザー向け機能では次を確認し、人間が承認を記録する。
 
+UI影響がないbackend、operations、enabling featureは、UI Mockを`Not Applicable`とする理由と承認者を記録してGate 2を通過できる。
+
 - 主要画面と画面遷移
 - Desktop / Mobile
 - Loading / Empty / Error / Partial / Unknown等の一般画面状態
@@ -58,13 +60,15 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 
 ### Gate 3: Specification Ready
 
-- feature sliceのScopeとNon-goalsをHumanが承認している。
-- `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行っている。
-- Promotion分類が`plan.md`と`tasks.md`へ反映され、`spec.md`、`plan.md`、`tasks.md`が相互に整合する。
+- HumanのProvisional Slice Selectionと、`spec.md` / Clarify後かつArchitecture着手前のFinal Scope Approvalを追跡できる。Planning Approvalとの統合・遡及承認がない。
+- `spec.md`作成後、Technical Plan確定前に`plan.md`へUI code promotion assessmentまたは承認済みN/Aを記録している。
+- ApplicableなPromotion分類が`tasks.md`へ反映され、`spec.md`、`plan.md`、`tasks.md`が相互に整合する。
 - 重要なArchitecture DecisionがADRへ記録されている。
 - 受入条件が検証可能である。
 - 全受入条件をTaskとTestへ追跡できる。
 - Taskの依存順、予定編集範囲、並列状態、Testが明示されている。
+- 各Taskに期待結果と検証方法を含むCompletion / Acceptance Criteriaがある。
+- PlanでSecurity、Privacy、Error handling、Performance、Cache、Accessibility、SEO、Evidence、Freshness、Operations、Observability、CostをApplicable / N/A判定している。
 - Planning段階の並列状態は`No`または`Candidate`であり、`Approved`を先取りしていない。
 - Feature Planning ReviewerのCritical / Majorが0件である。
 - HumanがPlanning Summaryと実装開始を承認している。
@@ -72,6 +76,8 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 ### Gate 4: Local Implementation Ready
 
 Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従う本番実装である。UI Mock Approval前のUI-only codeや未評価のFixture・暫定型・仮処理を、そのまま本番実装として扱わない。
+
+- 並列候補Taskは、Implementation Orchestratorが実行直前に依存、予定変更範囲、Worker競合等を再確認し、`tasks.md`の`Parallel Execution`項目へ判定者、日時、根拠、同時実行Groupとともに`Approved`または`No`を記録している。
 
 - 必須のformat、lint、typecheck、test、buildが成功する。
 - Secret scan、採用するSecurity scanner、依存監査が成功する。

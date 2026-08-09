@@ -15,7 +15,7 @@ Decision date: 2026-08-09
 - 開発レイヤーを第一階層とし、対応する成果物を後から追跡しやすくする。
 - 全AI共通の制約は`shared/`へ集約し、レイヤー固有ファイルへコピーしない。
 - 各Agentについて、責任、入力、出力、権限、禁止事項、停止条件を明記する。
-- Reviewerは原則read-onlyとし、重大度と出力形式を共通化する。
+- すべてのReviewerとReview Orchestratorは例外なくread-onlyとし、ファイルの編集・修正を禁止する。指摘は対象レイヤーのAgentまたはImplementerへ返す。
 - 実装レビューは単一の万能Reviewerへ集約せず、統括Reviewer、常設Reviewer、変更内容に応じた専門Reviewerへ責任分離する。
 - 専門Reviewerを毎回すべて実行せず、変更差分とリスクに基づいて必要な観点だけを選択する。
 - `.ai/`のファイルは、ToolのAdapterまたは実行Promptから明示的に参照された場合に使用される。配置しただけで自動実行・自動読込されるとはみなさない。
@@ -65,6 +65,7 @@ Decision date: 2026-08-09
 │       ├── task-readiness-checklist.md
 │       └── parallel-candidate-checklist.md
 ├── implementation/
+│   ├── implementation-orchestrator.md
 │   ├── local-implementer.md
 │   ├── review-orchestrator.md
 │   ├── reviewers/
@@ -92,6 +93,7 @@ Decision date: 2026-08-09
 | `*-agent.md` | 作成・実装主体の責任、入力、出力、編集権限、停止条件 |
 | `*-reviewer.md` | レビュー対象、観点、重大度、禁止事項、通過条件 |
 | `review-orchestrator.md` | 差分の分類、専門Reviewerの選択、結果統合、重複排除、通過判定 |
+| `implementation-orchestrator.md` | Task実行直前の依存・競合確認、並列実行判定、`tasks.md`の限定記録 |
 | `*-checklist.md` | 判定可能な確認項目と完了条件 |
 | 作業名のPrompt | 特定作業を開始する再利用可能な入力Template |
 | `shared/*-policy.md` | 複数レイヤーに適用する共通方針 |
@@ -116,7 +118,7 @@ AIを実行するときは、必要な範囲だけを次の順序で読み込む
 1. format、lint、typecheck、test、build、Secret scan、依存脆弱性検査等の決定論的チェックを実行する。
 2. `correctness-reviewer.md`を原則すべての実装Taskで実行する。
 3. `review-orchestrator.md`が変更内容とリスクから必要な専門Reviewerを選択する。
-4. 選択された専門Reviewerを、Implementerとは分離したread-onlyのContextで実行する。
+4. 選択された専門Reviewerを、Implementerとは分離したread-onlyのContextで実行する。Reviewerはファイルを編集・修正せず、指摘をImplementerへ返す。
 5. Review Orchestratorがfindingを統合し、重複を除き、Critical / Major / Minor / Open Questionへ整理する。
 6. CriticalまたはMajorがあればImplementerへ戻し、修正後に影響するチェックとレビューを再実行する。
 
@@ -142,7 +144,11 @@ specs/             Spec Kitによるfeature単位の成果物
 AGENTS.md          リポジトリ全体の短い入口と絶対ルール
 ```
 
-OpenCode導入時は、`.opencode/agents/`にImplementer、Review Orchestrator、各Reviewerの権限、Model、実行Modeと`.ai/`への参照を持つ薄いAdapterを置く。共通のレビュー観点を`.opencode/`へコピーしない。
+OpenCode導入時は、`.opencode/agents/`にImplementation Orchestrator、Implementer、Review Orchestrator、各Reviewerの権限、Model、実行Modeと`.ai/`への参照を持つ薄いAdapterを置く。共通のレビュー観点を`.opencode/`へコピーしない。
+
+Implementation OrchestratorはReviewerではない実行調整Roleである。Task実行直前に依存、予定変更範囲、共有Contract、Worker競合、Test、Local resourceを確認し、Parallel Candidateを`Approved`または`No`へ判定する。書込権限は`tasks.md`の該当Taskにある`Parallel Execution`項目だけに限定する。このAdapterと実行手順は`docs/process/03-tooling-and-open-decisions.md`のWF-12に従い、最初の本実装TaskがGate 4へ入る前に作成する。現時点では先回りして作成しない。
+
+Review Orchestratorと各ReviewerのAdapterは例外なくread-onlyに設定し、編集・修正権限を与えない。findingはPlanning AgentまたはImplementerへ返す。
 
 Spec Kitが生成・管理するファイルは、初期化前に推測で作らない。導入後も独自のAI方針は`.ai/`に保持し、生成領域との責任を分離する。
 
