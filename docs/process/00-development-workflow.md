@@ -26,7 +26,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 | Implementation and local review | Application code and tests | `.ai/implementation/` |
 | Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
 
-上記は採用済みの目標構成である。既存ファイルの移動が完了するまでは現在のパスを有効とし、新旧パスへ同じ内容を複製しない。
+上記を現行の配置ルールとする。必要性が生じていない空フォルダは先回りして作らず、対象レイヤーの作業開始時に追加する。
 
 ## Standard Flow
 

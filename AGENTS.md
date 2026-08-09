@@ -49,7 +49,7 @@ Use these documents as primary context:
 - Do not create DB tables, columns, ER diagrams, Prisma schema, API endpoints, detailed UI design, or implementation unless explicitly requested.
 - Keep project artifacts under `docs/`, tool-independent AI instructions under `.ai/`, and tool-managed integration files under their designated directories.
 - Do not assume that a file under `.ai/` is automatically loaded or executed. Use it only through an explicit reference from the active agent or tool adapter.
-- Follow the target structures in `docs/README.md` and `.ai/README.md`; while migration is pending, do not duplicate files between old and new paths.
+- Follow the active structures in `docs/README.md` and `.ai/README.md`. Do not duplicate the same source-of-truth content across multiple paths.
 
 ## Work style
 

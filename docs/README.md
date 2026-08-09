@@ -1,13 +1,13 @@
 # Documentation Structure
 
-Status: Adopted target structure; migration pending  
+Status: Adopted and active
 Decision date: 2026-08-09
 
 ## Purpose
 
 本書は、プロジェクト成果物の配置、開発工程との対応、およびSource of Truthの境界を定める。
 
-この構成は採用済みだが、既存ファイルの移動は次の作業で行う。移動完了までは現在のパスを有効な参照先として扱い、同じ内容を新旧両方へ複製しない。
+この構成を成果物配置の現行ルールとして使用する。必要性が生じていない空フォルダは先回りして作らず、各レイヤーの作業開始時に追加する。
 
 ## Placement Principles
 

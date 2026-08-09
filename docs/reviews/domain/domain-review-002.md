@@ -2,7 +2,7 @@
 
 Review date: 2026-08-07  
 Review target: `docs/spec/domain/`  
-Previous review: `docs/reviews/domain-review-001.md`  
+Previous review: `docs/reviews/domain/domain-review-001.md`  
 Review scope: Major findings M-1 through M-7 の解消確認
 
 ## 結論

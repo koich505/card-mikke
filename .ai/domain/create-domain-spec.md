@@ -4,15 +4,15 @@
 
 ## Primary Inputs
 
-- `02-market-corpus-v2-audited.md`
+- `docs/research/02-market-corpus-v2-audited.md`
   - 品質監査・訂正済みの最新市場調査コーパス
   - 日本市場に実在する商品・サービス・規約・役割・例外のEvidenceとして使用する
 
-- `03-domain-counterexample-audit.md`
+- `docs/research/03-domain-counterexample-audit.md`
   - 既存Domain Modelに対する反証調査
   - 既存概念の境界問題、不足概念、過剰抽象化、未解決事項の検討材料として使用する
 
-`01-market-corpus-v1.md` は監査履歴・調査経緯の確認用途に限る。
+`docs/research/01-market-corpus-v1.md` は監査履歴・調査経緯の確認用途に限る。
 v1とv2で内容が矛盾する場合はv2を優先する。
 
 ただし、v2および03も絶対的に正しい完成仕様として扱ってはならない。
@@ -484,7 +484,7 @@ Research Evidenceで確認できない部分を創作しないこと。
 以下のMarkdownファイルを作成する。
 
 ```text
-/spec/domain/
+docs/spec/domain/
 ├── 00-scope.md
 ├── 01-glossary.md
 ├── 02-actors-and-roles.md

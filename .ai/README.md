@@ -1,13 +1,13 @@
 # AI Instruction Structure
 
-Status: Adopted target structure; migration pending  
+Status: Adopted and active
 Decision date: 2026-08-09
 
 ## Purpose
 
 本書は、AIの役割、行動指針、レビュー観点、チェックリストの配置と読込規則を定める。
 
-`.ai/`はTool非依存のAI指示の正本である。現在の`context/`、`prompts/`、`reviewers/`は移行前の構成であり、次の作業でレイヤー優先構成へ移動する。移動完了までは現在のファイルを利用し、同一指示を新旧両方へ複製しない。
+`.ai/`はTool非依存のAI指示の正本である。レイヤー優先構成を採用し、各成果物と、それを作成・レビューするAI指示を対応づける。
 
 ## Principles
 
@@ -36,9 +36,8 @@ Decision date: 2026-08-09
 │   ├── research-reviewer.md
 │   └── research-checklist.md
 ├── domain/
-│   ├── domain-spec-agent.md
+│   ├── domain-spec-policy.md
 │   ├── domain-reviewer.md
-│   ├── domain-checklist.md
 │   └── create-domain-spec.md
 ├── requirements/
 │   ├── requirements-agent.md
@@ -71,7 +70,7 @@ Decision date: 2026-08-09
     └── merge-readiness-checklist.md
 ```
 
-必要性が生じていないファイルや空フォルダは先回りして作らず、対象レイヤーの作業開始時に追加する。
+必要性が生じていないファイルや空フォルダは先回りして作らず、対象レイヤーの作業開始時に追加する。既存の`create-domain-spec.md`は作成指示と完了条件を兼ねるため、再利用上の必要が生じるまで`domain-spec-agent.md`と`domain-checklist.md`へ形式的に分割しない。
 
 ## File Responsibilities
 
