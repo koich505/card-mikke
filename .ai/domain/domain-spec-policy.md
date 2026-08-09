@@ -1,28 +1,28 @@
 # Domain Specification Policy
 
-## Goal
+## 目的
 
-Domain Specification defines concepts, responsibilities, boundaries, relationships, invariants, scenarios, and open questions before implementation.
+Domain Specificationでは、実装に入る前にConcept、責務、境界、関係、不変条件、Scenario、Open Questionを定義する。
 
-## Non-goals
+## 対象外
 
-Do not produce:
+以下は作成しない。
 
-- DB schema
-- Tables
-- Columns
+- DB Schema
+- Table
+- Column
 - SQL
-- Prisma schema
-- ORM model
-- JSON schema
-- API design
-- ER diagram
-- UI design
-- Class design
+- Prisma Schema
+- ORM Model
+- JSON Schema
+- API設計
+- ER図
+- UI設計
+- Class設計
 
-## Concept definition format
+## Conceptの定義形式
 
-For major domain concepts, describe:
+主要なDomain Conceptについて、以下を記載する。
 
 - Definition
 - Responsibility
@@ -33,13 +33,13 @@ For major domain concepts, describe:
 - Boundaries
 - Examples
 - Counterexamples
-- Temporal behavior
-- Evidence requirements
-- Open questions
+- Temporal Behavior
+- Evidence Requirements
+- Open Questions
 
-## Key boundaries
+## 主要な境界
 
-Always check:
+常に以下の境界を確認する。
 
 - Actor / Organization / Role
 - Product / Offering / Variant

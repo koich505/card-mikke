@@ -1,39 +1,39 @@
 # Evidence Policy
 
-## Principle
+## 原則
 
-Every important domain fact must be traceable to evidence.
+重要なDomain Factは、すべてEvidenceまで追跡可能でなければならない。
 
-## Required distinction
+## 必須の区別
 
 - unknown
 - undisclosed
 - partially_disclosed
 - disclosed
 
-Do not treat unknown and undisclosed as the same.
+unknownとundisclosedを同一視しない。
 
-## Temporal distinction
+## 時点の区別
 
-Do not confuse:
+以下を混同しない。
 
-- retrieved date
-- published date
-- announced date
-- effective date
-- application availability date
-- feature availability date
-- service end date
+- 取得日（retrieved date）
+- 公開日（published date）
+- 発表日（announced date）
+- 発効日（effective date）
+- 申込可能日（application availability date）
+- 機能提供日（feature availability date）
+- サービス終了日（service end date）
 
-## Source priority
+## Sourceの優先順位
 
-Prefer:
+以下の順序で優先する。
 
-1. Government / legal / official regulatory source
-2. Issuer or service provider official source
-3. Partner organization official source
-4. Third-party source only for discovery or low-confidence facts
+1. 政府、法令、規制当局の公式Source
+2. IssuerまたはService Providerの公式Source
+3. Partner Organizationの公式Source
+4. 第三者Sourceは、探索またはconfidenceが低いFactに限って使用する
 
-## Rule
+## ルール
 
-If the source does not support a claim, mark it as unknown or open question.
+SourceがClaimを裏付けていない場合は、unknownまたはOpen Questionとして扱う。
