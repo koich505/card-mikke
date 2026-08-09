@@ -1,6 +1,6 @@
 # 日本国内クレジットカード市場 Domain Specification Scope
 
-Status: Draft for Requirements preparation
+Status: Reviewed — Ready for Requirements (conditional)
 Research baseline: 2026-08-07
 
 ## Purpose
@@ -11,9 +11,9 @@ Research baseline: 2026-08-07
 
 ## Primary Inputs
 
-- `research/02-market-corpus-v2-audited.md`: 品質監査・訂正済みの最新市場コーパス。市場事実の正本として扱う。
-- `research/03-domain-counterexample-audit.md`: 既存Domain Modelへの反証調査。境界問題、不足概念、過剰抽象化、未解決事項の材料として扱う。
-- `research/01-market-corpus-v1.md`: 監査履歴・調査経緯の確認用途に限る。v1とv2が矛盾する場合はv2を優先する。
+- `docs/research/02-market-corpus-v2-audited.md`: 品質監査・訂正済みの最新市場コーパス。市場事実の正本として扱う。
+- `docs/research/03-domain-counterexample-audit.md`: 既存Domain Modelへの反証調査。境界問題、不足概念、過剰抽象化、未解決事項の材料として扱う。
+- `docs/research/01-market-corpus-v1.md`: 監査履歴・調査経緯の確認用途に限る。v1とv2が矛盾する場合はv2を優先する。
 
 ## Non Goals
 

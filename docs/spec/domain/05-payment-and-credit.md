@@ -179,7 +179,7 @@ Legal Classificationは、法的分類を推測ではなく根拠付きで保持
 
 ### Lifecycle
 
-法改正、規約変更、事業者登録変更、支払方式変更により変わりうる。
+法改正、規約変更、支払方式変更により変わりうる。事業者登録変更はLegal Classificationの変更を自動的に意味せず、再評価の契機として扱う。
 
 ### Relationships
 
