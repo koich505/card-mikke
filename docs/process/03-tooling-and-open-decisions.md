@@ -19,9 +19,10 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 
 ## Initial Operating Assumptions
 
-- 実装用とレビュー用のOpenCode Agentを分離する。
-- Implementerは編集可能、Reviewerは原則read-onlyとする。
-- 両Agentともcommit、push、PR作成、mergeを禁止する。
+- 実装用Agent、Review Orchestrator、専門Reviewerを分離する。
+- Implementerは編集可能、Review OrchestratorとReviewerは原則read-onlyとする。
+- Correctness Reviewerは原則常時実行し、その他の専門Reviewerは差分とリスクに応じて選択する。
+- すべてのAgentでcommit、push、PR作成、mergeを禁止する。
 - OpenCodeで実用的な長文Contextを扱うため、まず64k tokens以上を候補条件とし、実機Benchmarkで確定する。
 - 初期のローカル同時実行数は1とする。
 - Spec Kitや各ToolのVersionは導入時に固定し、更新手順を記録する。
@@ -46,7 +47,7 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 
 ## Deferred Alternatives
 
-Goose、Aider、OpenHands等は現時点では採用しない。OpenCode + Ollamaで不足が実測された場合に再評価する。初期段階で独自Adapterや独自Orchestratorは作成しない。
+Goose、Aider、OpenHands等は現時点では採用しない。OpenCode + Ollamaで不足が実測された場合に再評価する。`review-orchestrator.md`はPrompt上の役割として定義し、初期段階で専用のOrchestration softwareは作成しない。
 
 ## Next Resume Point
 

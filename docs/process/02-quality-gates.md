@@ -60,8 +60,10 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 ### Gate 4: Local Implementation Ready
 
 - 必須のformat、lint、typecheck、test、buildが成功する。
-- 採用するSecurity scannerと依存監査が成功する。
-- Local ReviewerのCritical/Majorが0件である。
+- Secret scan、採用するSecurity scanner、依存監査が成功する。
+- Correctness Reviewerが実行されている。
+- Review Orchestratorが変更差分に必要な専門Reviewerを選択し、選択理由を記録している。
+- 実行したすべてのLocal ReviewerでCritical/Majorが0件である。
 - MinorとOpen Questionの扱いが記録されている。
 - feature slice完了時にconvergeを通過している。
 
@@ -84,11 +86,25 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 ## Review Loop
 
 1. ImplementerがTaskを実装し、決定論的チェックを実行する。
-2. Reviewerが別コンテキストで差分を評価する。
-3. Critical/MajorがあればImplementerへ戻す。
-4. 修正後にチェックとレビューを再実行する。
-5. 原則3周で収束しない場合は人間へエスカレーションする。
-6. feature slice完了後にconvergeし、Codexの最終レビューへ進む。
+2. Correctness Reviewerが別コンテキストで差分を評価する。
+3. Review Orchestratorが変更内容に応じた専門Reviewerを選択する。
+4. 選択された専門Reviewerが別々のread-only Contextで評価する。
+5. Review Orchestratorが結果を統合し、Critical/MajorがあればImplementerへ戻す。
+6. 修正後に影響する決定論的チェックとReviewerを再実行する。
+7. 原則3周で収束しない場合は人間へエスカレーションする。
+8. feature slice完了後にconvergeし、Codexの最終レビューへ進む。
+
+## Local Reviewer Routing
+
+| Reviewer | Default |
+|---|---|
+| Correctness | 原則すべての実装Taskで実行 |
+| Security | 機械検査は常時。LLM詳細レビューはSecurityリスクがある変更時 |
+| Frontend Quality | UI、操作、Accessibility、SEO、Metadata変更時 |
+| Performance / Cost | 性能、外部API、Storage、Build、Hosting費用へ影響する変更時 |
+| Evidence / Content | カード情報、記事、比較表示、Evidenceや更新日処理の変更時 |
+
+Reviewerの選択を減らす目的でSecurityリスクを過小評価してはならない。一方、関連しない専門Reviewerを常時実行することも要求しない。
 
 ## Records
 

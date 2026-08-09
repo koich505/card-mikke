@@ -6,6 +6,8 @@ This repository develops a Japanese-language information site for credit cards a
 
 The source of truth is maintained in Markdown documents under `docs/`.
 
+Repository structure and placement rules are defined in `docs/README.md`. AI behavior instructions and their loading rules are defined in `.ai/README.md`.
+
 ## Current phase
 
 The project is currently in Requirements preparation. The Domain Specification is ready as a conditional input, and the development workflow has been documented, but application implementation has not started.
@@ -24,6 +26,10 @@ Use these documents as primary context:
   - Current domain specification and unresolved domain questions.
 - `docs/process/`
   - Adopted development workflow, responsibility boundaries, quality gates, tools, and open decisions.
+- `docs/README.md`
+  - Source-of-truth locations, target repository structure, and artifact placement rules.
+- `.ai/README.md`
+  - Target AI instruction structure, context loading order, and tool-specific boundaries.
 
 `docs/research/01-market-corpus-v1.md` is historical evidence only. If v1 conflicts with v2, prefer v2.
 
@@ -41,17 +47,21 @@ Use these documents as primary context:
 - Treat one feature slice as one branch and one pull request unless an approved exception is documented.
 - AI agents must not commit, push, open or merge pull requests. These actions require a human.
 - Do not create DB tables, columns, ER diagrams, Prisma schema, API endpoints, detailed UI design, or implementation unless explicitly requested.
+- Keep project artifacts under `docs/`, tool-independent AI instructions under `.ai/`, and tool-managed integration files under their designated directories.
+- Do not assume that a file under `.ai/` is automatically loaded or executed. Use it only through an explicit reference from the active agent or tool adapter.
+- Follow the target structures in `docs/README.md` and `.ai/README.md`; while migration is pending, do not duplicate files between old and new paths.
 
 ## Work style
 
 When modifying documents:
 
-1. Read the relevant source files first.
-2. Preserve evidence and references.
-3. Keep terminology consistent across files.
-4. Record unresolved issues instead of forcing conclusions.
-5. Prefer small, reviewable changes.
-6. Summarize changed files at the end.
+1. Read `docs/README.md`, `.ai/README.md`, and the relevant source files first.
+2. Load only the shared and layer-specific AI instructions needed for the task.
+3. Preserve evidence and references.
+4. Keep terminology consistent across files.
+5. Record unresolved issues instead of forcing conclusions.
+6. Prefer small, reviewable changes.
+7. Summarize changed files at the end.
 
 When implementation begins, follow `docs/process/00-development-workflow.md` and the quality gates in `docs/process/02-quality-gates.md`.
 

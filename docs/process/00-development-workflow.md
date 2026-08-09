@@ -9,6 +9,25 @@ Decision date: 2026-08-08
 
 Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持するプロジェクト上の責任分界とゲートを定義する。
 
+成果物とAI指示の配置ルールは、`docs/README.md`および`.ai/README.md`を正本とする。
+
+## Artifact Locations
+
+| Phase | Primary output | AI instructions |
+|---|---|---|
+| Market research and audit | `docs/research/` | `.ai/research/` |
+| Domain specification | `docs/spec/domain/` | `.ai/domain/` |
+| Domain review and correction | `docs/reviews/domain/` | `.ai/domain/` |
+| Functional / non-functional requirements | `docs/spec/requirements/` | `.ai/requirements/` |
+| Requirements review | `docs/reviews/requirements/` | `.ai/requirements/` |
+| User flow and UI mock approval | `docs/design/ui/` | `.ai/ui/` |
+| Architecture decisions | `docs/architecture/` | `.ai/architecture/` |
+| Feature specification and tasks | `specs/<feature>/` | Spec Kit and `.ai/implementation/` |
+| Implementation and local review | Application code and tests | `.ai/implementation/` |
+| Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
+
+上記は採用済みの目標構成である。既存ファイルの移動が完了するまでは現在のパスを有効とし、新旧パスへ同じ内容を複製しない。
+
 ## Standard Flow
 
 1. **Domain Specification**

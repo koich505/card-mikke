@@ -34,14 +34,23 @@ OpenCodeはCoding Agentの実行環境、Ollamaはローカル推論Providerと�
 - 仕様変更が必要な場合は推測で拡張せず、Open Questionとして返す。
 - commit、push、PR作成、mergeは行わない。
 
-### Local Reviewer
+### Review Orchestrator
 
-- Implementerとは別のコンテキストで差分をレビューする。
+- 変更差分、Task、リスクを分類し、必要な専門Reviewerを選択する。
+- Correctness Reviewerを原則すべての実装Taskで必須とする。
+- 専門Reviewerのfindingを統合し、重複を除き、通過可否を判定する。
+- 自身ですべての品質観点を再レビューする万能Reviewerにはしない。
 - 原則read-onlyとし、直接修正せず指摘をImplementerへ返す。
-- 正確性、テスト、保守性、セキュリティ、性能、アクセシビリティ、SEO、Evidence、運用、コストを確認する。
-- Critical、Major、Minor、Open Questionで分類する。
 
-同じモデルを利用する場合でも、ImplementerとReviewerの指示・コンテキスト・権限を分離する。
+### Local Reviewers
+
+- Correctness、Security、Frontend Quality、Performance / Cost、Evidence / Contentの責任を分離する。
+- Correctness以外は変更内容とリスクに応じて実行し、関連しないReviewerを毎回起動しない。
+- 各ReviewerはImplementerと別のコンテキストで差分をレビューする。
+- 原則read-onlyとし、Critical、Major、Minor、Open Questionでfindingを返す。
+- 機械的に判定できるコード規約はlint等へ委ね、専用LLM Reviewerを作らない。
+
+同じモデルを利用する場合でも、Implementer、Review Orchestrator、各Reviewerの指示・コンテキスト・権限を分離する。
 
 ## Codex
 
