@@ -1,0 +1,95 @@
+# Quality Gates
+
+Status: Adopted working decision  
+Decision date: 2026-08-08
+
+## Goal
+
+ローカルLLM内で実装とレビューを十分に収束させ、Codexは最終的な独立レビューに集中させる。LLMによる「完璧」は保証できないため、決定論的チェック、人間の承認、CIを組み合わせる。
+
+## Severity
+
+| Severity | Meaning | Delivery decision |
+|---|---|---|
+| Critical | 情報漏えい、権限逸脱、重大なデータ破壊、要件の根本的不履行等 | 必ず修正。commit候補・PR・mergeへ進めない |
+| Major | 主要機能の誤動作、重要なテスト不足、重大な性能・アクセシビリティ・Evidence欠陥等 | 必ず修正。最終レビュー通過とみなさない |
+| Minor | 局所的な改善、低リスクの保守性・表現上の問題等 | 人間が修正、別Task化、受容を明示的に判断 |
+| Open Question | 仕様または判断材料が不足している事項 | 影響するゲートより前に解決または制約として記録 |
+
+## Quality Axes
+
+- **Requirement correctness**: 受入条件と承認済みMockを満たし、不要な機能を追加していない。
+- **Tests**: 主要な正常系、境界値、失敗系、回帰リスクを検証している。
+- **Maintainability**: 責務、命名、依存、複雑性、変更容易性が妥当である。
+- **Security and privacy**: 入力検証、認証・認可、秘密情報、依存脆弱性、ログ、個人情報、外部通信を確認する。
+- **Performance**: ページ速度、Bundle、画像、Query、Cache、外部API呼出しを確認する。
+- **Accessibility**: Keyboard操作、Focus、Semantic HTML、Label、Contrast、Reduced motion等を確認する。
+- **SEO**: Index制御、Metadata、Canonical、Structured Data、内部リンク等を確認する。
+- **Evidence and freshness**: 出典、確認日、更新履歴、Unknown / Disclosure Statusを壊さない。
+- **Operations**: 可観測性、障害時挙動、Rollback、設定差、復旧可能性を確認する。
+- **Cost**: Hosting、Build、Storage、外部API、モデル推論等を計測し、承認済み上限内に保つ。
+
+Securityはblocking gateとする。コストは閾値を定めて計測・管理し、すべてのTaskで根拠なく微細最適化することは要求しない。
+
+## Gate Sequence
+
+### Gate 1: Requirements Ready
+
+- 機能範囲、非対象、受入条件、非機能要件が記録されている。
+- DomainのUnknownとOpen Questionが保持されている。
+- Architectureを固定する未解決事項が識別されている。
+
+### Gate 2: UI Mock Approved
+
+ユーザー向け機能では次を確認し、人間が承認を記録する。
+
+- 主要画面と画面遷移
+- Desktop / Mobile
+- Loading / Empty / Error / Partial / Unknown状態
+- Filter、Sort、Search等の主要操作
+- Evidence、確認日、Disclosure Statusの見せ方
+- Keyboard、Focus、Label等の主要アクセシビリティ
+- 実際に近い日本語文言とデータ量
+
+### Gate 3: Specification Ready
+
+- `spec.md`、`plan.md`、`tasks.md`が相互に整合する。
+- 受入条件が検証可能である。
+- Taskの依存順、並列可否、テストが明示されている。
+
+### Gate 4: Local Implementation Ready
+
+- 必須のformat、lint、typecheck、test、buildが成功する。
+- 採用するSecurity scannerと依存監査が成功する。
+- Local ReviewerのCritical/Majorが0件である。
+- MinorとOpen Questionの扱いが記録されている。
+- feature slice完了時にconvergeを通過している。
+
+具体的なコマンドとツールは技術Stack決定後に定め、最終的に単一の品質コマンドから再現可能にする。
+
+### Gate 5: Codex Final Review Ready
+
+- レビュー対象差分がfeature sliceに限定されている。
+- 仕様、Mock、計画、Task、チェック結果を参照できる。
+- CodexのCritical/Majorが0件である。
+- 指摘による実質的変更後はLocal Gateを再実行している。
+
+### Gate 6: Merge Ready
+
+- 人間が差分、UI、未解決事項を確認している。
+- Pull Requestの必須CIが成功している。
+- 承認されていない仕様変更とSecurity例外がない。
+- 人間がSquash mergeを実行する。
+
+## Review Loop
+
+1. ImplementerがTaskを実装し、決定論的チェックを実行する。
+2. Reviewerが別コンテキストで差分を評価する。
+3. Critical/MajorがあればImplementerへ戻す。
+4. 修正後にチェックとレビューを再実行する。
+5. 原則3周で収束しない場合は人間へエスカレーションする。
+6. feature slice完了後にconvergeし、Codexの最終レビューへ進む。
+
+## Records
+
+保持するのは、採用した仕様・判断、コマンド結果の要約、未解決事項、レビューの最終結果である。生のLLM会話ログ全体をSource of Truthやmerge条件にはしない。
