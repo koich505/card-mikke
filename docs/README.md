@@ -40,6 +40,7 @@ docs/
 │   ├── domain/
 │   ├── requirements/
 │   ├── ui/
+│   ├── implementation/
 │   └── features/
 └── process/
 ```
@@ -51,10 +52,21 @@ specs/
 └── <feature-id>-<feature-name>/
     ├── spec.md
     ├── plan.md
-    └── tasks.md
+    ├── tasks.md
+    └── implementation-log.md
 ```
 
-`docs/spec/requirements/`はサイト全体の要件、`specs/<feature>/`は実装対象となるfeature sliceの仕様・計画・Taskを扱う。両者を混同しない。
+`docs/spec/requirements/`はサイト全体の要件、`specs/<feature>/`は実装対象となるfeature sliceの仕様・計画・Taskを扱う。`implementation-log.md`は実行状態と検査・レビュー要約を記録するプロジェクト管理成果物であり、Spec Kit生成物を上書きしない。
+
+OpenCodeのProject固有Commandは引数なしとし、対象Featureは採用Versionで検証済みのSpec Kit Active Feature pointerから解決する。Pointerの実Pathと形式はWF-12完了時に固定し、それまでは実装入口をBlockingする。
+
+Reviewer入力はGit管理成果物ではなく、採用時に固定除外する`.opencode/runtime/review-artifacts/`へ置く。Workflow設計Reviewの正本は`docs/reviews/implementation/`、Codex最終Review記録は`docs/reviews/features/`とし、Runtime Artifactと混同しない。
+
+Feature固有のHuman判断Sourceは`docs/reviews/features/<feature-id>/human-decisions.md`とし、Humanだけが作成・編集する。署名による本人性は主張せず、使用時の明示確認とSource bytes / revisionの変更検出を境界とする。編集後は旧Review Resultをstaleにし、fresh Snapshotで完全なLocal Reviewを行う。
+
+Runtime Directory、Schema parser、Snapshot Closure Collector、`.opencode/tooling/installed-command-manifest.json`は現時点では未実装・未生成である。WF-12実証時に`docs/tooling/open-code-validation.md`へHuman承認済みManifest / Wrapper hashを記録するまで全Project固有Commandを実行しない。
+
+全CommandはTrusted Command Controllerへ接続する。専用Resolver Toolと固定Agent allowlistを採用OpenCode Versionで強制できなければ、外部Wrapperを決定するまで使用しない。
 
 ## Phase and Artifact Mapping
 
@@ -68,7 +80,7 @@ specs/
 | User flow and UI mock | `docs/design/ui/` | `.ai/ui/` |
 | Architecture decisions | `docs/architecture/` | `.ai/architecture/` |
 | Feature specification, architecture, and tasks | `specs/<feature>/`, `docs/architecture/decisions/` | Spec Kit and `.ai/architecture/` |
-| Implementation and local review | Application code and tests | `.ai/implementation/` |
+| Implementation and local review | Application code, tests, `specs/<feature>/implementation-log.md` | `.ai/implementation/` and `.opencode/` adapters |
 | Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
 
 ## Directory Responsibilities
@@ -108,6 +120,7 @@ UI Scopeと要件対応は`docs/design/ui/`直下、User Flowは`docs/design/ui/
 - サイト全体の要件は、今後作成する`docs/spec/requirements/`を正本とする。
 - 承認済みUIは`docs/design/ui/approvals/`から対象Mockを追跡可能にする。
 - feature単位の仕様・計画・Taskは`specs/<feature>/`を正本とする。
+- feature単位の実行状態、検査、ローカルレビュー要約は`specs/<feature>/implementation-log.md`を正本とする。
 - 開発運用は`docs/process/`を正本とする。
 - AIの行動指針は`.ai/`を正本とし、詳細は`.ai/README.md`に従う。
 

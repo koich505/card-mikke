@@ -78,6 +78,12 @@ UI影響がないbackend、operations、enabling featureは、UI Mockを`Not App
 Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従う本番実装である。UI Mock Approval前のUI-only codeや未評価のFixture・暫定型・仮処理を、そのまま本番実装として扱わない。
 
 - 並列候補Taskは、Implementation Orchestratorが実行直前に依存、予定変更範囲、Worker競合等を再確認し、`tasks.md`の`Parallel Execution`項目へ判定者、日時、根拠、同時実行Groupとともに`Approved`または`No`を記録している。
+- WF-3、WF-4、WF-5B、WF-6B、WF-12が解決済みで、Command intent / Installed Manifest、Canonical hash、currentGate付きBinding、全Schema、Closure、Human decision確認を含む完了証跡がある。
+- status以外の操作はfresh Run / Runtime / Snapshotを使い、Human判断、Gate変更、Codex rework、Blocked resume、手動Source変更後に全Reviewerを再実行している。
+- Task状態、検査結果、Review結果、停止・再開判断が`specs/<feature>/implementation-log.md`へ記録されている。
+- Immutable Run binding、Active pointer revision、Review input payload / Artifact binding hash、Source-tree fingerprint、post-checkが一致し、Hash DAGに循環がない。
+- Local Review Controllerの固定起動Chain、deny-by-default権限、循環・任意Agent起動の不在をWF-12証跡で確認できる。
+- Secure Runtime Creation、Schema parse / binding、二段RO Invocation、Snapshot Closure、Collector resource制限をWF-12証跡で確認できる。
 
 - 必須のformat、lint、typecheck、test、buildが成功する。
 - Secret scan、採用するSecurity scanner、依存監査が成功する。
@@ -85,7 +91,11 @@ Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従�
 - Review Orchestratorが変更差分に必要な専門Reviewerを選択し、選択理由を記録している。
 - 実行したすべてのLocal ReviewerでCritical/Majorが0件である。
 - MinorとOpen Questionの扱いが記録されている。
-- feature slice完了時にconvergeを通過している。
+- Minorのaccept / deferにHuman承認参照があり、Open Questionの影響Gate / Blocking判定がある。Security / Privacy findingは承認済み例外なしで残っていない。
+- Critical / MajorはHuman dispositionで解消されず、後続Artifact / revisionのReviewer / Integration Resultで解消を確認している。
+- feature slice完了時に検証済み収束手段を通過している。
+
+`tasks.md`のPlanning本文や完了Checkboxを実装状態の記録先にせず、Implementation Orchestratorによる編集は`Parallel Execution`だけに限定する。
 
 本実装用の具体的なコマンドと追加Security Toolは技術Stack決定後に定め、最終的に単一の品質コマンドから再現可能にする。Gate 2で使うUI用最小品質コマンド、Secret scan、依存脆弱性監査はUI Bootstrap前に決定する。
 
@@ -94,14 +104,19 @@ Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従�
 - レビュー対象差分がfeature sliceに限定されている。
 - 仕様、Mock、計画、Task、チェック結果を参照できる。
 - CodexのCritical/Majorが0件である。
+- Codex Review記録、対象Revision、Artifact hashが一致し、残存Minor / Open QuestionのHuman判断がある。
 - 指摘による実質的変更後はLocal Gateを再実行している。
+- WF-11解決までは、Codex Critical / Major修正後に例外なくCodex再Reviewを通過している。
 
 ### Gate 6: Merge Ready
 
-- 人間が差分、UI、未解決事項を確認している。
-- Pull Requestの必須CIが成功している。
-- 承認されていない仕様変更とSecurity例外がない。
-- 人間がSquash mergeを実行する。
+- Humanが最終差分、動作、UI、Minor / Open Questionを確認した証拠がある。
+- Pull Request URLと対象Revisionを記録している。
+- Pull Requestの必須CIが対象Revisionで成功している。
+- 未承認のScope / Requirement変更とSecurity / Privacy例外がない。
+- HumanがSquash mergeを実行し、merged revisionとURL、Human actor、日時を記録している。
+
+Commit、push、PR作成だけではGate 6通過または`Human delivered`としない。
 
 ## Review Loop
 
@@ -111,8 +126,8 @@ Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従�
 4. 選択された専門Reviewerが別々のread-only Contextで評価する。
 5. Review Orchestratorが結果を統合し、Critical/MajorがあればImplementerへ戻す。
 6. 修正後に影響する決定論的チェックとReviewerを再実行する。
-7. 原則3周で収束しない場合は人間へエスカレーションする。
-8. feature slice完了後にconvergeし、Codexの最終レビューへ進む。
+7. 初回をAttempt 1とする最大3 Review Attemptsで収束しない場合、または同一Critical / Majorが再発した場合は人間へエスカレーションする。
+8. feature slice完了後に検証済み収束手段を実行し、Codexの最終レビューへ進む。
 
 ## Local Reviewer Routing
 

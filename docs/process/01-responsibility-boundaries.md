@@ -13,6 +13,7 @@ Decision date: 2026-08-08
 - UX、視覚品質、事業上の妥当性を最終確認する。
 - commit、push、Pull Request作成、CI確認、mergeを行う。
 - セキュリティ例外、品質ゲート例外、費用上限の変更を承認する。
+- Feature固有判断を`docs/reviews/features/<feature-id>/human-decisions.md`へHuman自身が記録し、使用時の明示確認に応答する。署名基盤のないローカル単一Human境界であり、AIは判断を代筆・捏造しない。
 
 ## Spec Kit
 
@@ -21,12 +22,21 @@ Spec Kitは仕様駆動開発の成果物と手順を整える。自律的に実
 - `spec.md`で何を、なぜ実現するかを記録する。
 - `plan.md`でfeature slice全体の技術計画とテスト方針を記録する。
 - `tasks.md`で依存順の実装Taskを管理する。
-- clarify、checklist、analyze、convergeによって曖昧さ・不整合・実装漏れを検出する。
+- clarify、checklist、analyze、および採用Version上で検証済みの収束手段によって曖昧さ・不整合・実装漏れを検出する。
 - `/speckit.implement`は、接続されたCoding AgentにTask実行を依頼する入口として扱う。
 
 ## OpenCode and Local LLM
 
 OpenCodeはCoding Agentの実行環境、Ollamaはローカル推論Providerとして使用する。
+
+Project固有Commandは引数なしとし、採用Versionで検証済みのSpec Kit Active Feature pointer、`implementation-log.md`のSelected Task、人間が選択したtrusted review recordだけを入力とする。WF-12未完了または選択が一意でない場合は実装を開始しない。
+
+### Trusted Command Controller
+
+- 全Project Commandの唯一の入口としてpre-run Intentと専用Resolver結果を検証し、CSPRNG Run ID必須の厳格なfinal `run-binding-v1`だけを下流へ渡す。
+- `implementation-orchestrator`、`local-review-controller`、`status-reporter`以外を起動しない。
+- generic Shell、編集、Network、任意Repository read、未知Toolを使用しない。
+- OpenCodeでTool / Agent allowlistを強制できない場合は実行せず、外部Wrapper判断へ戻す。
 
 ### Implementation Orchestrator
 
@@ -35,11 +45,12 @@ Implementation Orchestratorは、各Taskの実行直前にPlanning上の並列�
 - 依存Taskの完了、予定変更範囲、共有Contract、Worker間の編集競合、Test、Local resourceを確認する。
 - `Parallel: Candidate`を実行時の`Approved`または`No`へ判定する。
 - `tasks.md`の該当Taskにある`Parallel Execution`項目へ、判定結果、判定者、判定日時、根拠、同時実行Groupを記録する。
-- 編集権限は上記`Parallel Execution`項目だけに限定する。Application code、Test、Spec、Plan、Task本文は変更しない。
+- `tasks.md`の編集権限は上記`Parallel Execution`項目だけに限定する。別途`implementation-log.md`を単独Writerとして更新し、Application code、Test、Spec、Plan、Task本文は変更しない。
 - Reviewerの選択、finding統合、品質通過判定はReview Orchestratorへ委ねる。
 - commit、push、PR作成、mergeを行わない。
+- `implementation-log.md`の単独Writerとして、Revision確認後に直列更新する。Reviewer入力Artifactは検証済みread-only Collectorだけが生成する。
 
-このRoleのOpenCode用Agent / Command等の実装資材はまだ作成しない。最初の本実装TaskがGate 4へ入る前に定義し、この責任、権限、記録先を維持する。
+このRoleのOpenCode用Agent / Command資材は`.opencode/`に定義済みである。採用OpenCode Versionで権限構文と実効範囲を検証するまで、Gate 4の実行可能状態とはみなさない。
 
 ### Local Implementer
 
@@ -55,6 +66,14 @@ Implementation Orchestratorは、各Taskの実行直前にPlanning上の並列�
 - 専門Reviewerのfindingを統合し、重複を除き、通過可否を判定する。
 - 自身ですべての品質観点を再レビューする万能Reviewerにはしない。
 - 例外なくread-onlyとし、ファイルを編集・修正しない。指摘をImplementerへ返す。
+- Reviewerを自ら起動せず、routing / integrationを会話ResultでLocal Review Controllerへ返す。
+
+### Local Review Controller
+
+- Reviewerではない実行調整RoleとしてImmutable Runtime Artifactを生成する。
+- 固定allowlistのReview OrchestratorとReviewerだけを一意な順序で起動し、循環・再委譲を禁止する。
+- Runtime Artifactだけを書き、code、Planning成果物、implementation-log、Git管理Review記録を変更しない。
+- Runtimeを排他的・安全に作成し、Deterministic Minimum Routing、Schema検証、別InvocationのRouting / Integration、Snapshot Closureを調整する。
 
 ### Local Reviewers
 
@@ -93,7 +112,7 @@ Cursorは人間による差分閲覧、軽微な調整、UI確認のためのEdi
 次の場合は自動ループを止め、人間へ判断を求める。
 
 - 同じCritical/Majorが修正後も再発する。
-- 原則3周でレビューが収束しない。
+- 初回をAttempt 1とする最大3 Review Attemptsで収束しない、または同一Critical / Majorが再発する。
 - Requirementsまたは承認済みMockの変更が必要になる。
 - Domain Open QuestionをArchitecture上の固定値にする必要が生じる。
 - セキュリティ例外、データ損失、外部費用増加、互換性破壊の可能性がある。

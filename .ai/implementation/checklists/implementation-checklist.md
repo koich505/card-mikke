@@ -1,0 +1,59 @@
+# Implementation Checklist
+
+- [ ] Gate 3とHuman実装開始承認を確認した
+- [ ] WF-3 / 4 / 5B / 6B / 12が解決済みで完了証跡を参照できる
+- [ ] 採用VersionでAgent / Command構文、権限、引数、Tool境界、ask、Resolver、Guard、Collector、収束手段を検証した
+- [ ] 引数なしCommandからActive Feature pointerをcanonical化し、`specs/`直下の一意な既存Directoryへ解決した
+- [ ] pre-run `command-intent-v1`にRun IDがなく、CSPRNG ID必須のfinal `run-binding-v1`だけを固定Roleへ渡した
+- [ ] run / feature / gate / selected taskはRun Binding、scope / source fingerprint / review input payloadはArtifact Bindingへ照合した
+- [ ] feature scopeでは`taskId`と`selectedTaskId`がともにnull、task scopeではともにnon-nullかつ一致した
+- [ ] Source / Diff / Closure / Review Input / Artifact Bindingの`runBindingHash`が計算済みfinal Run Binding Hashと完全一致した
+- [ ] 上記全Recordの`baseRevision / currentRevision` pairが完全一致し、欠落がない
+- [ ] `command-intent-v1`のCommand file / Installed Manifest hash、currentGate、固定Dispatchを検証した
+- [ ] `.opencode/tooling/installed-command-manifest.json`またはWrapper hashが`docs/tooling/open-code-validation.md`のHuman承認と一致する
+- [ ] Gate順序とcurrentGateを確認し、Gate変更時に旧Bindingをstale化して新Runへ再Bindingした
+- [ ] Run IDが`run-<32 lowercase hex>`でCSPRNG由来・未使用である
+- [ ] Selected Task、または一意なNext Ready TaskをLogから解決した
+- [ ] Taskの依存、Planned files、Acceptance Criteriaが明確である
+- [ ] `Parallel Execution`をOrchestratorが実行直前に判定した
+- [ ] 計画範囲内だけを変更した
+- [ ] 全tracked / untrackedのcanonical path、type、mode、symlink target、content hash、sizeをpre / post収集した
+- [ ] DeltaがPlanned path、許可実行記録、Human承認済み固定除外だけである
+- [ ] Runtime Artifact領域だけをSource-tree Manifestから除外し、他のuntrackedを除外していない
+- [ ] entry→manifest / diff / closure→review-input payload→artifact bindingのHash DAGに循環がなく、書込後post-checkが一致した
+- [ ] Closure capsが固定5 Tier各1件、edgeが完全tuple順・一意、root compositionが再計算一致した
+- [ ] regular file / lstat / no-followとbyte / count / time上限を通過した
+- [ ] Secret候補はPath / hash / contentを保存せずRedacted event IDで停止した
+- [ ] Oversize判定後にbounded readし、永続化前Secret scan、Clean後hash / CASの順を守った
+- [ ] 必要なTestを追加・更新した
+- [ ] 固定済み品質CommandとSecurity Toolが成功した
+- [ ] CorrectnessとRouteされたReviewerを実行した
+- [ ] Critical / Majorが0である
+- [ ] Minor accept / deferにHuman承認参照がある
+- [ ] Open Questionの影響Gate / Blockingを判定した
+- [ ] Security / Privacy findingに承認済み例外、または解消記録がある
+- [ ] Review Artifactのbase、tracked / untracked、鮮度、fingerprintを確認した
+- [ ] Immutable Run bindingとActive pointer revisionを各Phase前に再検証した
+- [ ] Local Review Controllerが固定allowlistのRO / Reviewerだけを循環なく起動した
+- [ ] Schemaのunknown / duplicate / size / binding / identity検証が成功した
+- [ ] RFC 8785 UTF-8 + SHA-256 + Domain separator + Hash field omit規則をFixture検証した
+- [ ] `review-input-v1`のnormalized path / changeType / riskTags / ruleId / producer / hashを検証した
+- [ ] `unknown` risk tagでは5 Reviewerすべてを実行した
+- [ ] Findingと`human-disposition-v1`をBindingし、Deterministic Resultを再計算した
+- [ ] C / MはHuman判断で解消せず、後続Reviewer / Integration Resultを確認した
+- [ ] Human decision Source hash / revisionとnonce明示確認を検証した
+- [ ] Human decision / approval、Gate、Codex rework、Blocked resume、手動Source変更後はfresh Run / Snapshotで全Reviewerを再実行した
+- [ ] prior Run / Findingはprovenanceだけで、旧Reviewer Resultをpass判定へ再利用していない
+- [ ] Human dispositionはcurrent RunのReviewerが発行・維持したFindingとcurrent ArtifactへBindingした
+- [ ] RoutingとIntegrationを別RO Invocationで実行し、routing / ordered result hashを照合した
+- [ ] First-party / Vendored / Third-party / Toolchain / EvidenceのTier別Closureが完全である
+- [ ] `implementation-log.md`へ要約を記録した
+- [ ] commit / push / PR / mergeを行っていない
+
+## Delivery Transition
+
+- [ ] Humanが最終差分、動作、UI、Minor / Open Questionを確認した
+- [ ] PR URL、対象Revision、必須CI成功を確認した
+- [ ] 未承認のScope変更とSecurity / Privacy例外がない
+- [ ] HumanのSquash merge、merged revision / URL、Actor、日時がある
+- [ ] 上記すべての後にだけOrchestratorが`Human delivered`を記録した

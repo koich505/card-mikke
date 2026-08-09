@@ -27,10 +27,11 @@ Decision date: 2026-08-09
 .ai/
 ├── README.md
 ├── shared/
-│   ├── project-context.md
+│   ├── project-context.md（planned; not yet created）
 │   ├── evidence-policy.md
 │   ├── quality-policy.md
-│   └── review-result-format.md
+│   ├── review-result-format.md
+│   └── untrusted-input-and-execution-policy.md
 ├── research/
 │   ├── research-agent.md
 │   ├── research-reviewer.md
@@ -65,9 +66,16 @@ Decision date: 2026-08-09
 │       ├── task-readiness-checklist.md
 │       └── parallel-candidate-checklist.md
 ├── implementation/
+│   ├── command-controller.md
 │   ├── implementation-orchestrator.md
 │   ├── local-implementer.md
+│   ├── local-review-controller.md
 │   ├── review-orchestrator.md
+│   ├── schemas.md
+│   ├── status-reporter.md
+│   ├── human-decisions-template.md
+│   ├── run-feature.md
+│   ├── implementation-log-template.md
 │   ├── reviewers/
 │   │   ├── correctness-reviewer.md
 │   │   ├── security-reviewer.md
@@ -86,6 +94,8 @@ Decision date: 2026-08-09
 
 必要性が生じていないファイルや空フォルダは先回りして作らず、対象レイヤーの作業開始時に追加する。既存の`create-domain-spec.md`は作成指示と完了条件を兼ねるため、再利用上の必要が生じるまで`domain-spec-agent.md`と`domain-checklist.md`へ形式的に分割しない。
 
+`shared/project-context.md`は将来、`AGENTS.md`と各正本を短く束ねる必要が生じた場合に作成する予定であり、現時点のActive fileまたは必須参照ではない。
+
 ## File Responsibilities
 
 | File kind | Responsibility |
@@ -94,6 +104,10 @@ Decision date: 2026-08-09
 | `*-reviewer.md` | レビュー対象、観点、重大度、禁止事項、通過条件 |
 | `review-orchestrator.md` | 差分の分類、専門Reviewerの選択、結果統合、重複排除、通過判定 |
 | `implementation-orchestrator.md` | Task実行直前の依存・競合確認、並列実行判定、`tasks.md`の限定記録 |
+| `command-controller.md` | 全引数なしCommandの専用Resolver入口とImmutable binding受渡し |
+| `local-review-controller.md` | Immutable Artifact生成、固定Reviewer chainの起動、会話ResultのRuntime記録 |
+| `schemas.md` | Installed Command Manifest、Command / Artifact binding、Hash DAG、Review input / Closure、Routing、Finding、Human disposition、Integrationの厳格形式とCanonical hash規則 |
+| `human-decisions-template.md` | Human判断Source recordとローカル真正性境界 |
 | `*-checklist.md` | 判定可能な確認項目と完了条件 |
 | 作業名のPrompt | 特定作業を開始する再利用可能な入力Template |
 | `shared/*-policy.md` | 複数レイヤーに適用する共通方針 |
@@ -116,11 +130,12 @@ AIを実行するときは、必要な範囲だけを次の順序で読み込む
 実装レビューは次の順序で行う。
 
 1. format、lint、typecheck、test、build、Secret scan、依存脆弱性検査等の決定論的チェックを実行する。
-2. `correctness-reviewer.md`を原則すべての実装Taskで実行する。
-3. `review-orchestrator.md`が変更内容とリスクから必要な専門Reviewerを選択する。
-4. 選択された専門Reviewerを、Implementerとは分離したread-onlyのContextで実行する。Reviewerはファイルを編集・修正せず、指摘をImplementerへ返す。
-5. Review Orchestratorがfindingを統合し、重複を除き、Critical / Major / Minor / Open Questionへ整理する。
-6. CriticalまたはMajorがあればImplementerへ戻し、修正後に影響するチェックとレビューを再実行する。
+2. Local Review Controllerが検証済みCollectorでImmutable Runtime Artifactを生成する。
+3. ControllerがReview Orchestratorを起動し、routing planを会話Resultで受け取る。
+4. ControllerがCorrectnessを常時、選択された専門Reviewerを固定allowlistから順次起動する。
+5. Controllerが個別ResultをReview Orchestratorへ渡し、統合Resultを会話で受け取ってRuntime Artifactへ記録する。
+6. Implementation Orchestratorが採用結果だけを`implementation-log.md`へ転記する。
+7. CriticalまたはMajorがあればImplementerへ戻し、修正後に影響するチェックとレビューを再実行する。
 
 ### Reviewer Routing
 
@@ -144,11 +159,17 @@ specs/             Spec Kitによるfeature単位の成果物
 AGENTS.md          リポジトリ全体の短い入口と絶対ルール
 ```
 
-OpenCode導入時は、`.opencode/agents/`にImplementation Orchestrator、Implementer、Review Orchestrator、各Reviewerの権限、Model、実行Modeと`.ai/`への参照を持つ薄いAdapterを置く。共通のレビュー観点を`.opencode/`へコピーしない。
+`.opencode/agents/`にImplementation Orchestrator、Implementer、Review Orchestrator、各Reviewerの権限、実行Modeと`.ai/`への参照を持つ薄いAdapterを置く。ModelはWF-3 / WF-4の決定後にProject設定で指定し、共通のレビュー観点を`.opencode/`へコピーしない。
 
-Implementation OrchestratorはReviewerではない実行調整Roleである。Task実行直前に依存、予定変更範囲、共有Contract、Worker競合、Test、Local resourceを確認し、Parallel Candidateを`Approved`または`No`へ判定する。書込権限は`tasks.md`の該当Taskにある`Parallel Execution`項目だけに限定する。このAdapterと実行手順は`docs/process/03-tooling-and-open-decisions.md`のWF-12に従い、最初の本実装TaskがGate 4へ入る前に作成する。現時点では先回りして作成しない。
+Implementation OrchestratorはReviewerではない実行調整Roleである。引数なしCommandから検証済みActive Feature pointerとLog内Selectionを解決し、Task実行直前に依存等を確認する。書込権限は`tasks.md`の`Parallel Execution`項目と`implementation-log.md`に限定し、Review起動はLocal Review Controllerへ委ねる。
+
+Trusted Command Controllerは全`.opencode/commands/`の唯一のAdapter先であり、Run IDなしのIntent検証後にCSPRNG IDを含むfinal `run-binding-v1`だけを固定Roleへ渡す。OpenCodeがTool単位・Agent単位allowlistを強制できない場合は全Commandを使用不可とし、外部Wrapper方針をHumanが決める。
+
+採用時の生成物`.opencode/tooling/installed-command-manifest.json`と検証証跡`docs/tooling/open-code-validation.md`は現在未作成である。Human Tooling MaintainerがManifest / Wrapper hashを承認するまでWF-12と全Project CommandをBlockedにする。
 
 Review Orchestratorと各ReviewerのAdapterは例外なくread-onlyに設定し、編集・修正権限を与えない。findingはPlanning AgentまたはImplementerへ返す。
+
+Local Review Controllerだけが固定allowlistのReview Roleを起動し、Runtime Artifactを書ける。Review Orchestratorはrouting / integrationを会話Resultで返し、Reviewerを起動しない。ReviewerとReview Orchestratorは`task: deny`で再委譲と循環を禁止する。
 
 Spec Kitが生成・管理するファイルは、初期化前に推測で作らない。導入後も独自のAI方針は`.ai/`に保持し、生成領域との責任を分離する。
 
@@ -163,6 +184,8 @@ AIが作成またはレビューした結果は内容に応じて配置する。
 - Architecture Decision: `docs/architecture/`
 - Review結果: `docs/reviews/<layer>/`
 - Feature仕様・計画・Task: `specs/<feature>/`
+- Feature実装状態・検査・ローカルレビュー要約: `specs/<feature>/implementation-log.md`
+- Runtime Reviewer入力: `.opencode/runtime/review-artifacts/<run-id>/<scope-id>/`（Git管理外、監査正本ではない）
 - AI行動指針の変更: `.ai/<layer>/`または`.ai/shared/`
 
 Reviewerの指摘は、自動的に仕様変更へ昇格させない。採用された修正だけを対象成果物へ反映する。

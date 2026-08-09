@@ -23,7 +23,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 | User flow and UI mock approval | `docs/design/ui/` | `.ai/ui/` |
 | Architecture decisions | `docs/architecture/` | `.ai/architecture/` |
 | Feature specification, architecture, and tasks | `specs/<feature>/`, `docs/architecture/decisions/` | Spec Kit and `.ai/architecture/` |
-| Implementation and local review | Application code and tests | `.ai/implementation/` |
+| Implementation and local review | Application code, tests, `specs/<feature>/implementation-log.md` | `.ai/implementation/` and `.opencode/` adapters |
 | Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
 
 上記を現行の配置ルールとする。必要性が生じていない空フォルダは先回りして作らず、対象レイヤーの作業開始時に追加する。
@@ -61,15 +61,19 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
    - HumanがPlanning Summaryと実装開始を承認する。
 7. **Local Implementation and Review Loop**
    - OpenCodeからOllamaのローカルモデルへ実装Taskを渡す。
+   - 引数なしCommandはTrusted Command Controllerだけへ入り、専用ResolverのImmutable bindingから依存順に自動Loopする。
+   - Local Review ControllerがClosure済みImmutable Artifactを安全なRuntimeへ生成し、Schema検証付きの二段RO InvocationとReviewerを固定順で起動する。
    - 実装、決定論的チェック、別コンテキストのローカルレビュー、修正を反復する。
-   - 原則3周を上限とし、収束しない場合は人間へエスカレーションする。
+   - 初回ReviewをAttempt 1、修正後の再Reviewごとに+1とし、最大3 Review Attemptsで収束しない場合は人間へエスカレーションする。
 8. **Feature Convergence**
-   - 機能スライス内のTask完了後、`/speckit.converge`で仕様に対する実装漏れを確認する。
+   - 機能スライス内のTask完了後、WF-4 / WF-12で採用Version上の収束手段を検証し、仕様に対する実装漏れを確認する。
+   - 専用Commandが存在しない場合は、承認済みのAcceptance Criteria / Task / Test / 差分traceability reviewを代替手段とする。
    - 不足Taskが追加された場合はローカルループへ戻す。
 9. **Codex Final Review**
    - ローカルゲート通過後の機能差分をCodexが原則1回レビューする。
    - CriticalまたはMajorがあれば、指摘をローカルループへ戻す。
-   - 修正後はローカルゲートを再実行し、影響が実質的ならCodexも再レビューする。
+   - Critical / Major修正後はローカルゲートを再実行し、WF-11解決までは例外なくCodexも再レビューする。
+   - 合格記録と対象Revisionを確認後、`Delivery ready`へ進む。
 10. **Human Delivery**
     - 人間がCursor等で差分、動作、UIを最終確認する。
     - 人間がcommit、push、Pull Request作成、CI確認、Squash mergeを行う。
@@ -95,9 +99,9 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 
 - 承認済みMockのユーザー体験を変える場合は、RequirementsとMockを更新し再承認する。
 - `spec.md`、`plan.md`、`tasks.md`と実装の差異を口頭合意だけで残さない。
-- Codexレビュー後の実質的変更は、該当するローカルゲートと最終レビューを再実行する。
+- CodexのCritical / Major修正後は必ず該当Local Gateを再実行し、WF-11解決までは必ずCodexも再Reviewする。その他の実質的変更も該当Local Gateと最終Reviewを再実行する。
 - AIの会話ログはSource of Truthにしない。採用した決定だけをMarkdownへ反映する。
 
 ## Current Boundary
 
-現時点ではDomain Specificationと開発・UI工程方針が文書化され、次の工程はRequirements作成である。Requirements、UI Mock、Architecture、本番実装、およびSpec Kit / OpenCode / Ollama / CIの初期化・設定は、各Entry Conditionと明示的な作業依頼を満たすまで開始しない。
+現時点ではDomain SpecificationとRequirements、UI、Feature Planning、Local Implementationの工程方針および実装用AI資材が文書化され、次の成果物作成工程はRequirementsである。Requirements、UI Mock、Feature成果物、本番実装、およびSpec Kit / OpenCode / Ollama / CIの初期化・設定は、各Entry Conditionと明示的な作業依頼を満たすまで開始しない。
