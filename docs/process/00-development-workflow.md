@@ -22,7 +22,7 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
 | Requirements review | `docs/reviews/requirements/` | `.ai/requirements/` |
 | User flow and UI mock approval | `docs/design/ui/` | `.ai/ui/` |
 | Architecture decisions | `docs/architecture/` | `.ai/architecture/` |
-| Feature specification and tasks | `specs/<feature>/` | Spec Kit and `.ai/implementation/` |
+| Feature specification, architecture, and tasks | `specs/<feature>/`, `docs/architecture/decisions/` | Spec Kit and `.ai/architecture/` |
 | Implementation and local review | Application code and tests | `.ai/implementation/` |
 | Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
 
@@ -49,10 +49,13 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
    - `/speckit.clarify`と要件チェックリストで曖昧さを減らす。
    - UIに影響する曖昧さが判明した場合はMockへ戻り、再承認する。
    - `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行い、結果を`plan.md`と`tasks.md`の入力にする。
+   - Humanがfeature Scopeを承認する。重大なArchitecture判断がなければPlanning承認とまとめてよい。
 6. **Technical Plan and Task Breakdown**
    - `/speckit.plan`で機能スライス全体の技術計画・テスト方針を作る。
    - `/speckit.tasks`で依存順の実装Taskへ分割する。
    - `/speckit.analyze`で`spec.md`、`plan.md`、`tasks.md`の整合性を確認する。
+   - Task Planningでは並列状態を`No`または`Candidate`まで判定し、実行時の`Approved`判定はImplementation工程へ委ねる。
+   - HumanがPlanning Summaryと実装開始を承認する。
 7. **Local Implementation and Review Loop**
    - OpenCodeからOllamaのローカルモデルへ実装Taskを渡す。
    - 実装、決定論的チェック、別コンテキストのローカルレビュー、修正を反復する。

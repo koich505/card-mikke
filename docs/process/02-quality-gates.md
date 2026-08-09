@@ -58,10 +58,16 @@ Securityはblocking gateとする。コストは閾値を定めて計測・管�
 
 ### Gate 3: Specification Ready
 
+- feature sliceのScopeとNon-goalsをHumanが承認している。
 - `spec.md`作成後、Technical Plan確定前にUI code promotion assessmentを行っている。
 - Promotion分類が`plan.md`と`tasks.md`へ反映され、`spec.md`、`plan.md`、`tasks.md`が相互に整合する。
+- 重要なArchitecture DecisionがADRへ記録されている。
 - 受入条件が検証可能である。
-- Taskの依存順、並列可否、テストが明示されている。
+- 全受入条件をTaskとTestへ追跡できる。
+- Taskの依存順、予定編集範囲、並列状態、Testが明示されている。
+- Planning段階の並列状態は`No`または`Candidate`であり、`Approved`を先取りしていない。
+- Feature Planning ReviewerのCritical / Majorが0件である。
+- HumanがPlanning Summaryと実装開始を承認している。
 
 ### Gate 4: Local Implementation Ready
 

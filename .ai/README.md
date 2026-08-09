@@ -54,9 +54,16 @@ Decision date: 2026-08-09
 │   ├── ui-workflow-consistency-checklist.md
 │   └── create-ui-mock.md
 ├── architecture/
-│   ├── architecture-agent.md
-│   ├── architecture-reviewer.md
-│   └── architecture-checklist.md
+│   ├── feature-planning-agent.md
+│   ├── feature-planning-reviewer.md
+│   ├── create-feature-plan.md
+│   └── checklists/
+│       ├── feature-slicing-checklist.md
+│       ├── spec-readiness-checklist.md
+│       ├── ui-code-promotion-checklist.md
+│       ├── architecture-plan-checklist.md
+│       ├── task-readiness-checklist.md
+│       └── parallel-candidate-checklist.md
 ├── implementation/
 │   ├── local-implementer.md
 │   ├── review-orchestrator.md

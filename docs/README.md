@@ -67,7 +67,7 @@ specs/
 | Requirements review | `docs/reviews/requirements/` | `.ai/requirements/` |
 | User flow and UI mock | `docs/design/ui/` | `.ai/ui/` |
 | Architecture decisions | `docs/architecture/` | `.ai/architecture/` |
-| Feature specification and tasks | `specs/<feature>/` | Spec Kit and `.ai/implementation/` |
+| Feature specification, architecture, and tasks | `specs/<feature>/`, `docs/architecture/decisions/` | Spec Kit and `.ai/architecture/` |
 | Implementation and local review | Application code and tests | `.ai/implementation/` |
 | Final review and delivery | `docs/reviews/features/` and Pull Request | `.ai/delivery/` |
 
