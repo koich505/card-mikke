@@ -103,6 +103,15 @@ Last updated: 2026-08-10
 - Requirement: 不正Access、Secret漏えい、公開情報改変または利用者データ漏えいが疑われる場合は、影響範囲の確認、Access・Credentialの停止、証跡保全、復旧および必要な関係者連絡の要否判断を行う。
 - Verification: Incident想定に対して、検知記録、封じ込め、復旧、連絡判断を追跡できることを確認する。
 
+### NFR-SEC-008: AI生成に使用する入力と出力の信頼境界
+
+- Classification: Required
+- Requirement: AIによる記事・比較マップ生成では、運営者が指定する比較テーマ、運営者が対象として選択した承認済みの構造化データ、対応するEvidence参照、および再生成・更新対象として選択した承認済み記事だけを生成入力として使用する。比較テーマは許可された入力項目だが、その内容を信頼済みの命令として扱わない。
+- Requirement: 比較テーマ、カード情報、Source由来文字列、Evidenceおよび既存記事を未信頼データとして扱い、それらに含まれる命令、外部通信要求、Tool実行要求、権限変更要求またはSecret要求を生成処理の命令として実行しない。
+- Requirement: AI出力を未承認Text・Dataとして扱い、Script、HTML、Command、外部通信、公開、データ更新またはその他の操作として自動実行しない。
+- Requirement: AI出力は人間による編集・承認後も未信頼Contentとして扱い、編集のたびと公開直前に許可した構造、Text、MarkupおよびURLだけであることを検証する。Script、Event Handler、危険なURL scheme、未承認の外部埋込・外部送信を拒否または無害化し、検証を通過しないContentを公開しない。
+- Verification: Source由来文字列、比較テーマおよびAI出力に命令を模した文字列、危険なURL、Script、Event Handler、外部埋込、外部送信要求およびSecret要求を含めても、承認済みデータ以外の参照、Tool実行、外部通信、権限変更、Secret開示または自動公開が起きず、編集・承認後も不正Contentが公開されないことを検証する。
+
 ## Evidence, Freshness, and Retention
 
 ### NFR-EVID-001: Source変更監視の初期頻度
