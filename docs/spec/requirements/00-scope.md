@@ -1,6 +1,6 @@
 # Requirements Scope
 
-Status: Draft  
+Status: Approved
 Last updated: 2026-08-10
 
 ## Purpose

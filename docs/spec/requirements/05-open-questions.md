@@ -1,6 +1,6 @@
 # Requirements Open Questions
 
-Status: Draft  
+Status: Approved
 Last updated: 2026-08-10
 
 | ID | Question | Why unresolved | Impact | Decision owner | Needed by | Blocking Requirements | Recommended action |

@@ -1,6 +1,6 @@
 # Users and Goals
 
-Status: Draft  
+Status: Approved
 Last updated: 2026-08-10
 
 ## Priority Users

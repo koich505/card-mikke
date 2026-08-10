@@ -1,6 +1,6 @@
 # Acceptance Criteria
 
-Status: Draft  
+Status: Approved
 Last updated: 2026-08-10
 
 ## Account, Profile, and Privacy

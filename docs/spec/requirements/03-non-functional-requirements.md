@@ -1,6 +1,6 @@
 # Non-functional Requirements
 
-Status: Draft  
+Status: Approved
 Last updated: 2026-08-10
 
 ## Security and Privacy
