@@ -1,0 +1,414 @@
+# クレジットカード付帯保険・補償 条件構造 反証調査（追加ラウンド、調査基準日: 2026-08-10）
+
+本調査は `01-market-corpus-v1.md`（過去記録）、`02-market-corpus-v2-audited.md`（現行正本）、`03-domain-counterexample-audit.md`（既存反証調査）を前提として、これら3文書で十分に扱われていなかった「クレジットカード付帯保険・補償」領域の条件構造について、独立した追加反証調査を行った結果である。目的は市場人気ランキングの作成ではなく、既存ドメインモデルが表現しにくい構造差・例外・反例の発見である。指示に基づき、Insurance Product／Coverage／Covered Person／Trigger／Required Payment／Limit／Deductible／Exclusion／Coverage Period／Claim Requirement／Underwriter／Applicable Card・Variantを分離して整理した。
+
+***
+
+## 0. 調査の位置づけと総括所見
+
+02の記載範囲では、付帯保険は「Reward Operator」「Underwriter」等のActor Role分離の必要性は示唆されていたが、保険商品自体の条件構造（自動付帯／利用付帯の境界、家族会員差、複数カード合算、免責、改定プロセス）はほぼ未調査だった。本ラウンドでは三井住友カード、エポスカード、楽天カード、JCB、アメリカン・エキスプレス、ダイナースクラブという独立した6社以上の一次資料（Tier2）を確認し、保険構造における反例を発見した。
+
+最も重要な横断的知見は、「自動付帯／利用付帯」という二値区分自体が単純化しすぎており、実際には（a）担保項目ごとに自動付帯部分と利用条件付帯部分が併存する「一部自動・一部利用付帯」構造が主流であること、（b）利用条件を満たすタイミング（出国前／出国後）によって補償開始日が変わる時間的構造を持つこと、（c）保険会社（Underwriter）とカード発行会社（Issuer）が分離しており、かつ改定は約款PDF・お知らせページ単位で個別に発生し、カードのライフサイクルとは非同期であること、である。
+
+***
+
+## 1. 海外旅行傷害保険・国内旅行傷害保険
+
+### 1.1 構造パターン: 「一部自動・一部利用付帯」（担保項目単位の分離付帯）
+
+**構造パターン名**: Split Automatic/Conditional Attachment by Coverage Item
+
+三井住友カードでは、2022年4月16日出発分の旅行より、傷害死亡・後遺障害の保険金額が「自動付帯部分」（例: 一般カードで1,000万円）と「カード利用条件付帯部分」（例: 一般カードで上乗せ4,000万円、合計最高5,000万円）に分離され、両者が加算される構造になっている。TRUST CLUB VISAカード（旧三井住友VISAカード系）でも同様に、傷害死亡・後遺障害、傷害治療費用等の項目ごとに「自動付帯の最高保険金額」と「利用条件を満たした場合の上乗せ金額」が別テーブルで管理されている。[^1][^2]
+
+- 対象単位: Coverage（担保項目）× Attachment Type（自動／利用）
+- 観測された事実: 単一の保険Productの中で、担保項目（死亡後遺障害、治療費用、賠償責任、携行品、救援者費用等）ごとに自動付帯額と利用条件付帯額が異なる場合がある[^2][^1]
+- 適用条件: 自動付帯部分はカード保有のみで適用。利用条件付帯部分は、出国前に公共交通乗用具または宿泊を伴う募集型企画旅行の代金を対象カードで決済すること、または出国後に初めて公共交通乗用具料金を決済すること、のいずれかを満たす必要がある[^1][^2]
+- 除外条件: 航空券発券手数料、空港税、マイカー関連費用、マイレージ交換による航空券取得、プリペイドカードでの支払いは利用条件の対象外[^2]
+- 補償期間: 自動付帯分は旅行開始から3ヵ月（かつ旅行期間中）。利用条件付帯分は、出国前に条件を満たした場合は出国から3ヵ月、出国後に満たした場合はその決済時点から3ヵ月[^1][^2]
+- 関係する事業者と役割: Issuer（三井住友カード）とUnderwriter（保険会社、開示資料上は明示的社名まで確認できず、Unknown）が分離
+- Evidence Tier: Tier2（発行会社公式ページ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.smbc-card.com/mem/cardinfo/cardinfo4010499.jsp、https://www3.vpass.ne.jp/mem/service/li/hoken_kaigairyokou.jsp?cc=015[^2][^1]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 02・03は「自動付帯／利用付帯」を商品単位の属性として扱う暗黙の前提があるが、本事例は担保項目単位で分離が必要であることを示す
+- 既存モデルで表現しにくい点: `InsuranceProduct.attachment_type`のような単一Enumでは表現不能。`Coverage`エンティティごとに`attachment_type`と`amount`を持たせる必要がある
+- 追加確認が必要な点: 本改定の引受保険会社名、家族会員への同条件適用の有無（Unknown）
+
+### 1.2 構造パターン: 「自動付帯→利用付帯への改定」と補償額増額の同時発生
+
+**構造パターン名**: Attachment Downgrade with Compensating Amount Increase
+
+エポスカードは2023年10月1日付で海外旅行傷害保険を自動付帯から利用付帯に変更した一方、傷害死亡・後遺障害の補償額を最高500万円から最高3,000万円に、賠償責任を2,000万円から3,000万円に増額した。傷害治療費用（200万円）、疾病治療費用（270万円）、救援者費用（100万円）、携行品損害（20万円、自己負担3,000円）は改定前後で変更なしという、担保項目単位で「変更あり／なしが混在する改定」構造である。[^3][^4][^5]
+
+- 対象単位: Insurance Product（改定イベント） × Coverage（担保項目、項目別の変更有無）
+- 観測された事実: 適用条件の厳格化（自動付帯→利用付帯）が、必ずしも補償額の減額を意味しない。むしろ一部項目は増額される場合がある[^4][^3]
+- 適用条件（改定後）: 乗車代金（日本・海外）をエポスカードで支払った時点から、旅行を終えて帰宅するまでの間が補償対象。乗車代金決済前の事故は対象外[^6]
+- 対象者・対象取引: エポスカード（一般）、エポスゴールドカードで異なる補償額テーブルが存在（例: ゴールドは死亡・後遺障害改定前1,000万円→改定後5,000万円）[^4]
+- 開始日・終了日: 改定発表 2023年7月、施行 2023年10月1日出発分より[^5][^3]
+- Evidence Tier: Tier2（発行会社公式お知らせ）＋Tier4（ニュース記事による補完） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.eposcard.co.jp/news/hoken.html[^3]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 02・03には未収録の新規事例
+- 既存モデルで表現しにくい点: `ProductChangeHistory`が「改定＝条件厳格化＝補償縮小」という単純な相関を暗黙に仮定する場合、本事例（条件厳格化かつ一部補償増額）を誤って表現するおそれがある。改定イベントは「Attachment Type変更」と「Coverage Amount変更」を独立した属性として記録する必要がある
+- 追加確認が必要な点: 家族特約における同時改定の有無（Unknown、本ラウンド未確認）
+
+### 1.3 構造パターン: 「複数カード保有時の合算」ルールの明文化（JCB）
+
+**構造パターン名**: Multi-Card Aggregation with Ceiling Cap（他社カードとの合算規定）
+
+ANA JCBゴールドカード付帯の旅行傷害保険では、死亡・後遺障害保険金額および入院・通院保険金額（国内のみ）について、他のクレジットカード付帯の保険契約から同時に保険金が支払われる場合、これらの契約のうち最も高い保険金額を限度として保険金が支払われる、と明記されている。これは単純な「複数カード＝合算加算」ではなく「複数契約中の最高額が上限となる」という非加算的構造である。[^7]
+
+- 対象単位: Insurance Product × Claim Requirement（他契約との調整規定）
+- 観測された事実: 後遺障害保険金は、最も高い保険金額に普通保険約款所定の支払い割合を乗じた金額を限度とする[^7]
+- 関係する事業者と役割: Underwriter明示（一部JCBカードは損害保険ジャパン株式会社）[^8][^9]
+- Evidence Tier: Tier2（発行会社公式PDF規定集） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.jcb.co.jp/premium/gold/pdf/futai_2302_01.pdf[^7]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 03のEC群には合算規定への言及がなく、新規発見
+- 既存モデルで表現しにくい点: 「複数カード保有時の合算」を単純な加算モデル（`sum(coverage_amount)`）として実装すると誤りになる。「複数契約中の最大値を採用（キャップ）」という非加算的な調整ロジックが必要
+- 追加確認が必要な点: 傷害治療費用・疾病治療費用・賠償責任等、他の担保項目についても同様の調整規定が適用されるか（本ラウンドでは死亡・後遺障害と入院・通院のみ確認、他項目はUnknown）
+
+### 1.4 構造パターン: ダイナースクラブの「自動付帯から利用付帯へ」全面改定と「担保項目の廃止」の同時発生
+
+**構造パターン名**: Coverage Discontinuation Bundled with Attachment Change
+
+ダイナースクラブは2025年4月1日（JALダイナースカードは2025年10月1日）から、自動付帯または一部自動付帯だったカード種類の海外・国内旅行傷害保険を全面的に利用条件付きへ変更した。同時に「外貨盗難保険」（一部券種に自動付帯）を完全に付帯廃止とした。これは「適用条件の変更」と「担保項目自体の消滅」が単一の改定イベント内で並行して発生する構造である。[^10]
+
+- 対象単位: Insurance Product（改定イベント）× Coverage（担保項目、廃止対象と存続対象が混在）
+- 観測された事実: 利用条件を満たす対象取引は「公共交通乗用具または募集型企画旅行の料金」の決済であり、レンタカー料金、電車・バスの定期券・回数券、ガソリン代金、高速道路料金、駐車場料金、ホテル宿泊費用（国内旅行の宿泊中火災・爆発事故を除く）は対象外と明記されている[^10]
+- 対象者・対象取引: 家族カード、コンパニオンカード、ビジネス・アカウントカード、メタルカードでの支払いも利用条件の対象となる。本会員が同行しない家族会員だけの旅行でも、利用条件を満たすカード決済があれば補償が適用される[^10]
+- 適用条件の細部: マイレージ交換航空券利用時は、空港に向かう鉄道料金や燃油サーチャージ代金の決済で利用条件を満たせる。航空券発券手数料・マイレージ交換手数料・空港利用税の支払いは対象外[^10]
+- 開始日: 2025年4月1日（大多数）／2025年10月1日（JALダイナースカードのみ、対象カード追加に伴う個別スケジュール）[^10]
+- Evidence Tier: Tier2（発行会社公式お知らせ、FAQ付き） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.diners.co.jp/ja/press/inf_20241023_4.html[^10]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 03のEC-2（セゾンゲーミングカードの段階的終了）と構造的に類似する「複数フィーチャーが異なる日付で変化する」パターンだが、対象がカード商品ではなく付帯保険の担保項目である点で新規のドメイン領域
+- 既存モデルで表現しにくい点: カード「商品」のライフサイクルと、その商品に付帯する「保険」のライフサイクルは非同期に変化しうる。かつ、同一改定告知の中でも対象カード群ごとに施行日が異なる（JALダイナースのみ半年遅れ）という粒度の細かさがある
+- 追加確認が必要な点: 外貨盗難保険廃止の代替措置の有無（Unknown、公式資料には廃止の記載のみ）
+
+***
+
+## 2. 航空便遅延・欠航・手荷物遅延保険
+
+### 2.1 構造パターン: 「国内では利用付帯・海外では自動付帯」という同一保険内でのブランド差
+
+**構造パターン名**: Domestic/International Split Attachment within Single Insurance Product
+
+三井住友Visaプラチナカードの「海外・国内航空便遅延保険」は、海外渡航の場合は自動付帯だが、日本国内での航空便事故は、あらかじめ航空券を当該カードで支払っていた場合にのみ補償対象になるという、同一の保険商品内で地理的トリガーによって自動付帯／利用付帯が切り替わる構造を持つ。さらに、海外旅行期間中に利用する国内航空便の遅延については、海外航空便遅延保険の支払いが優先され、重複支払いはない、という優先順位規定も存在する。[^11]
+
+- 対象単位: Insurance Product（単一） × Trigger（地理的条件で自動／利用付帯が分岐）
+- 観測された事実: 乗継遅延費用最高2万円、手荷物遅延費用最高2万円、手荷物紛失費用最高4万円、出航遅延・欠航による食事費用最高2万円[^11]
+- 適用条件（国内航空便）: (a) 搭乗前にカードで料金を支払った場合、(b) カード発行会社を通じて予約しカードで支払った場合、(c) 宿泊を伴う募集型企画旅行に参加中でカードで料金を支払った場合、のいずれか[^11]
+- Evidence Tier: Tier2（Vpass公式規定ページ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www3.vpass.ne.jp/mem/service/li/hoken_kouku.jsp?cc=015[^11]
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: `Trigger`が単一の`attachment_type`フィールドでは表現できず、旅行のジオグラフィー（国内／海外）に応じて条件分岐するルールセットが必要
+- 追加確認が必要な点: プラチナ以外の券種（ゴールド、一般）における国内航空便遅延保険の有無（Unknown、本ラウンドではプラチナのみ確認）
+
+### 2.2 構造パターン: グレード別の担保項目「有無」の非対称差（アメックス）
+
+**構造パターン名**: Tiered Coverage Item Presence (Not Just Amount) by Card Grade
+
+三菱UFJ発行のアメックス系「国内・海外渡航便遅延保険」では、乗継遅延費用保険金がプラチナ・ゴールドプレステージ・ゴールドで付帯（一部注記付き）だが、一般・イニシャルカードには付帯自体がない（×表記）。これは補償額の差ではなく、担保項目そのものの有無がグレードによって異なる構造である。[^12]
+
+- 対象単位: Coverage（担保項目の有無） × Applicable Card/Variant
+- 観測された事実: 出航遅延費用等保険金（食事代1万円限度）、寄託手荷物遅延費用保険金（衣料購入費等1万円限度）、寄託手荷物紛失費用保険金（衣料購入費等2万円限度）は複数グレードで共通額だが、乗継遅延費用保険金のみグレード間で有無・注記が異なる[^12]
+- Evidence Tier: Tier2（発行会社公式ページ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.cr.mufg.jp/amex/service/other/insurance/delay/index.html[^12]
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: グレード別のCoverage比較表を単純な「金額の大小関係」として扱うと、「項目自体が存在しない」ケースを見落とす。`Coverage`エンティティは`amount = null / not applicable`と`amount = 0`を区別する必要がある
+
+***
+
+## 3. ショッピング保険
+
+### 3.1 構造パターン: 「年間総補償限度額の会計年度基準」と「1回払い購入限定」の組み合わせ（JCB）
+
+**構造パターン名**: Fiscal-Year Aggregate Cap Independent of Card Membership Anniversary
+
+JCBのショッピングガード保険は、「会員1名につき毎年4月1日から1年間の総補償金額」という会計年度基準（4月1日〜3月31日）で上限が管理されており、多くの保険が「会員資格が有効な期間中」を基準に扱う旅行保険とは異なる集計期間ロジックを持つ。カード入会日や更新日に紐づく周期ではなく、固定の公的会計年度に紐づく点が特殊である。[^13][^14][^15]
+
+- 対象単位: Insurance Product（ショッピングガード保険） × Coverage Period（集計期間）
+- 観測された事実: 年間補償限度額は券種により異なり、Biz ONEゴールドで500万円、一般カード会員用で100万円（自己負担1万円）、プラチナ系で500万円（自己負担3,000円）[^14][^15][^16][^13]
+- 対象者・対象取引: 対象カードで購入した本会員または家族会員が対象。物品購入時の対象カードでの決済が必須（現金・商品券併用時はカード利用額分のみ対象）[^16][^13]
+- 除外条件: 船舶・航空機・自動車・原動機付自転車・自転車・ハンググライダー・サーフボード・セーリングボードおよびこれらの付属品、義歯・義肢・コンタクトレンズ、動物・植物、現金・有価証券・チケット類、稿本・設計書、自動車電話・携帯電話等の付属品、食料品、会員の職業上の商品。スマートフォン等一部品物は対象外。JCBギフトカードでの購入は対象外[^17][^18][^16]
+- 免責金額: 1事故につき国内利用3,000円、海外利用1万円（券種・カードにより差がある）[^16][^17]
+- 補償期間（Claim Requirement）: 購入日（配送等の場合は物品到着日）から90日以内の事故が対象[^13][^16]
+- 対象外事由: 置き忘れ、紛失に起因する損害は対象外[^19]
+- 関係する事業者と役割: Underwriter明示（損害保険ジャパン株式会社、事故受付は「損保ジャパンJCB事故受付デスク」）[^14][^13]
+- Evidence Tier: Tier2（発行会社公式PDF・FAQ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.jcb.co.jp/insurance/futai/cardhoken-00107-226586.pdf、https://insurance.jcb.co.jp/cm/service/card/pdf/30_208727.pdf[^13][^16]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 02・03未収録の新規知見
+- 既存モデルで表現しにくい点: `CoveragePeriod`が「会員資格期間」を基準とするモデルのみを想定していると、「固定会計年度（4/1〜3/31）」という別種の集計単位を表現できない。`AggregationCycle`を「membership_anniversary」と「fixed_fiscal_year」で区別する必要がある
+
+### 3.2 構造パターン: 「登録型リボ払い登録」を条件とする自動付帯（JCB）
+
+**構造パターン名**: Payment-Scheme-Conditional Automatic Attachment（決済方式そのものが付帯条件）
+
+JCBの登録型リボ払い（スマリボ／「支払い名人」定額コース）に登録すると、ショッピングガード保険（国内）が自動付帯される。ただし「保険対象商品の購入時点、事故発生時点のいずれにおいても登録型リボ払いに登録していること」および「対象商品をショッピングリボ払い、またはショッピング1回払いで購入し、登録型リボ払いにて振替対象となっていること」という条件が課される。これは、Payment Scheme（決済方式）自体が保険適用の前提条件（Trigger）になっている構造であり、通常の「商品購入」というTriggerとは別軸の依存関係を持つ。[^20]
+
+- 対象単位: Insurance Product × Payment Scheme（トリガーとしての決済方式）
+- 観測された事実: 補償適用開始日は2009年3月1日以降ご利用分より[^20]
+- 対象者・対象取引: JCB本会員・家族会員。ショッピングリボ払い振替除外商品は対象外[^20]
+- 年間補償限度額: 会員1名につき毎年4月1日から1年間で100万円限度、自己負担額1回の事故につき3,000円[^20]
+- Evidence Tier: Tier2（発行会社公式ページ） / Disclosure status: disclosed / Confidence: high
+- URL: https://insurance.jcb.co.jp/cm/service/card/sgard_jp.html[^20]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 03のEC-4（Paidyの支払スキーム単位の法的分類）と構造的に類似するが、本事例は「支払スキームが保険適用のTriggerになる」という別の混同回避原則を示す
+- 既存モデルで表現しにくい点: `Payment Scheme`と`Insurance Trigger`を混同しない設計が必要。単純に「カードで購入したこと」ではなく「特定の決済方式に登録・振替済みであること」が保険適用の前提条件になっている点は、指示10の「Product、Variant、Offering、Benefit、Reward、Insurance、Campaign、Application Route、Payment Schemeを混同しない」という混同回避原則に直接抵触しうる境界事例
+- 追加確認が必要な点: 一括払いのみの一般カード会員がリボ登録した場合の保険適用の可否詳細（partially_disclosedのまま）
+
+### 3.3 構造パターン: アメックス「ショッピング・プロテクション」と「リターン・プロテクション」の分離とビジネスカード適用範囲差
+
+**構造パターン名**: Two Distinct Insurance Products with Overlapping Purchase Trigger but Different Claim Logic
+
+アメリカン・エキスプレスは、破損・盗難を補償する「ショッピング・プロテクション」（年間最高500万円、免責1万円、購入日から90日間）と、購入店が返品を受け付けない場合に返金する「リターン・プロテクション」（1商品最高3万円、会員につき年間最高15万円、購入日から90日以内に返却可能）という、トリガーが異なる2つの独立した保険商品を提供している。ショッピング・プロテクションはビジネス・カードで購入した仕入れ品も対象と明記される一方、リターン・プロテクションの対象カード一覧は個人カード中心である。[^21][^22]
+
+- 対象単位: 2つの独立したInsurance Product（トリガーが異なる）
+- 観測された事実: リターン・プロテクションは2023年7月12日より補償対象が一部変更（5,000円未満の購入金額は対象外に）[^22]
+- 除外条件（ショッピング・プロテクション）: 置き忘れ・紛失に起因する損害、運送中の破損、現金・有価証券・パスポート・印紙・切手・乗車券等のチケット類は対象外[^21]
+- 除外条件（リターン・プロテクション）: 未使用かつ良好な状態でないもの、指定宅配業者で返品できないサイズ（3辺合計200cm超・重量30kg超）、他の保険や購入店の返品規定で適用される場合は対象外[^22]
+- Evidence Tier: Tier2（発行会社公式ページ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.americanexpress.com/ja-jp/benefits/insurance/nac-insurance/shopping-protection/、https://www.americanexpress.com/ja-jp/benefits/insurance/nac-insurance/return-protection/[^21][^22]
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: 「ショッピング保険」という単一カテゴリで括ると、トリガー（破損・盗難 vs 返品拒否）が全く異なる2商品を1エンティティに誤って統合してしまう
+
+***
+
+## 4. ゴルファー保険
+
+### 4.1 構造パターン: 「セルフプレー除外」と「証明書類要件」がCoverageではなくClaim Requirementに位置する構造
+
+**構造パターン名**: Exclusion Encoded as Claim Evidentiary Burden, Not as Coverage Scope
+
+JCBプレミアムのゴルファー保険では、ホールインワン・アルバトロス費用（国内のみ、上限あり）について、原則としてキャディを帯同しないセルフプレー中の達成は保険金支払い対象外だが、「同伴競技者以外の第三者の目撃証明がある場合」または「映像等により達成を客観的に確認できる場合」は例外的に支払い対象となる、という構造を持つ。これは除外規定（Exclusion）というより、Claim Requirement（証拠要件）の厳格化によって事実上の適用制限を行う構造であり、単純な「対象／対象外」の二値では表現できない。[^23][^24]
+
+- 対象単位: Coverage（ホールインワン・アルバトロス費用）× Claim Requirement（証明書類・証明方法）
+- 観測された事実: 東京海上日動の一般契約では「同伴競技者」および「同伴競技者以外の第三者」の両方の目撃が必要（公式競技の場合はいずれか一方）、または映像による客観的確認[^24]
+- 対象者・対象取引: 日本国内のゴルフ場において、基準打数（パー）35以上の9ホールを正規にラウンドする「ゴルフ競技」中の達成が対象。9ホール未満・海外ゴルフ場・同伴競技者なし（公式競技を除く）・ゴルフ場経営者・従業員による達成は対象外[^25]
+- 補償項目別の限度額差（JCB「ザ・クラス」）: ゴルフ用品損害（国内・海外）5万円限度、ホールインワン・アルバトロス費用（国内のみ）10万円限度[^26]
+- 重複契約時の調整: 他にホールインワン・アルバトロス費用を補償する保険契約がある場合、支払われる保険金の合計額は、それらの契約のうち最も高い契約金額が限度となる（1.3の海外旅行傷害保険と同種の非加算的合算ルール）[^27]
+- 関係する事業者と役割: Underwriter（損保ジャパン、東京海上日動等、カードごとに異なる可能性、要個別確認）
+- Evidence Tier: Tier2（発行会社公式ページ、保険会社公式PDF） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.jcb.co.jp/premium/service/detail/golf-insurance.html、https://www.sompo-japan.co.jp/-/media/SJNK/files/covenanter/archives/nk/kinsurance/golfer.pdf[^26][^27]
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: 「対象外」を`Exclusion`テーブルに単純にフラグ化すると、「証拠要件を満たせば対象になる条件付き除外」という中間状態を表現できない。`ClaimRequirement`に証拠要件の厳格度パラメータを持たせる必要がある
+- 追加確認が必要な点: 複数カード会社間でUnderwriterが異なる場合、合算ルールの適用が保険会社単位か契約単位かの詳細（Unknown）
+
+***
+
+## 5. 個人賠償責任・キャンセル保険
+
+### 5.1 構造パターン: アメックス「キャンセル・プロテクション」の事由別・対象者別の上限差とUnderwriter変更の非連動性
+
+**構造パターン名**: Event-Type-Specific Sub-Limits Within a Single Annual Cap, with Underwriter Change Independent of Product Continuity
+
+アメックスのキャンセル・プロテクションは、年間総額の上限（多くのカードで10万円、プラチナ等は50万円）の内側に、キャンセル事由ごとの個別上限が存在する重層構造を持つ。本人・配偶者・1親等以内の親族の死亡・入院によるキャンセルは年間最高10万円だが、本人・配偶者・子供の通院によるキャンセルは年間最高3万円という別建ての上限であり、これらは同一の年間総枠を共有しつつ、通院のみさらに低い個別上限が課される。加えて、社命出張によるキャンセルは海外旅行契約に基づくサービスに限定され、支払い回数も年1回が上限という、事由によって対象取引の範囲自体が異なる。[^28][^29][^30]
+
+- 対象単位: Insurance Product（キャンセル・プロテクション） × Coverage（キャンセル事由別サブリミット）
+- 観測された事実: 2025年12月15日より本プロテクションの引受保険会社が東京海上日動火災保険株式会社からChubb損害保険株式会社に変更された。商品名・カード対象・補償内容の連続性は保たれつつ、Underwriterのみが変更されている（03のbitFlyer事例と同種のActor Role分離だが、こちらは時系列変化を伴う点が異なる）[^30]
+- 対象者・対象取引: 国内／海外旅行契約に基づくパッケージツアー、宿泊施設、公共交通機関、宴会・パーティー施設、趣味の指導・施設、演劇・音楽・美術等の興行、が対象取引として列挙される[^30]
+- 除外条件: カード会員の職務遂行に関係するもの、カード会員の故意または重大な過失、受取人の故意または重大な過失は対象外。マイルを利用したフライトのキャンセル料金は対象外[^28][^30]
+- 自己負担額: 「1,000円」または「キャンセル費用の10%相当額」のいずれか高い方[^29][^30]
+- 適用条件の非対象カード: 三菱UFJカード・ゴールド／プラチナ・アメリカン・エキスプレス・カード、JALアメックスCLUB-Aゴールド／プラチナ、セゾンゴールド・アソシエ・アメックス等の提携カードには本プロテクションが付帯しない（提携カードには一律で付帯しない傾向）[^28]
+- 一部カードでの終了: アメリカン・エキスプレス・ビジネス・ゴールド／ビジネス・プラチナ・カードは2025年9月30日をもって本プロテクションのサービスが終了。同日以降発生のキャンセル事由は対象外、申告期限は2026年3月31日[^31]
+- Evidence Tier: Tier2（発行会社公式ページ・お知らせ） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.americanexpress.com/ja-jp/benefits/insurance/nac-insurance/cancel-protection/、https://www.americanexpress.com/jp/index/offers/Topics/2025/amex-news-030.html[^31][^30]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 03で確認された「提携先ごとに規約が上書きされる」構造（弁護士カード特約）と類似し、プロパーカードと提携カードで同一ブランド内でも保険付帯の有無が分かれることを補強する事例
+- 既存モデルで表現しにくい点: 単一`InsuranceProduct`に対して(1)年間総枠、(2)事由別サブリミット、(3)対象取引範囲の事由別限定、という3層構造が存在。さらにUnderwriterが商品の存続中に変更される（商品としての連続性は保たれるが引受主体は非連続）という事例は、`CardPartnership`ではなく`InsuranceUnderwritingContract`という別のライフサイクルオブジェクトが必要であることを示唆する
+- 追加確認が必要な点: Chubb損害保険への変更に伴う補償内容・上限額の実質的変更有無（本ラウンドでは「変更」との明記のみ確認、詳細比較はUnknown）
+
+***
+
+## 6. レンタカー・自動車関連補償
+
+### 6.1 構造パターン: 「レンタカー料金自体は旅行傷害保険の利用条件対象外」だが「レンタカー中の事故は補償対象」という非対応構造
+
+**構造パターン名**: Payment-Trigger Exclusion Decoupled from Accident-Coverage Inclusion
+
+ダイナースクラブおよびTRUST CLUBカードの海外旅行傷害保険FAQでは、海外旅行中にレンタカーで事故が発生した場合、本人の傷害治療費用・傷害死亡・後遺障害のみ補償対象となる（賠償責任等の他の担保は対象外の可能性を含意）と説明されている。一方、同社の利用条件対象取引リストでは「レンタカー料金」自体は利用条件を満たす対象取引には含まれない（対象とならない主な利用内容に明記）。つまり、レンタカー料金の決済は保険の適用条件（Trigger）を満たさないが、他の手段（例: 航空券決済）で利用条件を満たしていれば、レンタカー中の事故そのものは（限定的な担保項目に限り）補償対象になりうる、という「支払いのトリガーとしての除外」と「事故発生時の補償対象としての包含」が分離した構造である。[^32][^10]
+
+- 対象単位: Payment Scheme（Trigger適格性） × Coverage（事故発生時の担保対象）
+- 観測された事実: レンタカー中の事故は傷害治療費用・傷害死亡・後遺障害に限定され、車両損害や第三者への賠償責任は本旅行傷害保険の対象に含まれない可能性が高い（本ラウンドでは車両損害・賠償責任の明示的な対象外規定までは一次確認できておらず、Unknownとして維持）[^32]
+- Evidence Tier: Tier2（発行会社公式FAQ） / Disclosure status: partially_disclosed（車両損害・対物賠償の扱いは未確認） / Confidence: medium
+- URL: 元記事はHelpfeel（発行会社FAQ集約プラットフォーム、Tier2相当のFAQ内容を集約）[^32]
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: 「対象取引としてのレンタカー」と「補償対象事故発生場所としてのレンタカー利用中」は別軸であり、これを単一の`RentalCarCoverage`エンティティで統合すると、Payment TriggerとAccident Coverageの区別が失われる
+- 追加確認が必要な点: 車両損害（CDW/LDW相当）や対物賠償責任がカード付帯保険で補償されるか、あるいは国内主要イシュアでレンタカー専用のCDW型補償（米系カードに見られるような車両損害免除制度）が存在するかは、本ラウンドで日本国内カードの一次資料を確認できず、**Unknown**（米国Diners Club US等の海外市場ではCDW型補償の存在を確認したが、これは米国市場の別法人・別商品であり、日本国内カードへの一般化はできない）[^33]
+
+***
+
+## 7. 不正利用補償・オンライン不正利用補償
+
+### 7.1 構造パターン: 「60日ルール」の基準点が「発生日」ではなく「申告日」である逆算構造、および複数の除外の並立
+
+**構造パターン名**: Retroactive Window Anchored to Report Date, Not Incident Date
+
+三井住友カードの不正利用補償は、会員規約第14条（会員保障制度）に基づき、不正利用の申告日から遡って60日前までの利用について損害を補償する。これは「事故発生日から60日以内に申告」という直感的な理解とは逆で、「申告日を基準に、そこから60日遡った時点以降の利用のみが補償対象」という構造であり、申告が遅れるほど補償対象期間が事後的に短くなる（61日以前の利用は補償対象外になる）という設計である。[^34][^35][^36]
+
+- 対象単位: Insurance/Guarantee Product（会員保障制度） × Claim Requirement（申告タイミングと補償範囲の逆算関係）
+- 観測された事実: 補償対象になるのはクレジットカードまたはカード番号が第三者によって不正利用されたと会社が認めた場合。暗証番号入力を伴う取引（本人の故意・過失により第三者に暗証番号が知られた場合）は補償対象外[^36][^37]
+- 対象者・対象取引: 会員本人の家族・同居人・代理人による利用は「不正利用」として認められず、補償対象外となる（家族カード会員自身の不正利用被害は別途扱いだが、本会員の家族・同居人が起こした行為は除外事由となる点に注意）[^37][^36]
+- 除外条件（列挙）: (1)会員の故意または重大な過失、(2)損害発生が保障期間外、(3)会員の家族・同居人・代理人による不正利用、(4)会員が住所等変更届出義務を怠った場合、(5)紛失・盗難の届出が虚偽だった場合、(6)暗証番号入力を伴う取引（会員に過失なしと認められた場合を除く）、(7)複数回類似被害で会員の過失に起因する場合、(8)届出受領日の61日以前に生じた損害、(9)戦争・地震等の著しい秩序混乱中の紛失・盗難[^37]
+- 免責事由の申告義務: 損害発生を知った日から30日以内に、てん補に必要な書類を提出し、被害状況等の調査に協力する義務がある（これは補償対象化の前提条件であり、60日ルールとは別の期限）[^37]
+- 補償期間（保障期間）: 入会日から1年間、毎年自動的に継続[^37]
+- 決済モード別除外: Olive等の複合口座サービスでは、ポイント払いモードでの不正利用は補償対象外と明記される、決済モード単位の対象/対象外の分離事例も確認[^38]
+- Evidence Tier: Tier2（発行会社公式ページ、会員規約） / Disclosure status: disclosed / Confidence: high
+- URL: https://www.smbc-card.com/mem/service/sec/cover-damage.jsp、https://happynap.net/credit-card-fraud-coverage-conditions-and-tips/（会員規約原文引用部分に基づく、Tier4だが規約原文を引用のためconfidence medium-high）[^34][^37]
+- 確認日: 2026-08-10
+- 既存文書との整合性: 02・03には不正利用補償の条件構造は未収録。JCBカードも同種の「61日以前の利用は対象外」ルールを持つことが別途確認された（複数イシュアでの独立確認により、本構造はrepeated market patternと判定できる）[^39]
+- 既存モデルで表現しにくい点: `Coverage Period`が「事故発生日を起点とする一定期間」という直感的モデルではなく、「申告日を起点として過去に遡る期間」という逆算構造を持つ。単純な`coverage_start_date + duration`ではなく`report_date - lookback_window`という計算方向が逆のロジックが必要
+- 類似ケース確認: JCBカードでも「盗難・紛失の連絡をした日から61日以前の利用」を対象外とする同種の構造が独立に確認された。三井住友・JCBという2つの独立イシュアで同一構造が確認できたため、**repeated market pattern**と判定する（confidence: high）[^39]
+- 追加確認が必要な点: オンライン不正利用（EC加盟店での不正決済等）に特化した別建ての補償制度が存在するか、あるいは上記の会員保障制度と同一枠で扱われるかは本ラウンドで明確に分離確認できず、Unknownとして維持する
+
+***
+
+## 8. スマートフォン保険・その他特殊保険
+
+### 8.1 構造パターン: 日本国内カードにおけるスマートフォン保険の実在性— Unknown（安易な断定回避）
+
+**構造パターン名**: Category Presence Unconfirmed — Explicit Unknown Marking
+
+本ラウンドの探索では、日本国内クレジットカードに「スマートフォン保険」を専用の担保項目として自動付帯・利用付帯するプロパーな一次資料（Tier1〜Tier3）を確認できなかった。JCBのショッピングガード保険FAQでは「スマートフォン等、一部補償の対象とならない品物があります」と明記されており、少なくとも一部カードのショッピング保険ではスマートフォンが明示的に除外対象になっている可能性がある。米系カード（Citi US）にはCell Phone Protection Benefitという専用保険が確認できたが、これは米国市場の別事業体・別商品であり、日本国内カードへの一般化はできない。[^18][^40]
+
+- 現在の状態: **Unknown**（存在しないと断定はしない。国内で「スマートフォン保険」を専用の担保項目名として掲げる一次資料は本ラウンドで発見できなかったが、包括的な網羅調査には至っていない）
+- Disclosure status: unknown
+- Confidence: low
+- 確認日: 2026-08-10
+- 既存モデルで表現しにくい点: 「スマートフォン保険」という担保カテゴリ自体が日本市場に存在するかどうかが不確定である以上、`InsuranceCategory`の列挙型に固定的に含めることは時期尚早。存在確認できた場合のみ追加する運用が望ましい
+- 追加確認が必要な点: スマートフォン購入時のショッピング保険適用可否のカード別詳細一覧（本ラウンドでは網羅調査未達）
+
+### 8.2 構造パターン: 弁護士費用・サイバー・法人向け補償 — Unknown（未発見）
+
+本ラウンドでは、日本国内クレジットカード付帯の「弁護士費用保険」「サイバー保険」単体商品としての一次資料を発見できなかった。03で確認された弁護士専用カード（全弁協系）は、弁護士という職業団体への所属を要件とする「専門職団体提携カード」であり、弁護士費用そのものを補償する保険特約ではない点に注意が必要である。両者は別の概念であり混同すべきでない。
+
+- 現在の状態: Unknown
+- Disclosure status: unknown / Confidence: low
+- 既存モデルで表現しにくい点: 「弁護士向けカード」（Affinity/Membership要件としての専門職団体提携）と「弁護士費用保険」（Coverage種別としての法的費用補償）は完全に異なる軸であり、名称の類似性から混同するリスクがある
+
+***
+
+## 9. 横断的ドメイン設計上の示唆
+
+### 9.1 Insurance Product構造の分解モデル
+
+本調査で確認された全事例を通じて、単一の「付帯保険」を以下の独立した軸に分解する必要性が確認された。
+
+| 軸 | 説明 | 反例で明らかになった要点 |
+|---|---|---|
+| Coverage（担保項目） | 死亡後遺障害、治療費用、賠償責任、携行品等 | 項目ごとに自動付帯／利用付帯が分かれる（1.1）、項目ごと有無自体が異なる（2.2） |
+| Attachment Type（付帯方式） | 自動付帯／利用付帯／一部自動一部利用 | 地理的トリガーで同一商品内でも切り替わる（2.1） |
+| Trigger（発動条件） | 何を決済すれば適用されるか | Payment Schemeが前提条件になる例（3.2）、対象取引と補償対象事故の非対応（6.1） |
+| Limit（上限） | 1事故・1旅行・年間・複数契約合算 | 合算は加算でなく最大値キャップ（1.3、4.1） |
+| Deductible（自己負担額） | 免責金額 | 国内・海外で自己負担額が異なる（3.1） |
+| Claim Requirement（請求要件） | 証明書類・申告期限 | 除外ではなく証拠要件の厳格化として機能（4.1）、逆算型の期間計算（7.1） |
+| Underwriter（引受保険会社） | Issuerとは別法人 | 商品の連続性を保ちつつ引受会社のみ変更される（5.1） |
+| Coverage Period（補償期間集計単位） | 会員資格期間 vs 固定会計年度 | JCBショッピング保険は4月1日始まりの固定年度（3.1） |
+
+### 9.2 既存3文書に対する具体的な補足提案
+
+02・03のドメインモデル反証調査は主に「商品・提携・法的分類」レベルの構造差を扱っていたが、本調査は「保険」領域において以下の追加観点が必要であることを示した。
+
+- `InsuranceProduct`は`CardProduct`の単純な従属エンティティではなく、独自のライフサイクル（改定日、Underwriter変更日）を持つ。03のEC-2（セゾンゲーミングカードの段階的終了）と同型の「機能単位の非同期な変化」が保険領域にも存在する（1.4のダイナースクラブ改定）。
+- `Coverage`は`InsuranceProduct`の下位に単純に列挙するのではなく、それぞれが独立した`attachment_type`、`limit`、`deductible`、`claim_requirement`を持つ必要がある（1.1、2.2）。
+- 複数カード保有時の合算は加算ではなく「最大値キャップ」であることが複数の独立事例（三井住友系、JCB系、ゴルファー保険）で確認され、**repeated market pattern**と判定できる。これは既存モデルに`aggregation_rule: max_of_contracts`のような明示的な列挙が必要であることを示す。
+- 不正利用補償の「申告日を基準とした遡及期間」は三井住友・JCBの独立2社で確認された**repeated market pattern**であり、`CoveragePeriod`の計算方向（順算／逆算）を区別するフィールドが必要である。
+
+### 9.3 未解明のまま残る領域（Unknown一覧）
+
+以下は本ラウンドでは一次情報による確認に至らず、存在しないと断定せずUnknownとして維持する。
+
+- 日本国内カードにおけるスマートフォン保険の専用商品としての実在性
+- 弁護士費用保険・サイバー保険・法人向け補償の専用商品としての実在性
+- 日本国内カードにおけるレンタカー車両損害（CDW/LDW型）補償の実在性
+- オンライン不正利用補償が通常の会員保障制度と別建てで存在するか
+- ゴルファー保険・キャンセル保険における引受保険会社のカード会社別対応表（本ラウンドでは一部のみ確認）
+- ダイナースクラブの外貨盗難保険廃止に伴う代替措置の有無
+
+---
+
+## References
+
+1. [03-domain-counterexample-audit-3.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/dad95a3b-7592-4fea-8263-af98e8c6e4b5/03-domain-counterexample-audit-3.md?AWSAccessKeyId=ASIA2F3EMEYEXP4GDNUN&Signature=ugNwDevWBaPubDIJTXzSFUmJQ6M%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCZ1WnUSjixuVt%2BLtLbbbBE5jUEWApN3kyl541%2FD%2BWSNAIhAMCAqfphqar32MRXFaXgFgwjVKDURSlGEnN5nzRgUGltKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgwM83DfqWT39alpMkMq0AR6dLEzKEW9CXrmM8USQsquhhahKyPwkp8JecaX7Kj94gpOl0NCN7AKcFH5vie%2F794knV3H9mq70jbtiL%2Fz19TT5Cel%2Bn4G5uuL48qvwmShlmTeXkuBg2qAZhEK5bK7OuyTFMkZaGA3Ks6qRW2y29tqpFNTWwywGFOS8%2B5UfVq5cz8Dk9Eva9jmLuZ8b0kWt%2BBHpJZjc8GRGqEcnCLZxA4A6gavz4PQccmyWu6MqpLTm0TiQf5zySLd7%2BGfySIkLi8zq9fMFQM55DIk05g2NSKOwmUGFRydQKRS1%2F9L2LhnC%2FivbgVQxCMlxYcbpzxvQ8g5g2audAXfon2ErlXAPg1ZtXQRjpVdc3KdNS3m4%2F66swPhxzKwgqajr5oZ6lhYnwN%2FrdMklWP6FI%2BfFDpG1OIdlldeN%2F62HXeZ2Sa9OZq%2BTH%2BTNtEw%2FYqM%2FFPKcZnKy1YCCtJvztPwtz%2FxFF75Dp3GXWWbOy%2FblTxRnA0Ko%2BbgtwdzUiIl2DY%2FjDB2dOPqGuqW3421tDULzvygNHpcGd5h4pcIH8UPLuPKCKDKWEozt0qEPWhrrFxy%2B0JY84M%2BXQjaQTxFlSdq7nULOAqhlgrmia%2BD5csIiTdQEqvIA%2FsEXQS9DR1fX6CNSgooaPcZwAXn6bN4Xks6a8zUHxU%2FanwzY1FlBrMUUfdLw1b0HFTMWC760myVwCfKkgV3tARO4a32baLhy3pgrNciVnIU8DXj1SUhm5p7EHA9vq88og%2FdZALGC%2BJL7cVC35IxZUmYpOWcYy72Y4qOFGux1500hhm7MO6159MGOpcBzpSJ8jXZZzuJS8UXFxH%2F4rXRDOA4YRnz36BH%2FeziHGVD22MY1xxq%2BxilwOaR2EKlOFxK9zAJD6XTykAeLcguSeWH1Aw2sInaokJaqo4FdIylzNeF33maI4EQB4wgNy8Tx7jny%2FKkOdEY3DEwrxgdUhh3HsbQdvhFvXDeNZfXQu4Nj%2BQ0UiNvLZOa9b%2FEAwwQFibSd3TAHg%3D%3D&Expires=1786374337) - # ドメインモデル反証調査（調査基準日: 2026-08-07）
+本調査は`02-market-corpus-v2-audited.md`を入力として、既存の「ドメインモデル仮説」および「エッジケース...
+
+2. [01-market-corpus-v1.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/9cd9894d-ccdd-463b-98a1-3fadb4085238/01-market-corpus-v1.md?AWSAccessKeyId=ASIA2F3EMEYEXP4GDNUN&Signature=2%2BRfhZZYyf7SU6OomitIIQXVHHM%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCZ1WnUSjixuVt%2BLtLbbbBE5jUEWApN3kyl541%2FD%2BWSNAIhAMCAqfphqar32MRXFaXgFgwjVKDURSlGEnN5nzRgUGltKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgwM83DfqWT39alpMkMq0AR6dLEzKEW9CXrmM8USQsquhhahKyPwkp8JecaX7Kj94gpOl0NCN7AKcFH5vie%2F794knV3H9mq70jbtiL%2Fz19TT5Cel%2Bn4G5uuL48qvwmShlmTeXkuBg2qAZhEK5bK7OuyTFMkZaGA3Ks6qRW2y29tqpFNTWwywGFOS8%2B5UfVq5cz8Dk9Eva9jmLuZ8b0kWt%2BBHpJZjc8GRGqEcnCLZxA4A6gavz4PQccmyWu6MqpLTm0TiQf5zySLd7%2BGfySIkLi8zq9fMFQM55DIk05g2NSKOwmUGFRydQKRS1%2F9L2LhnC%2FivbgVQxCMlxYcbpzxvQ8g5g2audAXfon2ErlXAPg1ZtXQRjpVdc3KdNS3m4%2F66swPhxzKwgqajr5oZ6lhYnwN%2FrdMklWP6FI%2BfFDpG1OIdlldeN%2F62HXeZ2Sa9OZq%2BTH%2BTNtEw%2FYqM%2FFPKcZnKy1YCCtJvztPwtz%2FxFF75Dp3GXWWbOy%2FblTxRnA0Ko%2BbgtwdzUiIl2DY%2FjDB2dOPqGuqW3421tDULzvygNHpcGd5h4pcIH8UPLuPKCKDKWEozt0qEPWhrrFxy%2B0JY84M%2BXQjaQTxFlSdq7nULOAqhlgrmia%2BD5csIiTdQEqvIA%2FsEXQS9DR1fX6CNSgooaPcZwAXn6bN4Xks6a8zUHxU%2FanwzY1FlBrMUUfdLw1b0HFTMWC760myVwCfKkgV3tARO4a32baLhy3pgrNciVnIU8DXj1SUhm5p7EHA9vq88og%2FdZALGC%2BJL7cVC35IxZUmYpOWcYy72Y4qOFGux1500hhm7MO6159MGOpcBzpSJ8jXZZzuJS8UXFxH%2F4rXRDOA4YRnz36BH%2FeziHGVD22MY1xxq%2BxilwOaR2EKlOFxK9zAJD6XTykAeLcguSeWH1Aw2sInaokJaqo4FdIylzNeF33maI4EQB4wgNy8Tx7jny%2FKkOdEY3DEwrxgdUhh3HsbQdvhFvXDeNZfXQu4Nj%2BQ0UiNvLZOa9b%2FEAwwQFibSd3TAHg%3D%3D&Expires=1786374337) - # 日本クレジットカード・後払い決済市場 市場調査コーパス
+調査基準日: 2026-08-07 / 目的: 後工程でのドメインモデル・要件定義のための一次証拠ベースの市場調査（DBスキーマ・ER図・S...
+
+3. [02-market-corpus-v2-audited-2.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/1048daf2-8549-4737-8b2c-5f136843af83/02-market-corpus-v2-audited-2.md?AWSAccessKeyId=ASIA2F3EMEYEXP4GDNUN&Signature=YkxDTMKubhkEpfX%2FiOF2B3GgadM%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCZ1WnUSjixuVt%2BLtLbbbBE5jUEWApN3kyl541%2FD%2BWSNAIhAMCAqfphqar32MRXFaXgFgwjVKDURSlGEnN5nzRgUGltKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgwM83DfqWT39alpMkMq0AR6dLEzKEW9CXrmM8USQsquhhahKyPwkp8JecaX7Kj94gpOl0NCN7AKcFH5vie%2F794knV3H9mq70jbtiL%2Fz19TT5Cel%2Bn4G5uuL48qvwmShlmTeXkuBg2qAZhEK5bK7OuyTFMkZaGA3Ks6qRW2y29tqpFNTWwywGFOS8%2B5UfVq5cz8Dk9Eva9jmLuZ8b0kWt%2BBHpJZjc8GRGqEcnCLZxA4A6gavz4PQccmyWu6MqpLTm0TiQf5zySLd7%2BGfySIkLi8zq9fMFQM55DIk05g2NSKOwmUGFRydQKRS1%2F9L2LhnC%2FivbgVQxCMlxYcbpzxvQ8g5g2audAXfon2ErlXAPg1ZtXQRjpVdc3KdNS3m4%2F66swPhxzKwgqajr5oZ6lhYnwN%2FrdMklWP6FI%2BfFDpG1OIdlldeN%2F62HXeZ2Sa9OZq%2BTH%2BTNtEw%2FYqM%2FFPKcZnKy1YCCtJvztPwtz%2FxFF75Dp3GXWWbOy%2FblTxRnA0Ko%2BbgtwdzUiIl2DY%2FjDB2dOPqGuqW3421tDULzvygNHpcGd5h4pcIH8UPLuPKCKDKWEozt0qEPWhrrFxy%2B0JY84M%2BXQjaQTxFlSdq7nULOAqhlgrmia%2BD5csIiTdQEqvIA%2FsEXQS9DR1fX6CNSgooaPcZwAXn6bN4Xks6a8zUHxU%2FanwzY1FlBrMUUfdLw1b0HFTMWC760myVwCfKkgV3tARO4a32baLhy3pgrNciVnIU8DXj1SUhm5p7EHA9vq88og%2FdZALGC%2BJL7cVC35IxZUmYpOWcYy72Y4qOFGux1500hhm7MO6159MGOpcBzpSJ8jXZZzuJS8UXFxH%2F4rXRDOA4YRnz36BH%2FeziHGVD22MY1xxq%2BxilwOaR2EKlOFxK9zAJD6XTykAeLcguSeWH1Aw2sInaokJaqo4FdIylzNeF33maI4EQB4wgNy8Tx7jny%2FKkOdEY3DEwrxgdUhh3HsbQdvhFvXDeNZfXQu4Nj%2BQ0UiNvLZOa9b%2FEAwwQFibSd3TAHg%3D%3D&Expires=1786374337) - # 日本クレジットカード・後払い決済市場 最新市場コーパス v2（監査済み、調査基準日: 2026-08-07）
+本ドキュメントは、現在参照すべき最新の市場コーパスである。v1を監査対象として再検証し...
+
+4. [カード付帯の海外・国内旅行傷害保険の適用条件改定に関する ...](https://www.smbc-card.com/mem/cardinfo/cardinfo4010499.jsp) - カード付帯の海外・国内旅行傷害保険の適用条件改定に関するお知らせのご案内。クレジットカード情報の照会・各種お申し込みの受付が24時間いつでもOK。あなたのクレジットカードライフをサポート！
+
+5. [【重要】エポスカード会員さま向け海外旅行傷害保険のサービス ...](https://www.eposcard.co.jp/news/hoken.html) - 【重要】エポスカード会員さま向け海外旅行傷害保険のサービス改定のお知らせ。クレジットカードなら入会金・年会費永年無料のエポスカード。最短即日発行！
+
+6. [｢エポスカード｣に付帯する｢海外旅行傷害保険｣の補償金額が ...](https://diamond.jp/zai/articles/-/1018800) - 「エポスカード」に付帯する「海外旅行傷害保険」が自動付帯から利用付帯に変更！ ただし「傷害死亡・後遺障害」の補償金額が最高500万円⇒最高3000万円、「賠償責任」が最高2000万円⇒最高3000万円...
+
+7. [エポスカード、海外旅行傷害保険を自動付帯から利用 ...](https://www.poitan.jp/archives/112735) - エポスカードは、2023年10月1日（日）より、海外旅行傷害保険の適用条件を変更する。 現在はカードを保有しているだけで補償を受けられる「自動付帯」だが、2023年10月1日（日）以降は旅行代金をエポ
+
+8. [エポスカード海外旅行保険は自動付帯？条件・補償内容を確認 | Mile Invest Lab ｜マイルインベストラボ](https://www.mileinvestlab.com/epos-card-travel-insurance/) - エポスカードの保険内容を確認。海外旅行保険の自動付帯・利用付帯の条件、病気やケガ、携行品損害などの補償内容に加え、国内旅行保険の有無やその他付帯サービス、保険の使い方まで解説します。
+
+9. [エポスカードに自動付帯される海外旅行保険の保障内容と条件](https://epiinfo.xsrv.jp/creditcard/eposcard-insurance/) - エポスカードの海外旅行保険についてこんな疑問を持っていませんか？ エポスカードの海外旅行保険って自動付帯？ 補償内容は？ 家族も対象になる？ エポスカードの海外旅行保険は、2023年10月に「最高50
+
+10. [[PDF] 保険サービスの ご案内 - 三井住友カード](https://www.smbc-card.com/content/dam/smcc/jp/ja/cmnfs/pdf/om_ancillary_insurance.pdf)
+
+11. [海外旅行傷害保険｜TRUST CLUB VISAカード（旧 三井住友 ...](https://www3.vpass.ne.jp/mem/service/li/hoken_kaigairyokou.jsp?cc=015)
+
+12. [エポスカード海外旅行保険の補償内容を正直解説【2026年版・上限・対...](https://tofumaru.com/epos-card-travel-insurance-guide/) - エポスカードの海外旅行保険を正直に解説。補償の上限額・対象外になるケース・利用付帯の条件を整理し、保険だけで足りる人と追加保険が必要な人の違いがわかります。2026年版。
+
+13. [海外旅行中の病気や事故に便利なクレジットカード付帯の保険 ...](https://www.smbc-card.com/nyukai/magazine/tabisapo/prepare/insurance.jsp) - クレジットカード付帯の海外旅行保険は、加入の手間が少なく別途費用もかからない点などがメリットです。補償内容や適用条件、選び方の注意点について解説します。| 海外旅行準備・持ち物ガイド【タビサポ】海外ク...
+
+14. [クレジットカード付帯の海外旅行傷害保険](https://www.rakuten-card.co.jp/overseas/insurance/) - 海外旅行中の万が一のトラブルの損害を楽天カード会員へ補償します。保険の事前申し込みは不要で、24時間365日、日本語でサポート！
+
+15. [エポスカードの海外旅行保険｜利用付帯の条件と補償内容を ...](https://adviser-navi.co.jp/card/column/65444/) - エポスカードの海外旅行保険は、2023年10月から利用付帯に変わりました。保険が使える旅行代金の条件、一般・ゴールド・プラチナの補償金額、家族が対象になるケース、現地での連絡先と請求手順まで解説します...
+
+16. [【改悪？】エポスカード付帯の海外旅行保険｜変更前と比較してわかったこと](https://www.mietta.online/epos-hoken/33511/) - 「エポスカードの海外旅行保険」が2023年10月から内容が一部改定されました。利用付帯の適用条件は？補償内容は？海外旅行における強みがさらに増したエポスカード。10月からの変更点を詳しく解説します。
+
+17. [海外旅行保険はクレジットカードに自動付帯している？ 利用 ...](https://www.rakuten-card.co.jp/minna-money/credit-card/select/article_2311_80329/) - クレジットカードに付帯する海外旅行保険には、自動付帯や利用付帯などの種類があります。自動付帯と利用付帯の違い、海外旅行保険の主な補償内容なども解説しているので、海外に旅行する予定のある方は、ぜひ参考に...
+
+18. [クレジットカード付帯の旅行傷害保険の手続きの流れは？補償 ...](https://www.rakuten-card.co.jp/minna-money/credit-card/use/article_2310_80388/) - クレジットカードには旅行傷害保険が付帯していることがありますが、適用条件や補償内容はクレジットカードによって異なります。旅行傷害保険のほかにも、クレジットカードには便利な保険が付帯していることがありま...
+
+19. [ショッピング・プロテクション®｜クレジットカードはアメリカン・ ...](https://www.americanexpress.com/ja-jp/benefits/insurance/nac-insurance/shopping-protection/) - 国内／海外問わずアメリカン・エキスプレスのカードでお求めのほとんどの商品について、購入後90日間の破損／盗難などの損害を補償するサービスです。
+
+20. [リターン・プロテクション｜クレジットカードはアメリカン・ ...](https://www.americanexpress.com/ja-jp/benefits/insurance/nac-insurance/return-protection/) - リターン・プロテクション ... アメリカン・エキスプレスのカードで買った商品の返品を購入店が受け付けないときに、購入金額を補償してカードに返金する安心のサービスです ...
+
+21. [Biz ONEゴールド会員用](https://www.jcb.co.jp/insurance/futai/cardhoken-00107-226586.pdf)
+
+22. [[PDF] ANAアメリカン・エキスプレス・プレミアム・カード - 規定集](https://www.americanexpress.com/content/dam/amex/jp/assets/pdfs/benefits/ana_premier_regulations.pdf)
+
+23. [[PDF] J C B カード 付 帯 保 険の ご 案 内](https://www.jcb.co.jp/premium/gold/pdf/futai_2302_01.pdf)
+
+24. [ショッピングガード保険（国内／海外）](https://www.jcb.co.jp/premium/service/detail/shopping-insurance.html) - 対象カードで購入された品物に破損や盗難などの損害が発生した場合、国内外を問わず年間最大500万円まで補償します。
+
+25. [[PDF] JCB - Platinum](https://www.jcb.co.jp/premium/gold/pdf/futai_2302_04.pdf)
+
+26. [ショッピングガード保険はJCBカードで購入した商品を紛失して ...](https://j-faq.jcb.co.jp/faq/show/6929?site_domain=default) - 置き忘れまたは紛失に起因する損害は、お支払いの対象とはなりません。 詳しくは、下のページの「付帯保険詳細」からお持ちのカード（もしくは入会検討中のカード）の「ショッピングガード保険」ページをご確認くだ
+
+27. [JCBカード会員用](https://insurance.jcb.co.jp/cm/service/card/pdf/30_208727.pdf)
+
+28. [登録型リボ払い付帯 ショッピングガード保険（国内） | JCBのおすすめ保険](https://insurance.jcb.co.jp/cm/service/card/sgard_jp.html) - 登録型リボ払い（スマリボまたは「支払い名人」定額コース）に登録すると、ショッピングガード保険（国内）が自動付帯されます！詳しくは保険適用条件等ご確認ください。
+
+29. [ショッピングガード保険 | JCB EIT エイトバリュー](http://jcb-eit-8value.com/merit/shopping-guard.html) - JCB EITには年間最高100万円のショッピングガード保険が付帯します。購入日より90日間が補償期間です。
+
+30. [よくあるご質問](https://j-faq.jcb.co.jp/faq/show/6929?category_id=279&site_domain=default) - 置き忘れまたは紛失に起因する損害は、お支払いの対象とはなりません。
+
+31. [付帯保険 | よくあるご質問（個人・法人のお客様） - JCB FAQ](https://j-faq.jcb.co.jp/category/show/130?site_domain=default&sort=sort_access&sort_order=asc) - 付帯保険・任意保険,ポイント・サービス・キャンペーン
+
+32. [よくあるご質問](https://j-faq.jcb.co.jp/category/show/281?page=1&site_domain=default&sort=sort_new&sort_order=desc) - 付帯保険_ショッピングガード保険,保険（付帯保険・任意保険）
+
+33. [カード付帯保険「ショッピングガード保険」とは？ | JCBのおすすめ保険](https://insurance.jcb.co.jp/cm/service/card/sgard.html) - JCBカードで購入された品物を、JCBカードでの購入日から90日間、年間最高100万円まで補償いたします（1事故につき自己負担額1万円）。お持ちのカードにより補償内容が異なりますので、詳しくはカード一...
+
+34. [[PDF] Your Guide to Protection Benefits](https://www.cardbenefits.citi.com/-/media/CPP/Files/LegalDocs/SOAPI/PID90_PRESTIGE_CRE130_GTPB_0124_TAGGED.PDF)
+
+35. [クレジットカード付帯のゴルフ保険とは？補償内容と単体保険との違いを解説【2026年版】 | ゴルプラ比較](https://golf-plat.com/blog/golf-insurance-credit-card-guide-2026) - クレジットカードに付帯するゴルフ保険（ゴルファー保険）の補償内容・使い方・注意点を解説。ホールインワン費用や賠償責任はカバーされるのか、単体のゴルフ保険とどう使い分けるべきかを30代ゴルファー向けにま...
+
+36. [untitled](https://www.gia-agency.jp/images/stories/pdf/%E3%82%B4%E3%83%AB%E3%83%95%E3%82%A1%E3%83%BC.pdf)
+
+37. [[PDF] ゴルファー保険 補償の説明](https://www.softbank.jp/mobile/set/data/service/insurance/pdf/golfer_compensation.pdf)
+
+38. [B型・F型 C型・D型 A型・E型 - 日本スノーボード協会](https://www.jsba.or.jp/_userdata/hoken/member.pdf) - スノーボードスクール総合補償制度」 被保険者が、日本国内または国外において、急激かつ偶然な外来の事故 ・ 携帯電話・スマートフォン等の携帯式通信機器、ノート型 ・ ...
+
+39. [[PDF] ゴルファー保険](https://www.sompo-japan.co.jp/-/media/SJNK/files/covenanter/archives/nk/kinsurance/golfer.pdf?la=ja-JP)
+
+40. [ソフトバンクかんたん保険 | スマートフォン・携帯電話](https://www.softbank.jp/mobile/service/insurance/) - ソフトバンクかんたん保険 サービス終了のお知らせ ・ 月額型保険の補償は満期満了日まで継続し ・ をもって補償終了となります。

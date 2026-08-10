@@ -1,0 +1,424 @@
+# 日本クレジットカード市場におけるライフサイクル／時間軸反例調査レポート v1
+
+## 1. 調査目的と前提
+
+本レポートは、日本国内クレジットカード／隣接後払いサービスの「商品・機能・規約・キャンペーン」の時間軸構造を再調査し、「商品に有効開始日と終了日を1つずつ持たせれば表現できる」という仮説を反証するための一次情報ベースの事例収集を目的とする。対象はProduct Lifecycle、Feature Lifecycle、Benefit Validity、Rule Version、Campaign Period、Migration Eventを混同せずに分離が必要となる反例であり、人気ランキングではなく構造の異なる事例・例外・反例を優先的に抽出する。[^1][^2][^3][^4]
+
+本調査では、既存の市場コーパス v1/v2およびドメイン反証調査レポートを前提にしつつも、一次情報（Tier1〜Tier3）を優先し、Tier4情報は発見用途に限定している。v1記述と矛盾する場合は、監査済みのv2コーパスを正本として扱い、本レポートはv2に対する追加のパターン発見・構造分析に位置付けられる。[^2][^5][^1]
+
+## 2. 代表的な時間軸反例パターン一覧
+
+### 2.1 代表パターンの概要
+
+以下のような構造パターンが、「商品に開始日・終了日を1セット持たせるだけでは表現できない」ことを示す代表的な反例として観測された。[^3][^6][^4]
+
+| # | 調査対象領域 | 構造パターン名 | 代表商品・サービス | 概要 |
+|---|---|---|---|---|
+| P1 | ゲーム提携カード | 段階的サービス終了＋機能限定期間＋自動解約 | セゾンゲーミングカードDigital | 新規募集停止→特典終了→ポイント付与終了→クレジット機能のみ→自動解約と、最低5段階のライフサイクル遷移が存在[^3][^7] |
+| P2 | ゲーム提携カード | 旧商品サービス終了と後継商品「新規契約」扱い＋ポイント非移行 | セゾンゲーミングカード→Digital | 名称上の「後継商品」だが契約は新規で、旧カードのポイント資産（ゲーミングコイン）が自動移行されない[^8][^3] |
+| P3 | 暗号資産連携クレジットカード | Payment Instrument発行主体・ブランド運営主体・暗号資産変換主体の三者分離＋料金体系改定＋自動切替え | bitFlyer クレカ（スタンダード／プラチナ） | アプラス発行・Mastercardブランド・bitFlyerがBTC付与先アカウントを運営し、後日タッチ決済機能追加と年会費改定が既存会員に対して自動切替えで適用[^6][^9][^10] |
+| P4 | デポジット型カード | 保証金＝利用限度額という資金構造を持つ商品ライフサイクル＋限度額別年会費体系 | ライフカード デポジット型 | 保証金（デポジット）と利用限度額が同一で、保証金納付方法・返還タイミングが商品契約の時間軸に結び付く[^4][^11] |
+| P5 | ホテル提携カード | 年会費改定＋無料宿泊特典条件改定＋エリートステータス付与条件改定の複合ルール改定 | Marriott Bonvoy アメックス プレミアム | 2025年8月21日改定で年会費・無料宿泊特典条件・プラチナ資格条件が同時に変更され、既存会員向けの移行期間・経過措置が別途設定[^12][^13][^14] |
+| P6 | ホテル提携カード | 年間決済額に応じた最上位ステータス付与＋継続無料宿泊特典 | ヒルトン・オナーズ アメックス プレミアム | 1年間200万円決済でダイヤモンドステータス、300万円決済＋継続でウィークエンド無料宿泊特典2泊など、ステータスと特典の別々のライフサイクル[^15][^16] |
+| P7 | 法人パーチェシングカード | 非発行型B2B購買カードのライフサイクルと与信・決済方式の制約 | 三菱UFJカード パーチェシング | カードレスの企業間取引専用決済サービスで、会社決済方式・一括払いのみ・申込資格や与信枠が法人単位で設定[^17] |
+| P8 | 後払いチャージサービス | プリペイド残高への後払いチャージ（Funding Method）のライフサイクル | Kyash「イマすぐ入金」 | 前月末までのあと払い精算義務・未払い時の遅延損害金・サービス制限など、カード本体とは別の後払いチャージ契約の時間軸[^18][^19] |
+
+
+## 3. 事例詳細 — 商品・機能・規約・キャンペーンの時間軸反例
+
+### 3.1 セゾンゲーミングカード／Digital — 段階的サービス終了と後継商品の非自動移行
+
+#### 3.1.1 観測された事実
+
+- 初代「セゾンゲーミングカード」は、2022年8月21日のリニューアル発表に伴い、2023年3月27日をもってサービス終了した。[^8]
+- セゾンゲーミングカードDigitalはゲーマー向けクレジットカードとして2022年9月頃に募集開始され、2024年9月10日に新規募集終了、2025年3月31日にサービス終了となるスケジュールが公式サイトお知らせおよびニュース記事により確認できる。[^7][^20][^3]
+- Digitalの終了プロセスは、(1)新規入会停止（2024年9月10日）、(2)ゲームギフトコード購入終了（2024年9月30日）、(3)ゲーミングコイン付与終了（2025年1月31日付与分）、(4)2025年2月1日〜3月31日は「カード利用（クレジット機能）のみ」利用可能、(5)2025年3月31日時点でカード自動解約、という段階的なライフサイクルを持つ。[^20][^3][^7]
+- 初代カードのサービス終了告知では、カード取扱終了日の2023年3月27日までゲーミングコイン交換可能、その後残高は登録口座へ換金される旨が明記され、ポイントの他商品への移行ではなく「換金」による処理である。[^8]
+
+#### 3.1.2 時間軸と適用条件の構造
+
+- 調査対象領域: ゲーム／エンタメ提携クレジットカード
+- 構造パターン名: 段階的終了＋機能限定＋自動解約（Feature LifecycleとProduct Lifecycleの分離）
+- 商品名: セゾンゲーミングカード、セゾンゲーミングカードDigital
+- 対象単位: Product（カード商品）、Feature（ゲームギフトコード購入機能、ゲーミングコイン付与）、Reward（ゲーミングコイン）、Campaign（入会キャンペーン等、詳細未調査）
+- 観測された事実: 同一カード商品に対し、機能ごとに終了日が異なり、全体サービス終了前に「クレジット機能だけ残す」期間が存在する。[^3][^7]
+- 適用条件: ゲーミングコイン付与はDigitalカード利用に対してのみ発生し、一定条件の利用（Steam決済等）で還元率が高くなる。終了告知後は特典付与・ギフトコード購入が順次終了し、クレジット決済のみ可能な期間に移行する。[^21][^3]
+- 対象者・対象取引: 当該カード保有者のゲーム関連決済・一般決済。クレジット機能のみ期間では、カードショッピングは継続可能だがゲーミングコイン付与やギフトコード購入は不可。[^7][^3]
+- 除外条件: 終了日前にカード解約した場合、ゲーミングコインは失効し、換金対象にもならない旨が初代カードの告知に記載されている。[^8]
+- 金額・率・回数・上限: ゲーミングコイン付与率やゲームギフトコード割引等の詳細は本調査では二次的なため未詳細収集（v2コーパスに一部記載）。
+- 開始日・終了日・集計期間: 
+  - 初代カードサービス終了日: 2023年3月27日[^8]
+  - Digital新規募集終了日: 2024年9月10日[^21][^3]
+  - Digitalサービス終了日・自動解約日: 2025年3月31日[^3][^7]
+  - クレジット機能のみ期間: 2025年2月1日〜3月31日[^20][^3]
+- 関係する事業者と役割: 
+  - 発行会社／Billing: 株式会社クレディセゾン
+  - 国際ブランド: Visa（Digital版）[^3]
+  - Reward運営: クレディセゾン（ゲーミングコインプログラム）[^3]
+- 現在の状態: 2026年8月時点ではサービス終了済み。Digitalも自動解約済みで新規入会不可。[^7][^3]
+- 公式一次情報URL: セゾンゲーミングカード終了告知、Digital終了告知（クレディセゾン公式お知らせ）。[^8][^3]
+- ページタイトル: 「セゾンゲーミングカードのサービス終了について」「『セゾンゲーミングカードDigital』のサービス終了について」。[^3][^8]
+- 発行・公開主体: 株式会社クレディセゾン。[^8][^3]
+- 公開日または改定日: 2022年8月21日付告知（初代）、2024年8月29日付告知（Digital）。[^3][^8]
+- 確認日: 2026-08-10（本調査日）。
+- Evidence Tier: Tier2（発行会社公式お知らせ）、補助的にTier4ニュース記事でスケジュール確認。[^20][^7][^3]
+- Disclosure status: disclosed（終了日・機能制限・自動解約が明示）。
+- Confidence: high（公式一次情報により時系列が明確）。
+- 既存文書との整合性: v2コーパスおよび反証レポートEC-2で既に「段階的終了」事例として記録されており、本調査で公式URLと日付を再確認して整合性が取れている。[^8][^3]
+- 既存モデルで表現しにくい点: 
+  - 単一のProductに対し「新規受付停止」「特典終了」「ポイント付与終了」「クレジット機能限定」「自動解約」という複数の終了イベントがあり、開始日・終了日のペア1つでは表現できない。
+  - Reward（ゲーミングコイン）のライフサイクル（換金処理含む）とProduct Lifecycleが異なる日付で終了する。
+  - 名称上の後継商品（Digital）と旧商品の間に契約・ポイント資産の連続性が無く、自動移行が明示的に否定されている。
+- 追加確認が必要な点: Digitalへの入会キャンペーンや特定ゲームタイトルとの提携キャンペーンの期間構造（延長・早期終了等）の一次情報収集は未実施であり、Campaign Periodの反例としては別途調査が必要。
+
+#### 3.1.3 ドメイン上の示唆
+
+- Product LifecycleとFeature Lifecycleを別軸で表現し、「商品全体の終了」と「機能単位の終了」を区別する必要がある。Feature単位の`valid_from`/`valid_to`や、`LifecycleStage`を持たせる設計判断が示唆される。[^3][^8]
+- 名称上の後継関係（successor_in_name）と、契約・ポイント資産の連続性（contractual_successor、asset_migration）を別種のMigration Event／Relationとして建てる必要がある。少なくとも「自動移行しない後継商品」というリレーション種別が存在しうる。[^8][^3]
+
+### 3.2 bitFlyer クレカ — 三者分離構造と料金体系改定・自動切替え
+
+#### 3.2.1 観測された事実
+
+- 「bitFlyer クレカ」は、日本初の「ビットコインが貯まるクレジットカード」として、bitFlyerと新生銀行グループのアプラスが共同で提供を開始した商品であり、Mastercardブランドを採用し、スタンダードカードとプラチナカードの2券種が存在する。[^9][^22][^23]
+- カード発行主体は株式会社アプラスであり、bitFlyerは暗号資産取引所運営・BTC付与先アカウント運営を担う。カードショッピング利用に応じてアプラスポイント相当のビットコインがbitFlyerアカウントへ付与される。[^6][^24]
+- カード申込条件として、20歳以上でbitFlyerアカウントを保有していることが必須とされ、外部アカウント開設がカード申込前提となっている。[^22][^9]
+- 2025年10月14日付のbitFlyer公式PDFにより、bitFlyer クレカにタッチ決済機能追加と料金体系（プラチナ年会費・年間利用額による無料条件）の改定が告知されている。既存会員は有効期限に応じて新仕様カードへ自動切替えされ、年会費改定は2026年3月請求分から適用される。[^10]
+
+#### 3.2.2 時間軸と適用条件の構造
+
+- 調査対象領域: 暗号資産連携クレジットカード
+- 構造パターン名: Payment Instrument／Reward Operator／Asset Operator三者分離＋外部アカウント前提＋料金体系改定・自動切替え
+- 商品名: bitFlyer Credit Card、bitFlyer Platinum Card
+- 対象単位: Product（クレジットカード）、Reward（BTC還元）、External Membership（bitFlyerアカウント）、Rule Version（料金体系・タッチ決済機能仕様）
+- 観測された事実: 
+  - 発行会社（アプラス）、暗号資産変換運営主体（bitFlyer）、国際ブランド（Mastercard）が別法人であり、Rewardの付与先はbitFlyerアカウントに紐づく。[^6][^9]
+  - タッチ決済対応・年会費改定は既存会員に対し有効期限に応じた自動切替えで適用される。新規発行開始日・既存カード自動切替え開始日・年会費改定適用月が別々に設定されている。[^10]
+- 適用条件: 
+  - bitFlyer クレカへの申込はbitFlyerアカウント開設者のみ可能。カード利用に応じて0.5〜1.0%相当のBTCが自動付与される。[^9][^6]
+  - プラチナカードの年会費無料条件は年間利用額150万円以上から300万円以上へ改定されるなど、Rule Versionが時間軸に応じて変化する。[^10]
+- 対象者・対象取引: 個人顧客。法人ユーザーは入会不可とニュースリリースに明記されている。[^24][^22]
+- 除外条件: bitFlyerアカウントが無い場合は申込不可。法人アカウントは対象外。[^24][^9]
+- 金額・率・回数・上限: 
+  - スタンダード還元率0.5%、プラチナ還元率1.0%（初期リリース時）。[^6][^9]
+  - 年会費改定前: プラチナ年会費16,500円（税込）、年間150万円利用で次年度無料。改定後: 年会費22,000円（税込）、年間300万円利用で次年度無料。[^10]
+- 開始日・終了日・集計期間: 
+  - サービス開始日: 2021年12月1日（提供開始発表）。[^22][^9]
+  - タッチ決済機能追加・新料金体系適用開始日: 2025年10月28日以降新規発行、2026年3月の年会費請求分から改定後年会費適用。[^10]
+- 関係する事業者と役割: 
+  - Issuer/Credit provider/Billing: 株式会社アプラス。[^9][^24]
+  - International brand: Mastercard。[^6][^9]
+  - Reward operator: アプラス（ポイント計算）、bitFlyer（ビットコイン付与・アカウント管理）。[^9][^6]
+  - External account operator: bitFlyer（暗号資産口座）。[^6][^9]
+- 現在の状態: サービス継続中。料金体系改定・タッチ決済機能追加が既存会員へ順次適用されている。[^10]
+- 公式一次情報URL: bitFlyer クレカ商品ページ、bitFlyer公式PDF（料金改定告知）。[^6][^10]
+- ページタイトル: 「ビットコインが貯まる bitFlyer クレカ」「ビットコインが貯まるbitFlyer クレカ、タッチ決済機能追加及び料金体系改定のお知らせ」。[^6][^10]
+- 発行・公開主体: bitFlyer（告知・特典説明）、アプラス（カード発行関係）、Mastercard（ブランド提供）。[^24][^9]
+- 公開日または改定日: 2021-11-30ニュースリリース、2025-10-14料金改定告知。[^9][^10]
+- 確認日: 2026-08-10。
+- Evidence Tier: Tier2（bitFlyer公式ページ・bitFlyer公式PDF）、Tier4ニュースメディアは補助的。[^22][^9][^6]
+- Disclosure status: disclosed（還元率・年会費・改定日・タッチ決済追加が明記）。
+- Confidence: high（一次情報により仕様と改定スケジュールが明示）。
+- 既存文書との整合性: v2コーパスおよび反証レポートEC-3の記述と一致しており、Wallet/Asset Operator分離の事例として再確認された。[^1][^2]
+- 既存モデルで表現しにくい点: 
+  - 外部アカウント（bitFlyerアカウント）が申込前提条件であり、かつReward付与先でもあるという二重の依存関係を、単一の`ExternalMembershipRequirement`と`RewardDestination`に分割すると同一アカウントであることの整合性が保証しにくい。
+  - ProductのRule Version（料金体系・タッチ決済機能追加）とReward計算ロジック（BTC還元率）が別タイミングで改定されうるため、「商品に1つのバージョン」とする設計では不十分。
+- 追加確認が必要な点: アプラス側の会員規約・約款PDFにおけるbitFlyer クレカ特有の条項（暗号資産付与・外部アカウント条件）がどのように規定されているか。
+
+### 3.3 ライフカード デポジット型 — 保証金と利用限度額の時間軸
+
+#### 3.3.1 観測された事実
+
+- ライフカードは「デポジット型クレジットカード」を提供しており、事前に預けた保証金（デポジット）を利用限度額として使うカードであると公式サイトに明記されている。[^4][^11]
+- 保証金＝利用限度額であり、スタンダードカードでは3万／5万／10万円、ゴールドカードでは10万〜190万円までの保証金で限度額が設定される。[^11][^4]
+- 保証金の納付方法は代金引換または銀行振込であり、解約後約2ヶ月で返還される旨がFAQ等に記載されている（v2コーパスに詳細あり）。[^4][^11]
+
+#### 3.3.2 時間軸と適用条件の構造
+
+- 調査対象領域: デポジット型クレジットカード
+- 構造パターン名: 保証金＝利用限度額型Productと保証金返還イベント
+- 商品名: デポジット型ライフカード（ライフカードDp、ライフカードゴールドDp等）
+- 対象単位: Product（カード）、Funding Arrangement（保証金）、Payment Scheme（一括払い等、詳細は一般的クレジットカードと同様）
+- 観測された事実: 商品のライフサイクルに対し、保証金の納付・保持・返還が別イベントとして存在し、解約後に保証金返還イベントが発生する。[^11][^4]
+- 適用条件: 審査に通過した顧客が保証金を事前納付することでカードが発行され、保証金の範囲内でクレジット利用可能。利用代金は登録口座から自動振替される。[^4][^11]
+- 対象者・対象取引: 審査に不安のある個人顧客や法人顧客（ゴールドDp・法人向けDpも存在）。
+- 除外条件: 保証金未納の場合カード発行不可。限度額3万／5万円の一部商品ではETCカード発行不可等の制約がある。[^25][^4]
+- 金額・率・回数・上限: 限度額と保証金が同額で、ゴールドカードでは保証金額に応じて年会費が変動する（例: 20〜90万円で年会費11,000円、100〜190万円で22,000円）。[^25][^4]
+- 開始日・終了日・集計期間: 商品発行から解約までの間保証金が預けられ、解約後約2ヶ月で返還される（正確な日数はFAQ記載、v2に反映）。
+- 関係する事業者と役割: 発行会社・与信・Billingいずれもライフカード株式会社が担う。[^11][^4]
+- 現在の状態: 2026年8月時点でも申込受付継続中（公式サイト上に案内）。
+- 公式一次情報URL: 「デポジット型クレジットカードのご案内」「デポジット型ライフカード」商品ページ。[^4][^11]
+- ページタイトル: 「事前に預けたデポジット（保証金）を限度額として使えるクレジットカードです」「デポジット型ライフカード」。[^11][^4]
+- 発行・公開主体: ライフカード株式会社。[^4][^11]
+- 公開日または改定日: 不明（通常商品ページ、改定履歴は未記載）。
+- 確認日: 2026-08-10。
+- Evidence Tier: Tier2（発行会社公式サイト）。
+- Disclosure status: disclosed。
+- Confidence: high。
+- 既存文書との整合性: v2コーパスの「デポジット型カード実在」訂正と一致している。[^2][^1]
+- 既存モデルで表現しにくい点: Productの開始・終了だけでなく、「保証金預かり開始」「保証金返還」というFunding Arrangementのライフサイクルが別に存在する。カード解約日と保証金返還日が異なるため、単一の終了日では資金の状態を表現できない。
+- 追加確認が必要な点: 保証金返還時の利息有無・税務上の取扱い（利息が付くか否か）は未調査。
+
+### 3.4 Marriott Bonvoy アメックス プレミアム — 年会費・無料宿泊特典・プラチナ資格条件の改定
+
+#### 3.4.1 観測された事実
+
+- Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カードは、2025年8月21日付で特典・サービス拡充と年会費改定を行い、年会費が49,500円から82,500円（税込）に引き上げられた。[^12][^26][^27]
+- 同時に無料宿泊特典取得条件が年間150万円以上利用から年間400万円以上利用へ変更され、ポイント上限も50,000ポイントから75,000ポイントへ引き上げられた。[^13][^28][^29]
+- プラチナエリート会員資格付与条件も、年間400万円利用から年間500万円利用へ引き上げられている（ただし移行期間中は一時的に400万円条件が維持される経過措置あり）。[^30][^14][^31]
+- 既存会員向けには、2025年10月28日から適用されるサービス改定ページや移行特別期間（2025年10月27日〜2026年10月26日）における優遇条件（150万円利用で75,000ポイント宿泊特典等）が用意されている。[^32][^33][^34]
+
+#### 3.4.2 時間軸と適用条件の構造
+
+- 調査対象領域: ホテル提携クレジットカード
+- 構造パターン名: Rule Version改定＋経過措置付き無料宿泊特典・ステータス条件変更
+- 商品名: Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カード
+- 対象単位: Product（カード）、Benefit（無料宿泊特典）、Status（プラチナエリート）、Rule Version（年会費・条件）、Campaign（移行期間キャンペーン）
+- 観測された事実: 
+  - 同一カード商品で、年会費額、無料宿泊特典の取得条件（年間決済額）、無料宿泊ポイント上限、プラチナ資格条件（年間決済額）が改定日を境に変更される。[^14][^12][^13]
+  - 既存会員と新規会員で適用開始日・条件が異なり、移行期間中は旧条件で新特典が得られるなどの経過措置が設定される。[^33][^34][^32]
+- 適用条件: 
+  - 新規申込（2025年8月21日以降）は即時新年会費・新条件が適用される。[^12][^13]
+  - 既存会員は2025年10月28日以降に新特典適用、無料宿泊特典は年間150万円利用で75,000ポイント相当宿泊券が得られる移行特別期間の救済措置がある。[^34][^32][^33]
+- 対象者・対象取引: Marriott Bonvoy会員かつカード会員。無料宿泊特典は基本カード会員に付与され、家族カード利用分も合算される。[^29]
+- 除外条件: 公共料金・税金等の一部支払いはポイント付与率が低下するなど、決済額カウントの条件が細かく設定されている（詳細はAmex公式・各解説記事参照）。[^31][^35]
+- 金額・率・回数・上限: 
+  - 年会費: 49,500円→82,500円（改定）。[^26][^27]
+  - 無料宿泊特典条件: 150万円→400万円決済、上限50,000→75,000ポイント（＋トップオフで最大100,000ポイント）。[^36][^13][^29]
+  - プラチナエリート条件: 400万円→500万円決済（経過措置期間中は400万円）。[^30][^14]
+- 開始日・終了日・集計期間: 
+  - 改定適用開始日: 2025年8月21日。[^14][^12]
+  - 既存会員への新特典適用開始日: 2025年10月28日。[^32][^12]
+  - 移行特別期間: 2025-10-27〜2026-10-26（150万円利用で新特典）。[^33][^34]
+  - 無料宿泊特典の有効期限: 付与から1年間。[^29]
+- 関係する事業者と役割: 
+  - Issuer: アメリカン・エキスプレス・インターナショナル,日本支社。[^13][^12]
+  - Brand partner: Marriott International（Marriott Bonvoyロイヤルティ・ホテル運営）。[^12][^13]
+- 現在の状態: 改定後プランが提供中（2026年8月時点）。移行期間は2026年10月26日まで継続中。[^37][^38]
+- 公式一次情報URL: Amex公式ベネフィットページ、既存会員向け改定案内、無料宿泊特典説明ページ。[^13][^32][^29][^12]
+- ページタイトル: 「Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カード」「既存会員様向け【サービス改定】Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カード」「無料宿泊特典」。[^32][^29][^12][^13]
+- 発行・公開主体: アメリカン・エキスプレス・インターナショナル,日本支社。[^12][^13]
+- 公開日または改定日: 2025-08-21改定発表、2025-10-28既存会員適用開始。[^14][^12]
+- 確認日: 2026-08-10。
+- Evidence Tier: Tier2（カード発行会社公式サイト）、Tier4は背景解説用。[^13][^32][^12]
+- Disclosure status: disclosed（年会費・条件・移行期間が明記）。
+- Confidence: high。
+- 既存文書との整合性: v2コーパスで「ホテル提携カード実在」「Marriott Bonvoy Premium改定」事例として記録されており、本調査で改定内容・経過措置の一次情報を補完した。[^1][^2]
+- 既存モデルで表現しにくい点: 
+  - Productに単一の年会費・無料宿泊条件・ステータス条件を持たせる設計では、「改定前条件」「改定後条件」「移行特別期間条件」という複数のRule Versionを表現できない。
+  - Benefit（無料宿泊特典）の有効期限（付与後1年間）と、Benefit取得条件の集計期間（カード入会日／切替日から1年間）の2つの時間軸が存在する。
+- 追加確認が必要な点: Marriott側のロイヤルティプログラム規約における無料宿泊特典の取り扱い（キャンセル時のポイント返却、ブラックアウト日等）。
+
+### 3.5 ヒルトン・オナーズ アメックス プレミアム — 年間決済額に応じたステータス・無料宿泊特典
+
+#### 3.5.1 観測された事実
+
+- ヒルトン・オナーズ アメリカン・エキスプレス・プレミアム・カードは、年間200万円以上のカード決済でヒルトン・オナーズのダイヤモンドステータスを付与し、年間300万円以上の決済とカード継続でウィークエンド無料宿泊特典2泊分を付与する仕組みを持つ。[^16][^15][^39]
+- 年会費や無料宿泊特典の具体的条件はAmex公式および解説記事で詳細に記載されているが、本調査では主にステータス付与条件と無料宿泊特典の時間軸を反例として着目する。[^15][^39]
+
+#### 3.5.2 時間軸と適用条件の構造
+
+- 調査対象領域: ホテル提携クレジットカード
+- 構造パターン名: 年間決済額に応じたステータス付与・無料宿泊特典の複数Benefit Lifecycle
+- 商品名: ヒルトン・オナーズ アメリカン・エキスプレス・プレミアム・カード
+- 対象単位: Product、Status（ゴールド／ダイヤモンド）、Benefit（ウィークエンド無料宿泊特典）
+- 観測された事実: 
+  - ゴールドステータスはカード保有により自動付与される一方、ダイヤモンドステータスは年間200万円決済達成で翌年末まで有効となる。[^39][^15]
+  - ウィークエンド無料宿泊特典1泊はカード継続時に付与され、さらにプログラム期間中に300万円決済達成でもう1泊分が付与されるなど、ステータスと無料宿泊特典のライフサイクルが別軸で存在する。[^15][^39]
+- 適用条件: 1月〜12月の決済額集計期間に応じてステータス付与・無料宿泊特典付与が決定される。[^39][^15]
+- 対象者・対象取引: ヒルトン・オナーズ会員かつカード会員。ホテル宿泊・一般決済を含むカード利用。
+- 除外条件: 決済対象に含まれない取引（税金等）がある可能性はあるが、詳細は公式規約要確認。
+- 金額・率・回数・上限: 年間200万円決済でダイヤモンドステータス、300万円決済＋継続でウィークエンド無料宿泊特典2泊。[^15][^39]
+- 開始日・終了日・集計期間: ステータス付与期間は達成年の翌年末まで、有効期間が明記されている。[^39][^15]
+- 関係する事業者と役割: Amex（カード発行）、Hilton（ホテル運営・ステータス管理）。
+- 現在の状態: サービス継続中。
+- 公式一次情報URL: Amex公式ベネフィットページ（ヒルトンカード）、ただし本調査では解説記事を主に参照。[^15][^39]
+- Evidence Tier: Tier2〜Tier4混在。公式ページの直接再確認が望ましい。
+- Disclosure status: partially_disclosed（複数サイトにより条件は整合的だが、一部は解説記事ベース）。
+- Confidence: medium。
+- 既存モデルで表現しにくい点: Product単位の有効開始日・終了日だけでは、「ステータス有効期間」「無料宿泊特典有効期限」「決済集計期間」を同時に表現できない。
+- 追加確認が必要な点: Amex公式規約PDFでのステータス条件詳細。
+
+### 3.6 三菱UFJカード パーチェシング — 非発行型B2B購買カード
+
+#### 3.6.1 観測された事実
+
+- 三菱UFJカード パーチェシングは、企業間取引の決済に利用できるB2B購買専用の非発行型クレジットカードであり、「サプライヤーとの企業間取引の決済に利用できる」「カード自体は発行しない」旨が公式サイトに記載されている。[^17]
+- 申込資格は資本金30百万円以上、従業員数50名以上、2期連続黒字決算、業歴10年以上の法人に限定されており、決済方式は会社決済方式のみ、一括払いのみで分割・リボ等は不可とされる。[^17]
+
+#### 3.6.2 時間軸と適用条件の構造
+
+- 調査対象領域: 法人パーチェシングカード
+- 構造パターン名: 非発行型カードサービスのProduct Lifecycle
+- 商品名: 三菱UFJカード パーチェシング
+- 対象単位: Service（パーチェシング決済サービス）、Payment Scheme（一括払いのみ）、Eligibility Rule（法人条件）
+- 観測された事実: カード番号・券面発行がない決済サービスであり、カードライフサイクルではなく契約ライフサイクルが中心となる。[^17]
+- 適用条件: 法人単位で契約し、サプライヤーへの支払いをカード払いに一本化。利用可能枠は企業ごとに審査基準に基づき設定される。[^17]
+- 対象者・対象取引: 資本金・従業員数等の条件を満たす法人の仕入れ・購買取引。
+- 除外条件: 資本金・従業員数・業歴要件を満たさない法人、個人は対象外。[^17]
+- 金額・率・回数・上限: 年会費33,000円／社、利用可能枠は企業ごとに審査により設定。[^17]
+- 開始日・終了日・集計期間: サービス提供期間は契約に依存、終了日は未記載。
+- 関係する事業者と役割: 三菱UFJニコス（サービス提供）、サプライヤー（加盟店）、利用法人（カード会員）。
+- Evidence Tier: Tier2（公式サイト）。
+- Disclosure status: disclosed。
+- Confidence: high。
+- 既存モデルで表現しにくい点: 「カード番号・券面を持たない決済サービス」を、通常のカードProductと同じライフサイクルで扱うと不自然。Payment Instrumentの概念自体が異なるため、Product Lifecycle（券面発行・番号変更等）とは別のService Lifecycleが必要。
+
+### 3.7 Kyash「イマすぐ入金」 — 後払いチャージサービス
+
+#### 3.7.1 観測された事実
+
+- Kyashの「イマすぐ入金」は、Kyash残高に入金した金額をあと払いできる入金方法であり、「申し込んだ金額を支払いなく入金し、後から金額を支払う、あと払いサービス」と公式サポートに記載されている。[^18]
+- 入金額は3,000〜50,000円で、入金月の翌月末までにコンビニまたはKyashマネー残高にて入金額と手数料の支払いが必要であり、支払い期限を過ぎると遅延損害金が発生し、Kyashの一部サービス利用が制限される。[^18]
+- 「イマすぐ入金」の利用規約はAGペイメントサービス株式会社（旧AGミライバライ）が提供するものであり、Kyash本体とは別契約である。[^19]
+
+#### 3.7.2 時間軸と適用条件の構造
+
+- 調査対象領域: 後払いチャージサービス（Funding Method）
+- 構造パターン名: プリペイド残高への後払いチャージ契約のLifecycle
+- 商品名: Kyash「イマすぐ入金」
+- 対象単位: Funding Method／Payment Scheme（あと払いチャージ契約）、Campaign（入金条件・手数料）
+- 観測された事実: 
+  - Kyash Card／Virtual自体はプリペイド型Visaカードであり、後払いなのは残高へのチャージ方法である。[^18]
+  - Funding契約のライフサイクルには「入金申込」「翌月末支払期限」「遅延損害金発生」「サービス制限」という独自の時間軸が存在し、カードProductの有効期限とは別に動く。[^19][^18]
+- 適用条件: 入金額3,000〜50,000円、手数料最低500円。翌月末までの支払い義務あり。[^18]
+- 対象者・対象取引: Kyashユーザーによる残高チャージ。後払いによるチャージ取引。
+- 除外条件: 規約違反時の制限（サービス停止等）。
+- Evidence Tier: Tier2（Kyashサポート記事、AGペイメント利用規約）。
+- Disclosure status: disclosed。
+- Confidence: high。
+- 既存モデルで表現しにくい点: Product Lifecycle（カード有効期限）とFunding Lifecycle（チャージ契約・支払期限）が別軸であり、「カードに開始日・終了日を持たせる」だけでは後払いチャージの支払期限や遅延発生をモデル化できない。
+
+
+## 4. Product Lifecycle仮説への反証要約
+
+### 4.1 「商品に開始日・終了日1セット」仮説が破綻するポイント
+
+上記事例から、以下のような理由で「Productに有効開始日と終了日を1つずつ持たせれば十分」という仮説は成り立たない。
+
+- 段階的終了: セゾンゲーミングカードDigitalのように、新規受付停止・特典終了・ポイント付与終了・機能限定期間・自動解約が異なる日付で発生するため、Product単位の終了日1つでは情報が失われる。[^7][^3]
+- 機能限定期間: クレジット機能のみ利用可能期間（Digitalの2025年2〜3月）は、Productが「存続しているが特典だけ終了した」状態であり、Feature Lifecycleの粒度が必要。[^3]
+- 名称上の後継と契約非連続: セゾンゲーミングカード→Digitalは「後継商品」だが自動切替えではなく新規契約であり、ポイント資産も移行されない。Migration Eventの種別（自動移行／希望者のみ切替／新規再申込／資産移行有無）を別途持たないと誤抽象化を招く。[^8][^3]
+- Rule Version改定: Marriott Bonvoy プレミアムの年会費・無料宿泊・ステータス条件改定は、Productの存続と別にRule Versionが複数存在する例であり、単一のProduct有効期間では表現できない。[^32][^12][^13]
+- Benefit Validityと取得条件の分離: Marriottの無料宿泊特典は「付与から1年有効」というBenefit Validityと、「カード入会日から1年間の決済額」などの取得条件集計期間が別軸で存在し、Productとは別の時間軸を持つ。[^29]
+- Funding Lifecycle: ライフカードデポジット型・Kyashイマすぐ入金のように、保証金預かり・返還や後払いチャージの支払期限・遅延損害金がProductとは別にライフサイクルを持つ。[^18][^4]
+- Service Lifecycle: 三菱UFJカード パーチェシングのような非発行型サービスでは、「カード番号・券面」ライフサイクルが存在せず、決済サービス契約の有効期間が中心となる。[^17]
+
+
+## 5. ドメイン上の示唆 — Lifecycle軸の分離方針
+
+### 5.1 必要なLifecycle軸の候補
+
+本調査で観測された構造から、少なくとも以下のLifecycle軸を分離する必要性が示唆される。
+
+- Product Lifecycle: 新規受付開始・受付停止・サービス終了・自動解約など、カード商品全体の状態遷移。[^3][^8]
+- Feature Lifecycle: 特典機能（ゲーミングコイン付与、ゲームギフトコード購入等）や付帯サービス（タッチ決済機能など）の開始・終了・機能限定状態。[^10][^3]
+- Benefit Validity: 無料宿泊特典・ゲーミングコイン・ウィークエンド無料宿泊などの特典の発行日・有効期限・利用期限。[^29][^15][^8]
+- Rule Version Lifecycle: 年会費、還元率、資格条件、ポイント上限、ステータス付与条件などのルールセットの版管理（改定日・適用開始日・経過措置期間）。[^12][^13][^32]
+- Campaign Period: 入会キャンペーン・ポイント増量キャンペーン・ビットコインプレゼントキャンペーン等の期間・延長・早期終了。[^22][^9]
+- Migration Event: 自動移行・希望者のみ切替・新規契約として再申込・ポイント／マイル／利用実績の移行・移行されない権利・カード番号・有効期限の変更などのイベント種別と発生日。[^10][^3]
+- Funding Lifecycle: 保証金預かり・返還、後払いチャージ契約の申込・支払期限・遅延発生・サービス制限など、Funding Methodに固有の時間軸。[^4][^18]
+
+### 5.2 Actor RoleとLifecycleの組み合わせ
+
+- 発行会社（Issuer）、提携会社（Co-brand partner）、国際ブランド、ポイント運営者、保険引受会社、サービス提供者は必ずしも同一主体ではなく、各Lifecycleに関わる主体も異なるため、Actor RoleとLifecycleの両方を分離してモデル化する必要がある。[^2][^1]
+- 例: bitFlyer クレカでは、Issuer（アプラス）のProduct Lifecycle、bitFlyerの外部アカウントLifecycle、MastercardブランドのライセンスLifecycleが別々に存在し、CryptoConversionRuleがこれらを結合する。[^9][^6][^10]
+
+
+## 6. 追加確認が必要な領域
+
+本ラウンドで明示的に未確認／部分確認に留まった領域は以下の通り。
+
+- セゾンゲーミングカード／Digitalにおける、後継商品へのポイント／コイン移行有無の公式明示（現状、換金のみ記載で移行に関する言及は見当たらず、Unknown扱い）。[^8][^3]
+- Marriott Bonvoy・Hilton等ホテル提携カードの、ホテル側ロイヤルティプログラム規約における無料宿泊特典・ステータス付与の詳細（カード側とプログラム側の規約整合性）。
+- パーチェシングカードの法的与信区分（割賦販売法上の包括／個別／二月払／その他）の明確な位置付け。[^17]
+- Kyash「イマすぐ入金」を提供するAGペイメントサービス株式会社の割賦販売法上の登録状況（包括／個別／二月払）の一次確認。[^19]
+
+これらはProduct／Feature／Rule／Campaign／Funding／Migrationの各軸に跨る重要な論点であり、次ラウンドではTier1〜Tier2ソースによる法的・契約的側面の補完が望まれる。
+
+***
+
+---
+
+## References
+
+1. [02-market-corpus-v2-audited-2.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/4aedc884-fcbd-4950-bd18-c81ce7f658c4/02-market-corpus-v2-audited-2.md?AWSAccessKeyId=ASIA2F3EMEYE4LX4L7LY&Signature=wmp4pXSCtISoqyYyjKQs1ecira8%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDL0FDDuRA%2B6rFXDMAmbQ37anaLk7HDhy4G5VmB43S5xwIhANHfvElvYplHYwsupFdqlGbnMM8nfMvAtDzC2mR7T93IKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgzhrquGG4kXi9mc5H8q0ASO0L%2BmMZAJcifIBi%2B5iFxe%2FBhVfRp3jp3kquDl%2Ffjv8V%2FpPw7QZFpKZj9h8zE3D3yMi5fLer3MQuLAv32zFq4%2FWdauHXIM2%2Bmuw5M9SVYylnzm3BIHjJI9Kfl2wIY4OQoE%2Fxo6DLpdpF%2FtpQsep87uxHY%2BbJJAxFlak%2B9Tm7u%2B9IxnMObvrElpjbmIFbISfdr03i37M%2FaXxhesCFxlpXZG3e5kzN80Md%2FPUxaRWWWm0%2Bz0Qy1EhxGK0mz%2FPJEJEsJEzmWeMKc%2FZXeSUATJbQoP0EJyVCG1DSP2y6rnJFgVju9RpiRhTouLmUag5XuEN3DmltyXhE9tiWPNjdA3SJ9ltodx1Zs%2BnywFS9zqwUf2yXE1xpmfZtYC1oZ9vS4CGea4P6OaCV%2F53Kd6AUlWvs%2FuUJnMXtfuLvi1OZFgCzInEsJT5nQAWjCWNAChCZDHARIb1vjH9WuTzJB2jYq18d7mtBUPQwaZGcaEib1iESji76Wmb4iN8KmiM34Ef%2Bv6P10VDTh9MTENGN3zW0qJlme1CX1lqya44un3LpcZIfzhaFPTjjr%2F3z83aFdH3kNt%2B7ylJUDwSyGsD2lWOCNYlPjWtuAACRNUw7%2BGzlQF%2FTzkkdcmDZqPRwO4wWuEONDv0T6ss9OJSjghYrTKZf2PZVJjXs%2FqooHSoDi7%2FeoOd3i7d%2FuyKQtwNnH7PZewDgA%2BE2HOab9ryY4iNQFbGuQambR1o72N8dG4e2T1kboxkys1tupV5sKVa%2BtJQDmVTRKHeStWnp1br9yVNCGgHnEgegl9MIO359MGOpcBvbTYASvkQbAa0wlve7mFFbJpDm%2BdvnND7ydy3aYvORgpcaCnFHG0yKk8lu4ZuRWyFhOnMo7BjWuh6XLpe%2BMdSVzXSVIJRx178w%2Fk4mYA8FnaIvyI3WTt0xmIwkwQqTkly83XNKGDrYA0jvXNfr5XDWN3UEhZsyL54OsdbufyssG5WvJbjpOotSI0zexDVk1RaykP4wNCVg%3D%3D&Expires=1786374486) - # 日本クレジットカード・後払い決済市場 最新市場コーパス v2（監査済み、調査基準日: 2026-08-07）
+本ドキュメントは、現在参照すべき最新の市場コーパスである。v1を監査対象として再検証し...
+
+2. [01-market-corpus-v1.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/91339056-7f5e-4d95-a2d6-afec21d3a740/01-market-corpus-v1.md?AWSAccessKeyId=ASIA2F3EMEYE4LX4L7LY&Signature=Ru%2BT%2FxpnUgPhLoLwKoCHQnCwSEg%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDL0FDDuRA%2B6rFXDMAmbQ37anaLk7HDhy4G5VmB43S5xwIhANHfvElvYplHYwsupFdqlGbnMM8nfMvAtDzC2mR7T93IKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgzhrquGG4kXi9mc5H8q0ASO0L%2BmMZAJcifIBi%2B5iFxe%2FBhVfRp3jp3kquDl%2Ffjv8V%2FpPw7QZFpKZj9h8zE3D3yMi5fLer3MQuLAv32zFq4%2FWdauHXIM2%2Bmuw5M9SVYylnzm3BIHjJI9Kfl2wIY4OQoE%2Fxo6DLpdpF%2FtpQsep87uxHY%2BbJJAxFlak%2B9Tm7u%2B9IxnMObvrElpjbmIFbISfdr03i37M%2FaXxhesCFxlpXZG3e5kzN80Md%2FPUxaRWWWm0%2Bz0Qy1EhxGK0mz%2FPJEJEsJEzmWeMKc%2FZXeSUATJbQoP0EJyVCG1DSP2y6rnJFgVju9RpiRhTouLmUag5XuEN3DmltyXhE9tiWPNjdA3SJ9ltodx1Zs%2BnywFS9zqwUf2yXE1xpmfZtYC1oZ9vS4CGea4P6OaCV%2F53Kd6AUlWvs%2FuUJnMXtfuLvi1OZFgCzInEsJT5nQAWjCWNAChCZDHARIb1vjH9WuTzJB2jYq18d7mtBUPQwaZGcaEib1iESji76Wmb4iN8KmiM34Ef%2Bv6P10VDTh9MTENGN3zW0qJlme1CX1lqya44un3LpcZIfzhaFPTjjr%2F3z83aFdH3kNt%2B7ylJUDwSyGsD2lWOCNYlPjWtuAACRNUw7%2BGzlQF%2FTzkkdcmDZqPRwO4wWuEONDv0T6ss9OJSjghYrTKZf2PZVJjXs%2FqooHSoDi7%2FeoOd3i7d%2FuyKQtwNnH7PZewDgA%2BE2HOab9ryY4iNQFbGuQambR1o72N8dG4e2T1kboxkys1tupV5sKVa%2BtJQDmVTRKHeStWnp1br9yVNCGgHnEgegl9MIO359MGOpcBvbTYASvkQbAa0wlve7mFFbJpDm%2BdvnND7ydy3aYvORgpcaCnFHG0yKk8lu4ZuRWyFhOnMo7BjWuh6XLpe%2BMdSVzXSVIJRx178w%2Fk4mYA8FnaIvyI3WTt0xmIwkwQqTkly83XNKGDrYA0jvXNfr5XDWN3UEhZsyL54OsdbufyssG5WvJbjpOotSI0zexDVk1RaykP4wNCVg%3D%3D&Expires=1786374486) - # 日本クレジットカード・後払い決済市場 市場調査コーパス
+調査基準日: 2026-08-07 / 目的: 後工程でのドメインモデル・要件定義のための一次証拠ベースの市場調査（DBスキーマ・ER図・S...
+
+3. [「セゾンゲーミングカードDigital」のサービス終了について](https://www.saisoncard.co.jp/customer-support/information/240830_2/) - 「セゾンゲーミングカードDigital」のサービス終了について。クレジットカードはポイントが永久不滅のセゾンカード。
+
+4. [デポジット型クレジットカードのご案内 - ライフカード](https://www.lifecard.co.jp/lp/lifecard-dp/) - 事前に預けたデポジット（保証金）を限度額として使えるクレジットカードです。 保証金 ＝ 利用限度額. 預けた金額の範囲内で利用でき、 使いすぎの心配がありません。
+
+5. [03-domain-counterexample-audit-3.md](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/2122664342/2c65a5d6-6378-4f93-b874-b3a9491ef10c/03-domain-counterexample-audit-3.md?AWSAccessKeyId=ASIA2F3EMEYE4LX4L7LY&Signature=OyQ9zAGT2feousGG6SwqHabr9rs%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDL0FDDuRA%2B6rFXDMAmbQ37anaLk7HDhy4G5VmB43S5xwIhANHfvElvYplHYwsupFdqlGbnMM8nfMvAtDzC2mR7T93IKvwECJ%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMNjk5NzUzMzA5NzA1IgzhrquGG4kXi9mc5H8q0ASO0L%2BmMZAJcifIBi%2B5iFxe%2FBhVfRp3jp3kquDl%2Ffjv8V%2FpPw7QZFpKZj9h8zE3D3yMi5fLer3MQuLAv32zFq4%2FWdauHXIM2%2Bmuw5M9SVYylnzm3BIHjJI9Kfl2wIY4OQoE%2Fxo6DLpdpF%2FtpQsep87uxHY%2BbJJAxFlak%2B9Tm7u%2B9IxnMObvrElpjbmIFbISfdr03i37M%2FaXxhesCFxlpXZG3e5kzN80Md%2FPUxaRWWWm0%2Bz0Qy1EhxGK0mz%2FPJEJEsJEzmWeMKc%2FZXeSUATJbQoP0EJyVCG1DSP2y6rnJFgVju9RpiRhTouLmUag5XuEN3DmltyXhE9tiWPNjdA3SJ9ltodx1Zs%2BnywFS9zqwUf2yXE1xpmfZtYC1oZ9vS4CGea4P6OaCV%2F53Kd6AUlWvs%2FuUJnMXtfuLvi1OZFgCzInEsJT5nQAWjCWNAChCZDHARIb1vjH9WuTzJB2jYq18d7mtBUPQwaZGcaEib1iESji76Wmb4iN8KmiM34Ef%2Bv6P10VDTh9MTENGN3zW0qJlme1CX1lqya44un3LpcZIfzhaFPTjjr%2F3z83aFdH3kNt%2B7ylJUDwSyGsD2lWOCNYlPjWtuAACRNUw7%2BGzlQF%2FTzkkdcmDZqPRwO4wWuEONDv0T6ss9OJSjghYrTKZf2PZVJjXs%2FqooHSoDi7%2FeoOd3i7d%2FuyKQtwNnH7PZewDgA%2BE2HOab9ryY4iNQFbGuQambR1o72N8dG4e2T1kboxkys1tupV5sKVa%2BtJQDmVTRKHeStWnp1br9yVNCGgHnEgegl9MIO359MGOpcBvbTYASvkQbAa0wlve7mFFbJpDm%2BdvnND7ydy3aYvORgpcaCnFHG0yKk8lu4ZuRWyFhOnMo7BjWuh6XLpe%2BMdSVzXSVIJRx178w%2Fk4mYA8FnaIvyI3WTt0xmIwkwQqTkly83XNKGDrYA0jvXNfr5XDWN3UEhZsyL54OsdbufyssG5WvJbjpOotSI0zexDVk1RaykP4wNCVg%3D%3D&Expires=1786374486) - # ドメインモデル反証調査（調査基準日: 2026-08-07）
+本調査は`02-market-corpus-v2-audited.md`を入力として、既存の「ドメインモデル仮説」および「エッジケース...
+
+6. [ビットコインが貯まる bitFlyer クレカ](https://bitflyer.com/ja-jp/s/lp/creditcard) - 種類, スタンダード. プラチナ ; ブランド, Mastercard. Mastercard ; 還元率, 0.5%. 1.0% ; 初年度年会費, 無料. 無料 ; 2年目以降年会費, 無料. 2...
+
+7. [「セゾンゲーミングカードDigital」が2025年3月31日でサービス終了に 各サービスの終了スケジュールも公開](https://game.watch.impress.co.jp/docs/news/1620002.html) - クレディセゾンは、「セゾンゲーミングカードDigital」のサービスを2025年3月31日をもって終了することを発表した。
+
+8. [セゾンゲーミングカードのサービス終了について](https://www.saisoncard.co.jp/customer-support/information/0822gaming/) - セゾンゲーミングカードのサービス終了について。クレジットカードはポイントが永久不滅のセゾンカード。
+
+9. [日本初！ビットコインが貯まる「bitFlyer クレカ」の提供を開始](https://jp.cointelegraph.com/news/bitflyer-creditcard) - 暗号資産（仮想通貨）取引所を運営する株式会社bitFlyer（本社：東京都港区、代表取締役：林 邦良、以下「bitFlyer」）と新生銀行グループの株式会社アプラス（東京本部：東京都千代田区、代表取締...
+
+10. [2025 年 10 月 14 日 各位 株式会社 bitFlyer ビットコインが ...](https://bitflyer.com/pub/20251014_announcement_of_bitFlyercard.pdf)
+
+11. [デポジット型ライフカード | クレジットカードはライフカード](https://www.lifecard.co.jp/card/credit/dp/) - デポジット型ライフカードの基本情報 · ライフカード 限度額： 3万円/5万円 · ライフカード 限度額： 10万円 · ライフカード ゴールド限度額： 10万円～ · ライフカード ...
+
+12. [Marriott Bonvoy® アメリカン・エキスプレス®・プレミアム・カード ...](https://www.americanexpress.com/ja-jp/benefits/marriott-bonvoy-premium-card/faq/) - Marriott Bonvoy® アメリカン・エキスプレス®・プレミアム・カードに関するよくあるご質問をご紹介します。
+
+13. [Marriott Bonvoy ® アメリカン・エキスプレス ® ・プレミアム・カード](https://www.americanexpress.com/ja-jp/benefits/marriott-bonvoy-premium-card/) - 最高峰の世界を思いのままに。Marriott Bonvoy® アメリカン・エキスプレス®・プレミアム・カードのサービスについてご案内します。
+
+14. [Marriott Bonvoy アメリカン・エキスプレス提携カードに関する ...](https://www.americanexpress.com/jp/index/offers/Topics/2025/amex-news-023.html) - 2025年8月21日（木）より、Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カード及びMarriott Bonvoy アメリカン・エキスプレス・カードは、 特典・サービスを拡...
+
+15. [ヒルトン･オナーズ アメックス･プレミアム･カードは、年200万円 ...](https://diamond.jp/zai/articles/-/265090) - ホテルで得するクレジットカード「ヒルトン・オナーズ アメックス・プレミアム・カード」の年会費や還元率、付帯特典などのメリットを詳しく解説！ ヒルトンの会員資格「ヒルトン・オナーズ・ゴールドステータス」...
+
+16. [どんな人に向いている？ヒルトン・オナーズ アメリカン ...](https://www.lehman-miler.com/2022/05/hilton-amex.html) - 最上級ステータスがすぐそこに！ヒルトンアメックスプレミアムカードはどんな人に向いているのか忖度なしでレビューします！！
+
+17. [三菱UFJカード パーチェシング](https://www.cr.mufg.jp/business/card/list/corp/mufgcard_purchasing.html) - 仕入れ等の購買活動の専用カードで支払いをスムーズにする三菱UFJニコスのMUFGカード コーポレート パーチェシングのご案内。
+
+18. [「イマすぐ入金」とは？](https://support.kyash.co/hc/ja/articles/4403409416089--%E3%82%A4%E3%83%9E%E3%81%99%E3%81%90%E5%85%A5%E9%87%91-%E3%81%A8%E3%81%AF) - ＜「イマすぐ入金」とは＞ 「イマすぐ入金」とはKyash残高に入金した金額を、あと払いできる入金方法です。 一般的にプリペイド方式で残高に入金するためには、先に支払った金額が入金されますが、「イマすぐ...
+
+19. [利用規約（Kyashイマすぐ入金） | AGペイメントサービス株式 ...](https://www.mirai-barai.co.jp/business/miraibarai/kiyaku/charge_1.html) - 利用規約（Kyashイマすぐ入金）
+
+20. [ゲーマー向けクレジットカード「セゾンゲーミングカードDigital」](https://www.4gamer.net/games/999/G999905/20240830047/) - クレディセゾンは本日（2024年8月30日），「セゾンゲーミングカードDigital」のサービスを2025年3月31日に終了すると発表した。 画像は公式サイト（外部リンク）より …
+
+21. [ゲーミングコイン付与の対象外となる利用はありますか。 - よくあるご質問](https://faq.saisoncard.co.jp/saison/detail?site=OA5LHO14&amp=&id=6127&amp=&search=true) - よくあるご質問「ゲーミングコイン付与の対象外となる利用はありますか。」の回答をご案内しております。クレジットカードはポイントが永久不滅のセゾンカード。
+
+22. [ビットコインが貯まる「bitFlyer クレカ」リリース【国内初】 執筆](https://jp.investing.com/news/cryptocurrency-news/article-466092) - ビットフライヤー：ビットコインが貯まる「bitFlyer クレカ」リリース【国内初】
+
+23. [ビットコインが貯まる「bitFlyer クレカ」を提供開始 - CoinPost](https://coinpost.jp/?p=297724) - 国内暗号資産（仮想通貨）取引所を運営する株式会社bitFlyerと新生銀行グループの株式会社アプラスは、ビットコインが貯まる「bitFlyer クレカ」を提供することを発表した。キャッシュレスサービス...
+
+24. [bitFlyer、ビットコインが貯まるクレカをスタート](https://www.nadanews.com/131690/) - 暗号資産（仮想通貨）取引所を運営するbitFlyerは12月1日、新生銀行グループのアプラスと共同で、ビットコ
+
+25. [ライフカードDp（デポジット）の評判と特徴、審査基準を徹底解説](https://www.goginsec.co.jp/ccguide/card/lifecard-dp) - ライフカードDp（デポジット）の特徴ライフカードDp（デポジット）は、ライフカードの発行しているデポジット制のクレジットカードです。事前に保証金を支払うことで発行することができ、クレジットカードの審査...
+
+26. [マリオットボンヴォイアメックスプレミアムカードが大幅改定 ...](https://deller-travel.com/marriott-bonvoy-premium/) - 2025年8月21日から、「マリオット・ボンヴォイ・アメリカン・エキスプレス・プレミアム・カード」の年会費および特典内容が大きく変更されます。本記事では、その改定内容と新旧の違い、今後もこのカードを保...
+
+27. [「Marriott Bonvoyアメックス・プレミアム」の改定は'改悪'なのか検証！ 年会費の大幅アップや無料宿泊特典の変更があっても｢継続保有｣を検討すべき人は？](https://diamond.jp/zai/articles/-/1055456) - 「Marriott Bonvoyアメリカン・エキスプレス・プレミアム・カード」と「Marriott Bonvoyアメリカン・エキスプレス・カード」の改定は'改善'なのか'改悪'なのか、改定後の年会費や...
+
+28. [年会費値上げの「Marriott Bonvoy アメックス」は継続か、解約か。代替カードを探す](https://news.mynavi.jp/premium/article/20250810-3401371/) - 8月5日、Marriott Bonvoy アメリカン・エキスプレス・カードとMarriott Bonvoy アメリカン・エキスプレス・プレミアム・カードの年会費改定が発表され、大幅に値上げされることに...
+
+29. [無料宿泊特典｜クレジットカードはアメリカン・エキスプレス ...](https://www.americanexpress.com/ja-jp/benefits/marriott-bonvoy/free-stay/) - アメリカン・エキスプレスの無料宿泊特典についてご案内します。毎年の年会費のお支払いに加えて、プログラム期間中150万円以上のカードご利用で、世界各地のMarriott Bonvoy参加ホテルでご利...
+
+30. [Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カード](https://www.americanexpress.com/ja-jp/benefits/additional-card/marriott-bonvoy-premium-card/) - カードのお申し込みをご検討の方に、Marriott Bonvoy® アメリカン・エキスプレス®・プレミアム・カードの家族カードをご案内します。
+
+31. [マリオットボンヴォイアメックスの改悪で乗り換えるべき ...](https://www.monsterism.net/36595/) - 2025年8月21日にマリオットボンヴォイアメックスの改定が発表され「自分は乗り換えるべきか？」「乗り換えるならどのクレカにすべきか？」と迷ってしまうかもしれません。 2025年8月21日（木）より、...
+
+32. [既存会員様向け【サービス改定】Marriott Bonvoy アメリカン ...](https://www.americanexpress.com/ja-jp/benefits/marriott-bonvoy-premium-card/special/enhance/) - 2025年8月20日までに、Marriott Bonvoy アメリカン・エキスプレス・プレミアム・カードをお持ち・お申し込みの会員様向けに、サービス改定についてご説明します。
+
+33. [【2025年8月21日改定】Marriott Bonvoy アメックスの ...](https://cozy-hack.com/marriottbonvoy_amex_premium_renewal/) - 2025年8月21日からのMarriott Bonvoyアメックスの改定内容を徹底解説。新プランの年会費、特典、ポイント還元率を旧プランと比較。継続するメリット・デメリットを分かりやすくまとめました。
+
+34. [【改悪？】Marriott Bonvoy アメックスが2025年に大幅改定 ...](https://vie-simple.com/marriottbonvoy-amex-revision/) - Marriott Bonvoyアメックスが2025年8月に大幅改定を発表。年会費値上げや特典条件変更の影響をわかりやすく解説。
+
+35. [「マリオットボンヴォイアメックス完全ガイド【2025年最新 ...](https://cinemile.jp/marriott-bonvoy-amex-complete-guide-2025/) - 【2025年制度改定】マリオットアメックス、本当に「改悪」なのか？年会費82,500円の真実を、プラチナエリート保有者が検証。スウェーデン・深圳での実体験から、ブランド・お金・ハードル・価値の4軸で徹...
+
+36. [アメックスとマリオットの提携クレジットカード刷新、何が変わった?](https://news.mynavi.jp/article/20250822-3412836/) - アメリカン・エキスプレス・インターナショナル, Inc.とマリオット・インターナショナルがこのほど、両社による提携クレジットカード「Marriott Bonvoy アメリカン・エキスプレス・プレミアム...
+
+37. [マリオットボンヴォイアメックスプレミアム改定後の価値と ...](https://card.tagu-blog.com/marriott-amex-premium-2025/) - マリオットボンヴォイアメックスプレミアムの2026年時点の実質価値を徹底解説。年会費・無料宿泊特典・エリート資格の改定内容、利用額別シミュレーション、継続か解約かの判断基準まで実体験ベースでまとめます...
+
+38. [【2026年7月版】Marriott Bonvoy アメリカン・エキスプレス ...](https://genryo-miler.com/marriott-bonvoy-amex-premium_introduction2) - こんにちは、管理栄養士マイラーです。 2025年8月21日よりリニューアルされ、年会費および特典内容が変更され…
+
+39. [Hilton ヒルトンアメックスプレミアムカードでホテルステイを ...](https://amex-guide.jp/amex/hilton/123/) - ヒルトンアメックスプレミアムカードの特典を現役ダイヤモンド会員が徹底解説！無料宿泊やスイートアップグレードでホテルステイを格上げする方法を、実体験と共にご紹介。申し込み手順も詳しく解説。
