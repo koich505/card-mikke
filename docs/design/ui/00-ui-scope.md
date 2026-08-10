@@ -17,6 +17,7 @@ Last updated: 2026-08-10
 
 ## UI validation scope
 
+- 注目のカード、特集記事、新着情報から候補を発見できるホーム
 - Profile値の自動反映と、保存されない一時変更の識別
 - 年間利用額、利用先カテゴリ、企業・Service別金額の入力
 - 年間正味還元額、初年度・通常年、内訳、仮定の表示
@@ -39,6 +40,13 @@ Last updated: 2026-08-10
 - 実在する個人情報、Credential、Secretを含むFixture
 
 ## Adopted UI-stage decisions
+
+### Product name and visual direction
+
+- UI Mock上の名称は`カード比較くん`とする。
+- 親しみやすく、情報量が多く、探索中の気分が上がる活気ある売場感を目指す。
+- 特定店舗やBrandの表現を模倣せず、太い見出し、明快な枠線、Sticker、吹き出し、帯見出し、強いサイズ差による`整理されたごちゃごちゃ感`へ翻訳する。
+- 算定状態、確認日、Evidence、広告・Affiliate、仮定、Error、Focusは装飾から分離し、理解可能性とAccessibilityを優先する。
 
 ### Asset policy（RQ-013 / RQ-038）
 
@@ -76,10 +84,8 @@ Last updated: 2026-08-10
 
 ## Remaining UI questions
 
-- Information Architecture、Global Navigation、主要入口の優先順位
-- 最初に完成させる主要User Flow
-- Desktop / Mobileにおける検索条件入力と比較導線
+- 検索結果Cardと比較画面の情報優先順位
+- Desktop / MobileにおけるFilterと比較候補の操作方法
 - 実在Serviceの初期収録一覧（Owner: Product owner、期限: UI Mock Approval前、戻し先: UI / Evidence）
 - 算定不完全な候補を含む順位の理解可能性（RQ-011）
 - 変更項目を特定できない場合の確認中表示範囲（RQ-017）
-
