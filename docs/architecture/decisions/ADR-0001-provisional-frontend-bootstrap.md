@@ -13,10 +13,10 @@ Approver: Product owner
 | Item | Provisional decision |
 |---|---|
 | Application placement | `apps/web/` |
-| Candidate framework | Next.js + React |
+| Candidate framework | Next.js `16.3.0` + React `19.2.8` |
 | Language | TypeScript strict |
-| Runtime | Node.js 24系。Bootstrap時の実行Versionを`.nvmrc`へ固定する |
-| Package manager | npm。Bootstrap時の実行Versionを`package.json#packageManager`とLockfileへ固定する |
+| Runtime | Node.js `24.14.1`。`.nvmrc`へ固定する |
+| Package manager | npm `11.11.0`。`package.json#packageManager`と`package-lock.json`へ固定する |
 | Styling | CSS Modules |
 | Design tokens | CSS Custom Properties |
 | Global CSS | Reset、基本Typography、Design Token、共通Focus表示に限定する |
@@ -41,7 +41,9 @@ Approver: Product owner
 ## Security checks
 
 - Secret scanはGitleaks `v8.29.0`を使用し、`gitleaks dir . --redact --no-banner`でRepositoryの作業Treeを検査する。
-- Bootstrap時に公式Release ArtifactとChecksumを用いて導入し、`gitleaks version`で採用Versionを確認する。
+- Bootstrap時に公式Release ArtifactとChecksumを用いてProject-localの`apps/web/.tools/`へ導入し、`gitleaks version`で採用Versionを確認する。BinaryはGit管理しない。
+- macOS ARM64 Artifact `gitleaks_8.29.0_darwin_arm64.tar.gz`の確認済みSHA-256は`e85fa832ea341fb05485bf483e55e9d421f473348f0ede51b5212e0e5c19b7c4`である。
+- `.gitleaks.toml`で生成物`.next/`、依存物`node_modules/`、検証済みTool格納先`.tools/`をWorking Tree scanから除外する。Source codeと文書は除外しない。
 - 依存脆弱性監査は`apps/web/`で`npm audit --audit-level=high`を実行する。
 - 依存監査はBootstrap時と`package-lock.json`変更時に再実行する。
 - Critical / High相当は、影響なしを追跡可能に説明できる場合を除き、UI Reviewへ進む前に解消する。
@@ -76,4 +78,3 @@ UI Mock Approval後、Feature Specification作成後かつTechnical Plan確定�
 - UI-only codeの`As-is reuse`、`Refactor before reuse`、`Replace`、`Remove`
 
 DB、API、認証、Hosting、本番Data Contractは本ADRの固定範囲外である。
-

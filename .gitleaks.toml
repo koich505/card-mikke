@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Exclude generated and verified third-party artifacts from the working-tree scan."
+paths = [
+  '''(^|/)\.next/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)\.tools/''',
+]
