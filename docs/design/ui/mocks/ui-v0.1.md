@@ -2,18 +2,18 @@
 
 Status: In progress; human interaction review pending  
 Created: 2026-08-10  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）  
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
 UI code: `apps/web/` working tree（未Commit）
 
 ## Purpose
 
-`カード比較くん`の視覚方針、ホームから条件入力・検索結果・比較へ進む主要Flow、Desktop / Mobileの情報密度と状態表現を操作可能なUI-only Mockで検証する。
+`カードみっけ`の視覚方針、ホームから条件入力・検索結果・比較へ進む主要Flow、Desktop / Mobileの情報密度と状態表現を操作可能なUI-only Mockで検証する。
 
 ## Included routes and states
 
 ### `/`
 
-- `カード比較くん`の名称と、Warm ivory、Clear gold、Vitamin coralで整理する落ち着きと活気を両立した視覚方針
+- `カードみっけ`の名称と、Warm ivory、Clear gold、Vitamin coralで整理する落ち着きと活気を両立した視覚方針
 - 条件検索への主要導線
 - 注目のカード3件
 - おすすめ特集記事3件

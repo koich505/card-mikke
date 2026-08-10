@@ -1,7 +1,7 @@
 # UI Scope
 
 Status: Draft for UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）  
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
 Last updated: 2026-08-10
 
 ## Purpose
@@ -43,7 +43,7 @@ Last updated: 2026-08-10
 
 ### Product name and visual direction
 
-- UI Mock上の名称は`カード比較くん`とする。
+- サイト名称およびUI Mock上の名称は`カードみっけ`とする。
 - 情報量を保ちながら、比較結果を落ち着いて検討できる静かな編集物の印象を目指す。従来の`整理されたごちゃごちゃ感`は採用しない。
 - 背景はWarm ivoryから淡いStoneを基調とし、細い枠線、柔らかな影、十分な余白で情報のまとまりを示す。
 - Clear Goldは先頭候補、主要・補助Action、進捗、金額、通常の状態表示に使用し、Vitamin Coralは選択状態と案内に使用する。変更確認中はMuted Orange、ErrorはDark Redとして意味を分離する。

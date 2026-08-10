@@ -15,12 +15,12 @@ export default function Home() {
           <a
             className={styles.brand}
             href="#featured"
-            aria-label="カード比較くん ホーム"
+            aria-label="カードみっけ ホーム"
           >
             <span className={styles.brandBurst} aria-hidden="true">
               比較！
             </span>
-            <span className={styles.brandName}>カード比較くん</span>
+            <span className={styles.brandName}>カードみっけ</span>
           </a>
 
           <nav className={styles.primaryNav} aria-label="メインナビゲーション">
@@ -276,7 +276,7 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
-        <strong>カード比較くん</strong>
+        <strong>カードみっけ</strong>
         <p>UI-only Mock — 合成Fixtureのみを使用しています。</p>
         <nav aria-label="フッターナビゲーション">
           <a href="#trust">掲載範囲</a>

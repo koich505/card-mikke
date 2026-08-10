@@ -1,7 +1,7 @@
 # Screen Inventory
 
 Status: Draft under UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）  
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
 Last updated: 2026-08-10
 
 ## Inventory policy

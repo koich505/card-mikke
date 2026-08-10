@@ -1,7 +1,7 @@
 # Information Architecture
 
 Status: Approved direction; details under UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）  
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
 Decision date: 2026-08-10
 
 ## IA principles

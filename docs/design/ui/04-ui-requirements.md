@@ -1,7 +1,7 @@
 # UI Requirements
 
 Status: Draft under UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）  
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
 Last updated: 2026-08-10
 
 ## Purpose and boundary
@@ -12,7 +12,7 @@ Last updated: 2026-08-10
 
 ### UIR-BRAND-001: 名称と視覚的性格
 
-- UI Mock上の名称は`カード比較くん`とする。
+- サイト名称およびUI Mock上の名称は`カードみっけ`とする。
 - 固い金融メディアではなく、親しみやすく、情報探索のテンションが上がる活気を表現する。
 - 情報密度を高め、太い見出し、強いサイズ差、明快な枠線、Sticker、吹き出し、帯見出し等で`整理されたごちゃごちゃ感`を作る。
 - 特定店舗、Brand、Logo、Font、売場意匠を複製しない。
@@ -88,6 +88,15 @@ Last updated: 2026-08-10
 - 新着情報は種別と日付を示し、承認済みの公開内容だけを通常の新着として扱う。
 - 更新確認中の記事は旧記事継続掲載であることを識別可能にする。
 - Traceability: FR-007–FR-009, FR-023, FR-031, AC-016
+
+### UIR-HOME-004: テーマからワンクリックで探す
+
+- ホームに、旅行好き、ショッピング好き、シンプルでお得重視等の公開中テーマを、名称と短い説明付きで選択できる探索入口を置く。
+- テーマを1回選択すると、追加入力やAccount登録を挟まず、対応する条件を適用した検索結果へ遷移する。
+- 遷移後は選択テーマと適用中の条件を確認でき、個別に条件を変更して再検索できる。
+- 既存の`条件からカードを探す`ActionおよびProfile条件を利用する探索を同時に提供し、テーマ検索で置き換えない。
+- テーマ名の`お得`等を、すべての利用者に対する最適性または順位保証として表現しない。
+- Traceability: FR-004, FR-005, FR-013, FR-014, FR-040, AC-041
 
 ## Search conditions
 

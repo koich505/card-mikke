@@ -92,7 +92,7 @@ export default function SearchPrototype() {
       <header className={styles.header}>
         <Link href="/" className={styles.brand}>
           <span aria-hidden="true">比較！</span>
-          カード比較くん
+          カードみっけ
         </Link>
         <nav aria-label="検索中のナビゲーション">
           <Link href="/">ホーム</Link>
