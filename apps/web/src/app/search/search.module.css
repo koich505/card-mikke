@@ -1465,6 +1465,23 @@
   gap: 0.55rem;
 }
 
+.cardDetailLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  padding: 0.65rem;
+  color: white;
+  background: var(--red);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.cardDetailLink span {
+  color: var(--yellow);
+}
+
 .resultActions > button {
   border: 2px solid var(--navy);
   border-radius: 999px;

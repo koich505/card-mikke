@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
-  currentPage: "home" | "search";
+  currentPage: "home" | "search" | "card";
 };
 
 export default function SiteHeader({ currentPage }: SiteHeaderProps) {

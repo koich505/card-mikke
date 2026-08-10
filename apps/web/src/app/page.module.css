@@ -716,6 +716,7 @@
   border-radius: 999px;
   color: white;
   background: var(--navy);
+  font-weight: 900;
 }
 
 .detailButton span {

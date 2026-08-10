@@ -241,7 +241,7 @@ export default function SearchPrototype() {
                       <span>✓</span>登録なしで比較OK
                     </li>
                     <li>
-                      <span>★</span>最大3枚を比較
+                      <span>★</span>最大5枚を比較
                     </li>
                     <li>
                       <span>◷</span>最短30秒
@@ -624,6 +624,12 @@ export default function SearchPrototype() {
                       <small>初年度 {yen.format(card.firstYearValue)}円</small>
                     </div>
                     <div className={styles.resultActions}>
+                      <Link
+                        href={`/cards/${card.id}`}
+                        className={styles.cardDetailLink}
+                      >
+                        詳細を見る <span>→</span>
+                      </Link>
                       <button
                         type="button"
                         className={selected ? styles.compareSelected : ""}
@@ -716,7 +722,7 @@ export default function SearchPrototype() {
         <div className={styles.compareBar} aria-label="比較候補">
           <div>
             <strong>{compareIds.length}枚</strong>
-            <span>選択中（最大3枚）</span>
+            <span>選択中（最大5枚）</span>
           </div>
           <button type="button" onClick={() => setCompareIds([])}>
             全解除

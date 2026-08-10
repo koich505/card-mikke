@@ -42,7 +42,7 @@ export default function Home() {
                   <span>✓</span>登録なしでOK
                 </li>
                 <li>
-                  <span>★</span>最大3枚を比較
+                  <span>★</span>最大5枚を比較
                 </li>
                 <li>
                   <span>◷</span>最短30秒
@@ -101,7 +101,7 @@ export default function Home() {
               <div>
                 <small>RESULT</small>
                 <strong>おすすめを確認</strong>
-                <p>条件に合うカードを最大3枚で比較。</p>
+                <p>条件に合うカードを最大5枚で比較。</p>
               </div>
             </li>
           </ol>
@@ -179,9 +179,9 @@ export default function Home() {
                     <small>確認日 {card.confirmedOn}</small>
                   </div>
                 </div>
-                <button type="button" className={styles.detailButton}>
+                <Link href={`/cards/${card.id}`} className={styles.detailButton}>
                   カードの詳細を見る <span>→</span>
-                </button>
+                </Link>
               </article>
             ))}
           </div>
