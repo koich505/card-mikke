@@ -1,0 +1,120 @@
+# Requirements Traceability
+
+Status: Draft  
+Last updated: 2026-08-10
+
+## Product Owner Decisions
+
+以下は対話で採用され、Requirementsへ反映された判断の正本である。生の会話Logを承認根拠として使用しない。
+
+| Decision ID | Date | Adopted decision | Requirements |
+|---|---|---|---|
+| RD-001 | 2026-08-09 | 個人向けクレジットカードを初期対象とし、法人、デビット、プリペイド、BNPL等を対象外とする | `00-scope.md` |
+| RD-002 | 2026-08-09 | 年間利用額、現金相当還元、年会費から年間正味還元額を算定し、非金銭Benefitを含めない | FR-005, FR-016 |
+| RD-003 | 2026-08-09 | 初年度と通常年を分け、抽選Campaignを算定へ含めない | FR-006, FR-015 |
+| RD-004 | 2026-08-09 | 未登録でも検索・比較でき、登録時はProfile・履歴・お気に入りを利用できる | FR-001–FR-003, FR-010, FR-011, FR-030 |
+| RD-005 | 2026-08-09 | 利用先カテゴリと個別企業・Serviceを指定し、年間総額と内訳を重複加算しない | FR-012 |
+| RD-006 | 2026-08-09 | 算定不能値は推測せず、変更確認中の過去承認値は注意表示付きで継続算定する | FR-014, FR-023 |
+| RD-007 | 2026-08-09 | 記事はAI Draft、人間確認・承認後公開とし、自動公開しない | FR-008, FR-009, FR-031 |
+| RD-008 | 2026-08-09 | Affiliate報酬を検索順位・記事選定へ影響させず、広告関係を開示する | FR-019, NFR-EDIT-001 |
+| RD-009 | 2026-08-09 | 公式Sourceだけを確定情報に使い、日次探索・差分検知・人間承認後に更新する | FR-020–FR-024, FR-033, FR-034 |
+| RD-010 | 2026-08-09 | Account・利用者データは即時利用不能、通常領域24時間、Backup 30日以内で削除する | FR-025, NFR-PRIV-003 |
+| RD-011 | 2026-08-09 | メール・PasswordとGoogle認証を採用する。MFAを必須にしない当初判断はRD-028により一般利用者だけへ限定した | FR-001, NFR-SEC-001–003 |
+| RD-012 | 2026-08-09 | Accessibility WCAG 2.2 AA、公開2.5秒、検索2秒を初期目標とする | NFR-A11Y-001, NFR-PERF-001, NFR-PERF-002 |
+| RD-013 | 2026-08-09 | 非AI運用費は月額5,000円目標、4,000円警告、超過時自動停止なしとする | NFR-COST-001, NFR-COST-002 |
+| RD-014 | 2026-08-09 | Availability 99.0%、最小BackupのRPO / RTOを各24時間とする | NFR-AVAIL-001, NFR-AVAIL-002 |
+| RD-015 | 2026-08-10 | 招待制・受付停止カードを初期検索から除外し、Filterで含められるようにする | FR-013 |
+| RD-016 | 2026-08-10 | 比較最大5枚、お気に入り最大50枚、未登録お気に入り30日とする | FR-029, FR-030 |
+| RD-017 | 2026-08-10 | AIが公式情報を初回・継続収集し、項目差分を人間が承認する | FR-021, FR-022, FR-033, FR-034 |
+| RD-018 | 2026-08-10 | 商品同一性を判別できない新規カード候補は自動登録・統合せず人間判断へ回す | FR-033 |
+| RD-019 | 2026-08-10 | 券面画像もAIが未公開Draftへ取得し、人間承認後だけ公開する | FR-035 |
+| RD-020 | 2026-08-10 | Login不要の誤情報指摘Formを設け、公式確認後に修正または理由付き却下する | FR-026 |
+| RD-021 | 2026-08-10 | Login利用者Reviewを1人1カード1件、星1〜5＋Message、AI検査＋人間承認で公開する | FR-036, FR-037 |
+| RD-022 | 2026-08-10 | Review集計は経済順位・記事順位へ影響させず、Login利用者からの通報を人間判断する | FR-037, FR-038, NFR-EDIT-002 |
+| RD-023 | 2026-08-10 | 経済計算は厳密額ではなく、カテゴリ内最良条件、月次均等配分、取引単位概算を明示した目安とする | FR-005, FR-012, FR-016 |
+| RD-024 | 2026-08-10 | Account削除時はReviewを削除し、通報は直接識別を外し、最小限の仮名化不正防止情報を90日保持する | FR-025, NFR-PRIV-003 |
+| RD-025 | 2026-08-10 | 初期運営は単一管理者Roleとし、専任の不正防止Roleを設けない | FR-022, NFR-SEC-003 |
+| RD-026 | 2026-08-10 | Performance・Availabilityは指定Mobile条件、75 Percentile、規定データ量、外部5分監視で測定する | NFR-PERF-001–003, NFR-AVAIL-001 |
+| RD-027 | 2026-08-10 | 用途・読者像別の複数カード記事に加え、単一カードの新商品・機能・特典・変更内容を扱う特集記事を初期対象とする | FR-007, FR-008, FR-009, FR-031 |
+| RD-028 | 2026-08-10 | 管理者のみMFA必須、運営者Sessionは無操作30分で失効、高Risk操作はMFAを含む再認証から15分以内に限定する | NFR-SEC-001, NFR-SEC-003, AC-040 |
+| RD-029 | 2026-08-10 | 初期性能試験量をカード2,000件、Rule 20,000件、利用先5,000件、公開Review 100,000件、保存済み検索・比較履歴100,000件とし、各項目同時2倍も増加時試験に使用する。これらは保存上限としない | NFR-PERF-002, NFR-PERF-003, AC-034 |
+| RD-030 | 2026-08-10 | 家族・追加カード発行可およびETCカード発行可を検索Filterに含め、発行可否が未確認のカードは一致扱いにしない。除外件数・未確認理由の表示は必須としない | FR-013, FR-017, AC-010 |
+
+## Domain to Requirements
+
+| Domain source | Concept / Constraint | Requirements | Status |
+|---|---|---|---|
+| `00-scope.md` | 日本国内のカードおよび隣接領域、条件付きRequirements Ready | Requirements `00-scope.md`, FR-004, FR-027 | Adopted within narrowed initial scope |
+| `02-actors-and-roles.md` | Actor / Role分離、運営者、利用者、発行主体 | FR-001, FR-022, FR-025, FR-032, NFR-SEC-001, NFR-SEC-003 | Traced |
+| `03-products.md` | Product / Offering / Variant、受付状態 | FR-013, FR-017, FR-027, FR-032, FR-033 | 商品同一性が不明な新規候補を自動登録・統合せず、OQ-3のProvisional境界を固定しない |
+| `04-membership-and-issuance.md` | Eligibility、Application Route、Member Role | FR-002, FR-004, FR-017, FR-019 | OQ-8を審査推測へ変換しない |
+| `05-payment-and-credit.md` | Payment Instrument / Scheme / Funding / Credit Provider分離 | FR-017, FR-020 | 一覧用固定分類へ先取りしない |
+| `06-rewards-and-economic-flows.md` | Reward / Benefit / Partner Revenue Share分離 | FR-005, FR-015, FR-016, FR-017 | OQ-16を保持。金銭換算境界を要件で限定 |
+| `07-rules.md` | Fee、Reward、Eligibility、Campaign等の条件 | FR-005, FR-006, FR-012, FR-015, FR-016, FR-021, FR-032 | 適用条件・期間・上限を保持 |
+| `08-temporal-model.md` | Product / Feature Lifecycle、時点・期間 | FR-006, FR-011, FR-017, FR-021, FR-023, FR-024, FR-031 | 当時値と最新値を分離 |
+| `09-evidence-model.md` | Evidence chain、claim-level Disclosure Status | FR-014, FR-017, FR-020–FR-024, FR-026, FR-033, FR-034, NFR-EVID-001–003 | Source全体へ単一Statusを付与しない |
+| `10-invariants.md` | 未確認を不存在としない、各Conceptを混同しない | FR-005, FR-014, FR-020, NFR-LEGAL-002 | Traced |
+| `11-scenarios.md` | 検索・比較で必要となる主要境界Scenario | FR-004–FR-006, FR-012–FR-017, FR-023 | 未確認具体例をFact化しない |
+| `12-open-questions.md` | OQ-1–19 | Requirements `05-open-questions.md`, FR-014, FR-020, FR-024, NFR-EVID-003 | Blocks Requirements: Noを維持。Architectureへ先送りする境界を固定しない |
+| `.ai/shared/evidence-policy.md` | 公式Source、確認日、Disclosure Status、外部送信制約 | FR-008, FR-014, FR-017, FR-020–FR-024, FR-026, NFR-PRIV-001, NFR-EVID-001–003 | Traced |
+
+## Requirement to Acceptance Criteria
+
+| Requirement | Acceptance Criteria |
+|---|---|
+| FR-001 | AC-001, AC-003 |
+| FR-002, FR-003 | AC-002 |
+| FR-004, FR-010 | AC-001, AC-011 |
+| FR-005, FR-006, FR-015, FR-016 | AC-007, AC-008 |
+| FR-007, FR-008, FR-009, FR-031 | AC-016 |
+| FR-011 | AC-022 |
+| FR-012 | AC-005, AC-006 |
+| FR-013 | AC-010 |
+| FR-014, FR-023 | AC-009 |
+| FR-017, FR-018, FR-020, FR-035 | AC-014, AC-027 |
+| FR-019 | AC-015 |
+| FR-021, FR-022 | AC-017 |
+| FR-024, FR-026 | AC-023 |
+| FR-025 | AC-004 |
+| FR-027 | AC-019 |
+| FR-028 | AC-011 |
+| FR-029 | AC-012 |
+| FR-030 | AC-013 |
+| FR-032 | AC-018 |
+| FR-033, FR-034 | AC-017, AC-025, AC-026 |
+| FR-036, FR-037 | AC-028, AC-029 |
+| FR-038 | AC-030 |
+| FR-039 | AC-031 |
+| NFR-SEC-005, NFR-SEC-006, NFR-SEC-007 | AC-032 |
+| NFR-MAINT-002, NFR-OPS-001 | AC-033 |
+| NFR-PERF-003 | AC-034 |
+| NFR-PRIV-001, NFR-PRIV-002, NFR-PRIV-004, NFR-SEC-001, NFR-SEC-002, NFR-SEC-003, NFR-SEC-004 | AC-035, AC-040 |
+| NFR-EVID-001, NFR-EVID-002, NFR-EVID-004, NFR-SEO-001, NFR-SEO-002 | AC-036 |
+| NFR-OBS-001, NFR-OBS-002 | AC-037 |
+| NFR-LEGAL-001, NFR-LEGAL-002 | AC-038 |
+| NFR-COMPAT-001 | AC-039 |
+| NFR-PRIV-003 | AC-004 |
+| NFR-EVID-003 | AC-023 |
+| NFR-MAINT-001 | AC-018 |
+| NFR-EDIT-001 | AC-015 |
+| NFR-EDIT-002 | AC-028, AC-029, AC-030 |
+| NFR-A11Y-001, NFR-PERF-001, NFR-PERF-002, NFR-AVAIL-001, NFR-COST-001, NFR-COST-002 | AC-021 |
+| NFR-AVAIL-002 | AC-024 |
+| Requirements `00-scope.md` Success Conditions | AC-020 |
+
+## UI Mock Handoff
+
+| Topic | Requirements / AC | Handoff status |
+|---|---|---|
+| Profile自動反映と一時変更 | FR-003 / AC-002 | UI Mockで保存有無の誤認を検証 |
+| 利用先カテゴリと企業・サービス | FR-012 / AC-005, AC-006 | 階層指定と金額不整合を検証 |
+| 完全・不完全・変更確認中の算定 | FR-014, FR-023 / AC-009 | 状態、旧値、順位変動可能性の理解を検証 |
+| Filter、0件、比較 | FR-004, FR-013, FR-029 / AC-010–012 | Desktop / Mobileと主要状態を検証 |
+| Evidence、確認日、Source | FR-017 / AC-014 | Disclosure Statusと一般画面状態を混同しない表示を検証 |
+| Affiliate・広告 | FR-019 / AC-015 | PR表示と申込前確認の認識を検証 |
+| 記事更新確認中 | FR-031 / AC-016 | 旧記事継続掲載時の誤認防止を検証 |
+| 単一カード特集記事 | FR-007, FR-019 / AC-015, AC-016 | 対象カード、特徴、適用条件、確認時点、公式Sourceおよび広告・Affiliate関係の理解を検証 |
+
+## Architecture-blocking Domain Questions
+
+`docs/spec/domain/12-open-questions.md`に従い、少なくともOQ-1、OQ-2、OQ-3、OQ-5、OQ-7、OQ-8、OQ-14、OQ-16、OQ-17、OQ-19は未解決のままArchitectureへ進めない。本RequirementsはDB、API、固定列挙または実装構造によってこれらを解決済みにしない。
