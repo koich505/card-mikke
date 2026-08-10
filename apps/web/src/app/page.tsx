@@ -45,15 +45,34 @@ export default function Home() {
           id="featured"
           aria-labelledby="featured-title"
         >
-          <div className={styles.sectionTitleRow}>
-            <div>
-              <p className={styles.sectionKicker}>いま見てほしい合成例</p>
-              <h2 id="featured-title">注目のカード</h2>
+          <div className={styles.featuredHeader}>
+            <div className={styles.featuredIntro}>
+              <p className={styles.resultBadge}>注目カード</p>
+              <h2 id="featured-title">
+                いま見てほしい<span>カード</span>を集めました
+              </h2>
+              <p className={styles.featuredLead}>
+                年会費、還元額、確認状態を並べて、気になる3枚を見比べられます。
+              </p>
+              <ul className={styles.criteriaList} aria-label="表示している比較項目">
+                <li>年会費</li>
+                <li>年間正味還元額</li>
+                <li>通常年・初年度</li>
+                <li>確認状態</li>
+              </ul>
             </div>
-            <p className={styles.selectionNote}>
-              個人条件による順位ではありません。UIの状態表示を確認する編集枠です。
-            </p>
+            <aside className={styles.featuredSummary} aria-label="注目カードの表示概要">
+              <span>今回の注目候補</span>
+              <p>
+                <strong>{featuredCards.length}</strong>枚
+              </p>
+              <small>すべて合成データ</small>
+            </aside>
           </div>
+
+          <p className={styles.selectionNote}>
+            個人条件による順位ではありません。UIの状態表示を確認する編集枠です。
+          </p>
 
           <div className={styles.cardGrid}>
             {featuredCards.map((card, index) => (
@@ -62,37 +81,70 @@ export default function Home() {
                 key={card.id}
               >
                 <div className={styles.cardRank} aria-label={`${index + 1}件目`}>
-                  PICK <strong>{index + 1}</strong>
+                  <span>PICK</span>
+                  <strong>{index + 1}</strong>
+                  <small>位</small>
                 </div>
+                <p className={styles.cardHighlight}>{card.label}</p>
                 <div
                   className={styles.cardVisual}
                   aria-label={`${card.name}の抽象券面`}
                 >
-                  <span>カード比較くん</span>
-                  <strong>{card.name}</strong>
+                  <div className={styles.cardVisualTop}>
+                    <span>CARD HIKAKU</span>
+                    <span className={styles.contactlessMark} aria-hidden="true">
+                      )))
+                    </span>
+                  </div>
+                  <span className={styles.cardChip} aria-hidden="true" />
+                  <span className={styles.cardNumber} aria-hidden="true">
+                    •••• •••• •••• {String(index + 1).padStart(4, "0")}
+                  </span>
                   <small>UI PROTOTYPE</small>
                 </div>
-                <p className={styles.cardLabel}>{card.label}</p>
-                <h3>{card.name}</h3>
-                <p className={styles.issuer}>{card.issuer}</p>
-                <p className={styles.cardReason}>{card.reason}</p>
-                <div className={styles.valueBox}>
-                  <span>通常年の年間正味還元額</span>
-                  <p>
-                    <strong>{yen.format(card.regularYearValue)}</strong>円
-                  </p>
-                  <small>初年度 {yen.format(card.firstYearValue)}円</small>
+                <div className={styles.cardIntro}>
+                  <h3>{card.name}</h3>
+                  <p className={styles.issuer}>{card.issuer}</p>
+                  <p className={styles.cardReason}>{card.reason}</p>
                 </div>
-                <ul className={styles.cardFacts}>
-                  <li>{card.annualFeeLabel}</li>
-                  <li>{card.baseRewardLabel}</li>
-                </ul>
-                <div className={`${styles.state} ${styles[`state_${card.state}`]}`}>
-                  <strong>{card.stateLabel}</strong>
-                  <span>確認日 {card.confirmedOn}</span>
+                <div className={styles.valueBox}>
+                  <span>表示中の条件での目安</span>
+                  <p>
+                    <strong>{yen.format(card.regularYearValue)}</strong>円<b> おトク</b>
+                  </p>
+                  <small>
+                    通常年の年間正味還元額 ・ 初年度 {yen.format(card.firstYearValue)}円
+                  </small>
+                </div>
+                <div className={styles.cardInfoGrid}>
+                  <div className={styles.infoTile}>
+                    <span className={styles.infoIcon} aria-hidden="true">
+                      ¥
+                    </span>
+                    <small>年会費</small>
+                    <strong>{card.annualFeeLabel.replace("年会費 ", "")}</strong>
+                  </div>
+                  <div className={styles.infoTile}>
+                    <span className={styles.infoIcon} aria-hidden="true">
+                      %
+                    </span>
+                    <small>基本還元</small>
+                    <strong>{card.baseRewardLabel.replace("基本還元 ", "")}</strong>
+                  </div>
+                  <div
+                    className={`${styles.infoTile} ${styles.state} ${styles[`state_${card.state}`]}`}
+                  >
+                    <span className={styles.infoIcon} aria-hidden="true">
+                      ✓
+                    </span>
+                    <small>情報の状態</small>
+                    <strong>{card.stateLabel}</strong>
+                    <span>確認日 {card.confirmedOn}</span>
+                  </div>
                 </div>
                 <button type="button" className={styles.detailButton}>
-                  詳細を見る
+                  {index === 0 ? "このカードの詳細を見る" : "公式情報・詳細を見る"}
+                  <span aria-hidden="true">›</span>
                 </button>
               </article>
             ))}

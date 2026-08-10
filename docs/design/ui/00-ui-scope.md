@@ -44,8 +44,18 @@ Last updated: 2026-08-10
 ### Product name and visual direction
 
 - UI Mock上の名称は`カード比較くん`とする。
-- 親しみやすく、情報量が多く、探索中の気分が上がる活気ある売場感を目指す。
-- 特定店舗やBrandの表現を模倣せず、太い見出し、明快な枠線、Sticker、吹き出し、帯見出し、強いサイズ差による`整理されたごちゃごちゃ感`へ翻訳する。
+- 情報量を保ちながら、比較結果を落ち着いて検討できる静かな編集物の印象を目指す。従来の`整理されたごちゃごちゃ感`は採用しない。
+- 背景はWarm ivoryから淡いStoneを基調とし、細い枠線、柔らかな影、十分な余白で情報のまとまりを示す。
+- Clear Goldは先頭候補、主要・補助Action、進捗、金額、通常の状態表示に使用し、Vitamin Coralは選択状態と案内に使用する。変更確認中はMuted Orange、ErrorはDark Redとして意味を分離する。
+- Ranking Cardは1位をGold、2位をSilver、3位をBronzeで表現し、順位Badge、帯見出し、枠線、金額Panelの淡い背景へ一貫して適用する。
+- 背景面は低彩度のまま保ち、GoldとVitamin Coralを帯、順位、選択状態、金額、CTAなど限定した面で高彩度・高Contrastに使用する。Blue系とGreen系はUI Accent、状態色、抽象券面で使用しない。
+- 単色の広い面を避け、Actionには明確なGradient、背景と情報Cardには白から淡色へ移る低ContrastのGradientを使用する。
+- 主要・補助CTAは文字Contrastを確保した淡いGold Gradientとし、進捗、順位、比較等の補助表示もGold系で統一する。
+- Footerは濃色面を使用せず、明るいIvoryから明確なGoldへ移るGradientと細いGold境界線で、余白のある軽い終端をつくる。
+- 特集記事Cardは白い面を基準とし、記事種別のAccentは上辺とLabelに限定する。
+- 先頭候補をほかの候補より少し大きく見せる一方、推薦精度、相性、現在利用中カードとの差額など、Requirementsにない意味は付加しない。
+- 注目カードは順位Ribbon、抽象券面、還元額Panel、特徴Tile、主要Actionの順に構成し、先頭候補だけ横長の強調Layoutを使用する。
+- 条件入力は注目カードと同じ配色、帯見出し、金額Panel、補足Tileを用い、簡潔なStep表示と入力結果を一つのCard内で把握できる構成とする。
 - 算定状態、確認日、Evidence、広告・Affiliate、仮定、Error、Focusは装飾から分離し、理解可能性とAccessibilityを優先する。
 
 ### Asset policy（RQ-013 / RQ-038）

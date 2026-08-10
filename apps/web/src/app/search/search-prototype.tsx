@@ -114,75 +114,110 @@ export default function SearchPrototype() {
           <section aria-labelledby="condition-title">
             <div className={styles.titleRow}>
               <div>
-                <p>STEP {step} / 3</p>
+                <p className={styles.conditionBadge}>かんたん3STEP</p>
                 <h1 id="condition-title">あなたの使い方を教えてください</h1>
+                <span className={styles.titleLead}>
+                  入力した条件は、このUI Mockの中だけで比較に使用します。
+                </span>
               </div>
               <div className={styles.stepper} aria-label={`全3ステップ中${step}番目`}>
                 {[1, 2, 3].map((item) => (
                   <span key={item} aria-current={item === step ? "step" : undefined}>
-                    {item}
+                    <small>STEP</small>
+                    <strong>{item}</strong>
                   </span>
                 ))}
               </div>
             </div>
 
             {step === 1 && (
-              <div className={styles.conditionPanel}>
-                <p className={styles.panelSticker}>まずは利用額！</p>
-                <fieldset className={styles.periodSwitch}>
-                  <legend>入力する期間</legend>
-                  {(["monthly", "annual"] as const).map((period) => (
-                    <button
-                      type="button"
-                      aria-pressed={spendPeriod === period}
-                      onClick={() => setSpendPeriod(period)}
-                      key={period}
-                    >
-                      {period === "monthly" ? "月間" : "年間"}
-                    </button>
-                  ))}
-                </fieldset>
-                <label htmlFor="search-spend">{periodLabel}利用額</label>
-                <div className={styles.bigAmount}>
-                  <span>¥</span>
-                  <input
-                    id="search-spend"
-                    type="number"
-                    min="0"
-                    step="10000"
-                    value={displayedSpend}
-                    onChange={(event) =>
-                      setAnnualSpend(Number(event.target.value) * periodMultiplier)
-                    }
-                  />
-                  <strong>円</strong>
-                </div>
-                <p>
-                  {spendPeriod === "monthly"
-                    ? `毎月のおおよその利用額を入力してください（年${yen.format(annualSpend)}円として比較）。`
-                    : `1年間のおおよその合計を入力してください（月${yen.format(annualSpend / 12)}円相当）。`}
+              <div className={styles.conditionPanel} data-step="1">
+                <p className={styles.panelSticker} aria-label="ステップ1">
+                  <span>STEP</span>
+                  <strong>1</strong>
+                  <small>/ 3</small>
                 </p>
-                <div className={styles.presetButtons} aria-label="入力例">
-                  {(spendPeriod === "monthly"
-                    ? [50_000, 100_000, 200_000]
-                    : [600_000, 1_200_000, 2_400_000]
-                  ).map((value) => (
-                    <button
-                      type="button"
-                      onClick={() => setAnnualSpend(value * periodMultiplier)}
-                      key={value}
-                    >
-                      {spendPeriod === "monthly" ? "月" : "年"}
-                      {yen.format(value)}円
-                    </button>
-                  ))}
+                <p className={styles.panelBand}>まずは利用額を入力</p>
+                <div className={styles.spendLayout}>
+                  <div className={styles.spendInputArea}>
+                    <fieldset className={styles.periodSwitch}>
+                      <legend>入力する期間</legend>
+                      {(["monthly", "annual"] as const).map((period) => (
+                        <button
+                          type="button"
+                          aria-pressed={spendPeriod === period}
+                          onClick={() => setSpendPeriod(period)}
+                          key={period}
+                        >
+                          {period === "monthly" ? "月間" : "年間"}
+                        </button>
+                      ))}
+                    </fieldset>
+                    <label htmlFor="search-spend">{periodLabel}利用額</label>
+                    <div className={styles.bigAmount}>
+                      <span>¥</span>
+                      <input
+                        id="search-spend"
+                        type="number"
+                        min="0"
+                        step="10000"
+                        value={displayedSpend}
+                        onChange={(event) =>
+                          setAnnualSpend(Number(event.target.value) * periodMultiplier)
+                        }
+                      />
+                      <strong>円</strong>
+                    </div>
+                    <p>
+                      {spendPeriod === "monthly"
+                        ? "毎月のおおよその利用額を入力してください。"
+                        : "1年間のおおよその合計を入力してください。"}
+                    </p>
+                    <div className={styles.presetButtons} aria-label="入力例">
+                      {(spendPeriod === "monthly"
+                        ? [50_000, 100_000, 200_000]
+                        : [600_000, 1_200_000, 2_400_000]
+                      ).map((value) => (
+                        <button
+                          type="button"
+                          onClick={() => setAnnualSpend(value * periodMultiplier)}
+                          key={value}
+                        >
+                          <span>{spendPeriod === "monthly" ? "月" : "年"}</span>
+                          {yen.format(value)}円
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <aside
+                    className={styles.spendSummary}
+                    aria-label="比較に使用する金額"
+                  >
+                    <span className={styles.summaryIcon} aria-hidden="true">
+                      ¥
+                    </span>
+                    <small>比較に使用する年間利用額</small>
+                    <p>
+                      <strong>{yen.format(annualSpend)}</strong>円
+                    </p>
+                    <div>
+                      <span>月額換算</span>
+                      <b>{yen.format(Math.round(annualSpend / 12))}円</b>
+                    </div>
+                    <em>入力期間を切り替えても同じ年額として比較します</em>
+                  </aside>
                 </div>
               </div>
             )}
 
             {step === 2 && (
-              <div className={styles.conditionPanel}>
-                <p className={styles.panelSticker}>使う場所！</p>
+              <div className={styles.conditionPanel} data-step="2">
+                <p className={styles.panelSticker} aria-label="ステップ2">
+                  <span>STEP</span>
+                  <strong>2</strong>
+                  <small>/ 3</small>
+                </p>
+                <p className={styles.panelBand}>よく使う場所を選択</p>
                 <h2>利用先カテゴリを選ぶ</h2>
                 <p>
                   選択したカテゴリだけ金額欄を表示します。企業・Service名はすべて架空です。
@@ -262,8 +297,13 @@ export default function SearchPrototype() {
 
             {step === 3 && (
               <div className={styles.reviewGrid}>
-                <div className={styles.conditionPanel}>
-                  <p className={styles.panelSticker}>最終確認！</p>
+                <div className={styles.conditionPanel} data-step="3">
+                  <p className={styles.panelSticker} aria-label="ステップ3">
+                    <span>STEP</span>
+                    <strong>3</strong>
+                    <small>/ 3</small>
+                  </p>
+                  <p className={styles.panelBand}>入力内容を最終確認</p>
                   <h2>この条件で比べます</h2>
                   <dl className={styles.reviewList}>
                     <div>

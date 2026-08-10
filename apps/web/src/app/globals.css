@@ -1,22 +1,56 @@
 :root {
-  --color-canvas: #fff8df;
-  --color-surface: #fffef8;
-  --color-ink: #172b4d;
-  --color-ink-soft: #53627a;
-  --color-navy: #2056a8;
-  --color-red: #e93f68;
-  --color-teal: #d95f18;
-  --color-orange: #f58d1f;
-  --color-yellow: #ffd447;
-  --color-border: #243b64;
-  --color-focus: #006ad4;
+  /* Neutral scale: page, surface, borders, secondary copy, primary copy. */
+  --gray-50: #f7f9fc;
+  --gray-100: #eef2f7;
+  --gray-200: #dce3ec;
+  --gray-300: #c5cfdd;
+  --gray-500: #667085;
+  --gray-700: #344054;
+  --gray-900: #17233c;
+
+  /* Brand scale: one blue family for links, selection and actions. */
+  --blue-50: #eef5ff;
+  --blue-100: #dbeaff;
+  --blue-200: #bdd6f5;
+  --blue-600: #2257a6;
+  --blue-700: #1c4b91;
+  --blue-800: #173d78;
+
+  /* Accent scale: reserved for small editorial emphasis. */
+  --red-50: #fff1f4;
+  --red-200: #f4bdc8;
+  --red-600: #c93f59;
+  --red-800: #8f2940;
+
+  --color-canvas: var(--gray-50);
+  --color-surface: #ffffff;
+  --color-ink: var(--gray-900);
+  --color-ink-soft: var(--gray-500);
+  --color-navy: var(--blue-800);
+  --color-accent: var(--red-600);
+  --color-gold: #c28b18;
+  --color-red: var(--red-600);
+  --color-danger: #b9384e;
+  --color-teal: var(--blue-600);
+  --color-orange: #b86a2e;
+  --color-yellow: #f5df9b;
+  --color-border: var(--gray-300);
+  --color-focus: var(--blue-600);
+  --gradient-page: linear-gradient(180deg, #fbfcfe 0%, var(--gray-50) 100%);
+  --gradient-surface: linear-gradient(150deg, #ffffff 0%, #fafbfd 100%);
+  --gradient-blue: linear-gradient(135deg, var(--blue-600), var(--blue-800));
+  --gradient-button: linear-gradient(135deg, var(--blue-600), var(--blue-800));
+  --gradient-teal: linear-gradient(135deg, var(--blue-600), var(--blue-800));
+  --gradient-gold: linear-gradient(135deg, #f7dc7d 0%, #d9a522 55%, #b87c08 100%);
+  --gradient-silver: linear-gradient(135deg, #eef2f7, #aeb9c8);
+  --gradient-bronze: linear-gradient(135deg, #c58a5b 0%, #9a6039 55%, #704127 100%);
   --font-sans:
     -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic",
     Meiryo, sans-serif;
-  --shadow-pop: 0 12px 30px rgb(31 56 90 / 13%), 0 3px 0 rgb(36 59 100 / 16%);
-  --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 28px;
+  --shadow-pop: 0 10px 28px rgb(23 35 60 / 7%), 0 2px 6px rgb(23 35 60 / 4%);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -41,7 +75,7 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--color-ink);
-  background: var(--color-canvas);
+  background: var(--gradient-page);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
