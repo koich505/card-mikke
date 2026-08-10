@@ -2,8 +2,63 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import SiteHeader from "@/app/components/site-header";
 import { featuredCards } from "@/fixtures/home";
 import styles from "./search.module.css";
+
+const spendOptions = [
+  { id: "amount-1", monthly: 50_000, annual: 500_000, icon: "\u00a5" },
+  { id: "amount-2", monthly: 100_000, annual: 1_000_000, icon: "W" },
+  { id: "amount-3", monthly: 200_000, annual: 2_000_000, icon: "C" },
+  { id: "amount-4", monthly: 300_000, annual: 3_000_000, icon: "B" },
+  { id: "amount-5", monthly: 500_000, annual: 5_000_000, icon: "P" },
+  { id: "amount-6", monthly: 700_000, annual: 7_000_000, icon: "7" },
+] as const;
+
+const profiles = [
+  {
+    id: "everyday",
+    name: "コツコツ派",
+    description: "コンビニやスーパーをよく使う",
+    badge: "日常使い重視",
+    icon: "SHOP",
+  },
+  {
+    id: "points",
+    name: "ポイント派",
+    description: "還元率やポイントを重視したい",
+    badge: "還元率重視",
+    icon: "POINT",
+  },
+  {
+    id: "travel",
+    name: "おでかけ派",
+    description: "旅行や交通でおトクに使いたい",
+    badge: "旅行・交通重視",
+    icon: "TRIP",
+  },
+  {
+    id: "simple",
+    name: "シンプル派",
+    description: "年会費をかけず気軽に使いたい",
+    badge: "年会費重視",
+    icon: "FREE",
+  },
+  {
+    id: "shopping",
+    name: "お買い物派",
+    description: "ネット通販や大きな買い物が多い",
+    badge: "買い物重視",
+    icon: "CART",
+  },
+  {
+    id: "custom",
+    name: "こだわり派",
+    description: "利用先と金額まで自分で設定したい",
+    badge: "詳細条件を入力",
+    icon: "EDIT",
+  },
+] as const;
 
 const categories = [
   "コンビニ",
@@ -16,19 +71,35 @@ const categories = [
   "交通",
   "旅行・宿泊",
   "ネット通販",
-  "その他",
 ] as const;
 
 type Category = (typeof categories)[number];
-type View = "conditions" | "results" | "compare";
+type ProfileId = (typeof profiles)[number]["id"];
 type SpendPeriod = "monthly" | "annual";
+type View = "search" | "results" | "compare";
 
 const yen = new Intl.NumberFormat("ja-JP");
 
+const categoryMarks: Record<Category, string> = {
+  コンビニ: "24",
+  スーパー: "食",
+  ドラッグストア: "+",
+  飲食店: "皿",
+  ガソリン: "G",
+  公共料金: "光",
+  携帯電話: "TEL",
+  交通: "IC",
+  "旅行・宿泊": "旅",
+  ネット通販: "WEB",
+};
+
 export default function SearchPrototype() {
-  const [step, setStep] = useState(1);
-  const [view, setView] = useState<View>("conditions");
-  const [annualSpend, setAnnualSpend] = useState(1_200_000);
+  const [view, setView] = useState<View>("search");
+  const [annualSpend, setAnnualSpend] = useState<number | null>(null);
+  const [mainSpendPeriod, setMainSpendPeriod] = useState<SpendPeriod>("annual");
+  const [selectedSpendId, setSelectedSpendId] = useState<string | null>(null);
+  const [customSpendMan, setCustomSpendMan] = useState("");
+  const [profile, setProfile] = useState<ProfileId | null>(null);
   const [spendPeriod, setSpendPeriod] = useState<SpendPeriod>("monthly");
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([
     "コンビニ",
@@ -38,30 +109,56 @@ export default function SearchPrototype() {
     コンビニ: 120_000,
     スーパー: 360_000,
   });
-  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
-  const [includeInvitation, setIncludeInvitation] = useState(false);
-  const [includeClosed, setIncludeClosed] = useState(false);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [differencesOnly, setDifferencesOnly] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
 
+  const detailedAnnualSpend = annualSpend ?? 0;
+  const periodMultiplier = spendPeriod === "monthly" ? 12 : 1;
   const allocated = useMemo(
-    () => Object.values(amounts).reduce((sum, value) => sum + (value ?? 0), 0),
+    () => Object.values(amounts).reduce((total, value) => total + (value ?? 0), 0),
     [amounts],
   );
-  const remaining = annualSpend - allocated;
-  const invalid = remaining < 0;
-  const periodLabel = spendPeriod === "monthly" ? "月間" : "年間";
-  const periodMultiplier = spendPeriod === "monthly" ? 12 : 1;
-  const displayedSpend = annualSpend / periodMultiplier;
+  const invalid = allocated > detailedAnnualSpend;
 
-  const visibleCards = useMemo(
-    () =>
-      featuredCards
-        .filter((card) => (freeFeeOnly ? card.annualFeeLabel.includes("無料") : true))
-        .toSorted((a, b) => b.regularYearValue - a.regularYearValue),
-    [freeFeeOnly],
-  );
+  const rankedCards = useMemo(() => {
+    const preference: Record<ProfileId, string[]> = {
+      everyday: ["everyday-plus", "smart-basic", "travel-step"],
+      points: ["everyday-plus", "travel-step", "smart-basic"],
+      travel: ["travel-step", "everyday-plus", "smart-basic"],
+      simple: ["smart-basic", "everyday-plus", "travel-step"],
+      shopping: ["everyday-plus", "travel-step", "smart-basic"],
+      custom: ["everyday-plus", "travel-step", "smart-basic"],
+    };
+    const order = profile ? preference[profile] : featuredCards.map((card) => card.id);
+    return [...featuredCards]
+      .filter((card) => !freeFeeOnly || card.annualFeeLabel.includes("無料"))
+      .toSorted((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  }, [freeFeeOnly, profile]);
+
+  const selectedProfile = profiles.find((item) => item.id === profile);
+  const comparedCards = featuredCards.filter((card) => compareIds.includes(card.id));
+
+  function selectSpend(id: string, value: number) {
+    setSelectedSpendId(id);
+    setCustomSpendMan("");
+    setAnnualSpend(mainSpendPeriod === "monthly" ? value * 12 : value);
+  }
+
+  function changeMainSpendPeriod(period: SpendPeriod) {
+    setMainSpendPeriod(period);
+    setSelectedSpendId(null);
+    setCustomSpendMan("");
+    setAnnualSpend(null);
+  }
+
+  function updateCustomSpend(value: string) {
+    setSelectedSpendId("custom");
+    setCustomSpendMan(value);
+    const amount = Number(value) * 10_000;
+    setAnnualSpend(
+      value === "" ? null : mainSpendPeriod === "monthly" ? amount * 12 : amount,
+    );
+  }
 
   function toggleCategory(category: Category) {
     setSelectedCategories((current) =>
@@ -75,614 +172,561 @@ export default function SearchPrototype() {
   }
 
   function toggleCompare(id: string) {
-    setCompareIds((current) => {
-      if (current.includes(id)) return current.filter((item) => item !== id);
-      if (current.length >= 5) return current;
-      return [...current, id];
-    });
+    setCompareIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : current.length < 3
+          ? [...current, id]
+          : current,
+    );
   }
 
-  const comparedCards = featuredCards.filter((card) => compareIds.includes(card.id));
+  function showResults() {
+    setFreeFeeOnly(false);
+    setCompareIds([]);
+    setView("results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function returnToSearch() {
+    setView("search");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   return (
     <div className={styles.page}>
       <a className={styles.skipLink} href="#search-main">
         本文へ移動
       </a>
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
-          <span aria-hidden="true">比較！</span>
-          カードみっけ
-        </Link>
-        <nav aria-label="検索中のナビゲーション">
-          <Link href="/">ホーム</Link>
-          <button type="button" onClick={() => setView("conditions")}>
-            条件を変更
-          </button>
-          <button type="button" onClick={() => setView("results")}>
-            検索結果
-          </button>
-        </nav>
-      </header>
 
-      <main id="search-main" className={styles.main}>
-        <div className={styles.prototypeNotice}>
-          UI Mock：入力・Filter・比較はMemory内の合成データだけで動作します
-        </div>
+      <SiteHeader currentPage="search" />
 
-        {view === "conditions" && (
-          <section aria-labelledby="condition-title">
-            <div className={styles.titleRow}>
-              <div>
-                <p className={styles.conditionBadge}>かんたん3STEP</p>
-                <h1 id="condition-title">あなたの使い方を教えてください</h1>
-                <span className={styles.titleLead}>
-                  入力した条件は、このUI Mockの中だけで比較に使用します。
-                </span>
+      <main id="search-main">
+        {view === "search" && (
+          <>
+            <section className={styles.hero} aria-labelledby="hero-title">
+              <div className={styles.heroInner}>
+                <div className={styles.heroVisual} aria-hidden="true">
+                  <span className={styles.sparkleOne}>✦</span>
+                  <span className={styles.sparkleTwo}>✦</span>
+                  <div className={styles.floatingCardBack}>
+                    <span />
+                  </div>
+                  <div className={styles.floatingCardFront}>
+                    <span className={styles.cardChip} />
+                    <strong>CARD</strong>
+                    <small>GOOD MATCH</small>
+                  </div>
+                  <div className={styles.matchSeal}>
+                    <strong>BEST</strong>
+                    <span>MATCH!</span>
+                  </div>
+                </div>
+
+                <div className={styles.heroCopy}>
+                  <p className={styles.eyebrow}>
+                    むずかしいカード選びを、もっと楽しく！
+                  </p>
+                  <h1 id="hero-title">
+                    いつもの使い方で
+                    <span>どれがおトク？</span>
+                  </h1>
+                  <p className={styles.heroDescription}>
+                    年間利用額とあなたのタイプを選ぶだけ。
+                    <br />
+                    ぴったりのカードを、わかりやすく比べられます。
+                  </p>
+                  <ul className={styles.heroBenefits}>
+                    <li>
+                      <span>✓</span>登録なしで比較OK
+                    </li>
+                    <li>
+                      <span>★</span>最大3枚を比較
+                    </li>
+                    <li>
+                      <span>◷</span>最短30秒
+                    </li>
+                  </ul>
+                </div>
+
+                <aside className={styles.howTo} id="how-to" aria-label="検索の流れ">
+                  <div className={styles.howToTitle}>
+                    <small>たったの</small>
+                    <strong>2</strong>
+                    <span>STEP</span>
+                  </div>
+                  <ol>
+                    <li>
+                      <span>1</span>
+                      <strong>年間利用額を選ぶ</strong>
+                    </li>
+                    <li>
+                      <span>2</span>
+                      <strong>あなたのタイプを選ぶ</strong>
+                    </li>
+                    <li className={styles.howToGoal}>
+                      <span>✓</span>
+                      <strong>おすすめをチェック！</strong>
+                    </li>
+                  </ol>
+                </aside>
               </div>
-              <div className={styles.stepper} aria-label={`全3ステップ中${step}番目`}>
-                {[1, 2, 3].map((item) => (
-                  <span key={item} aria-current={item === step ? "step" : undefined}>
-                    <small>STEP</small>
-                    <strong>{item}</strong>
-                  </span>
-                ))}
-              </div>
-            </div>
+            </section>
 
-            {step === 1 && (
-              <div className={styles.conditionPanel} data-step="1">
-                <p className={styles.panelSticker} aria-label="ステップ1">
-                  <span>STEP</span>
-                  <strong>1</strong>
-                  <small>/ 3</small>
-                </p>
-                <p className={styles.panelBand}>まずは利用額を入力</p>
-                <div className={styles.spendLayout}>
-                  <div className={styles.spendInputArea}>
-                    <fieldset className={styles.periodSwitch}>
-                      <legend>入力する期間</legend>
+            <section
+              className={styles.searchShell}
+              id="search-panel"
+              aria-label="カード検索"
+            >
+              <div className={styles.quickPanel}>
+                <section className={styles.questionBlock} aria-labelledby="spend-title">
+                  <div className={styles.spendHeaderRow}>
+                    <div className={styles.questionHeader}>
+                      <p>
+                        <span>まずはココ！</span>条件からカードを探す
+                      </p>
+                      <h2 id="spend-title">
+                        <span>Q1</span>
+                        {mainSpendPeriod === "monthly" ? "月間" : "年間"}
+                        いくらくらい使いますか？
+                      </h2>
+                    </div>
+                    <fieldset
+                      className={`${styles.periodSwitch} ${styles.mainPeriodSwitch}`}
+                    >
+                      <legend>利用額の期間</legend>
                       {(["monthly", "annual"] as const).map((period) => (
                         <button
                           type="button"
-                          aria-pressed={spendPeriod === period}
-                          onClick={() => setSpendPeriod(period)}
+                          aria-pressed={mainSpendPeriod === period}
+                          onClick={() => changeMainSpendPeriod(period)}
                           key={period}
                         >
                           {period === "monthly" ? "月間" : "年間"}
                         </button>
                       ))}
                     </fieldset>
-                    <label htmlFor="search-spend">{periodLabel}利用額</label>
-                    <div className={styles.bigAmount}>
-                      <span>¥</span>
-                      <input
-                        id="search-spend"
-                        type="number"
-                        min="0"
-                        step="10000"
-                        value={displayedSpend}
-                        onChange={(event) =>
-                          setAnnualSpend(Number(event.target.value) * periodMultiplier)
-                        }
-                      />
-                      <strong>円</strong>
-                    </div>
-                    <p>
-                      {spendPeriod === "monthly"
-                        ? "毎月のおおよその利用額を入力してください。"
-                        : "1年間のおおよその合計を入力してください。"}
-                    </p>
-                    <div className={styles.presetButtons} aria-label="入力例">
-                      {(spendPeriod === "monthly"
-                        ? [50_000, 100_000, 200_000]
-                        : [600_000, 1_200_000, 2_400_000]
-                      ).map((value) => (
-                        <button
-                          type="button"
-                          onClick={() => setAnnualSpend(value * periodMultiplier)}
-                          key={value}
-                        >
-                          <span>{spendPeriod === "monthly" ? "月" : "年"}</span>
-                          {yen.format(value)}円
-                        </button>
-                      ))}
-                    </div>
                   </div>
-                  <aside
-                    className={styles.spendSummary}
-                    aria-label="比較に使用する金額"
-                  >
-                    <span className={styles.summaryIcon} aria-hidden="true">
-                      ¥
-                    </span>
-                    <small>比較に使用する年間利用額</small>
-                    <p>
-                      <strong>{yen.format(annualSpend)}</strong>円
-                    </p>
-                    <div>
-                      <span>月額換算</span>
-                      <b>{yen.format(Math.round(annualSpend / 12))}円</b>
-                    </div>
-                    <em>入力期間を切り替えても同じ年額として比較します</em>
-                  </aside>
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className={styles.conditionPanel} data-step="2">
-                <p className={styles.panelSticker} aria-label="ステップ2">
-                  <span>STEP</span>
-                  <strong>2</strong>
-                  <small>/ 3</small>
-                </p>
-                <p className={styles.panelBand}>よく使う場所を選択</p>
-                <h2>利用先カテゴリを選ぶ</h2>
-                <p>
-                  選択したカテゴリだけ金額欄を表示します。企業・Service名はすべて架空です。
-                </p>
-                <fieldset className={styles.periodSwitch}>
-                  <legend>カテゴリ別の入力期間</legend>
-                  {(["monthly", "annual"] as const).map((period) => (
-                    <button
-                      type="button"
-                      aria-pressed={spendPeriod === period}
-                      onClick={() => setSpendPeriod(period)}
-                      key={period}
-                    >
-                      {period === "monthly" ? "月間" : "年間"}
-                    </button>
-                  ))}
-                </fieldset>
-                <div className={styles.categoryGrid}>
-                  {categories.map((category) => {
-                    const selected = selectedCategories.includes(category);
-                    return (
-                      <div
+                  <div className={styles.spendGrid}>
+                    {spendOptions.map((option, index) => (
+                      <button
+                        type="button"
                         className={
-                          selected ? styles.categorySelected : styles.categoryCollapsed
+                          selectedSpendId === option.id ? styles.choiceSelected : ""
                         }
-                        key={category}
+                        aria-pressed={selectedSpendId === option.id}
+                        onClick={() => selectSpend(option.id, option[mainSpendPeriod])}
+                        key={option.id}
                       >
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={selected}
-                            onChange={() => toggleCategory(category)}
-                          />
-                          <strong>{category}</strong>
-                        </label>
-                        {selected && (
-                          <div className={styles.categoryAmount}>
-                            <label htmlFor={`amount-${category}`}>
-                              {periodLabel}利用額
-                            </label>
-                            <input
-                              id={`amount-${category}`}
-                              type="number"
-                              min="0"
-                              step="10000"
-                              value={(amounts[category] ?? 0) / periodMultiplier}
-                              onChange={(event) =>
-                                setAmounts((current) => ({
-                                  ...current,
-                                  [category]:
-                                    Number(event.target.value) * periodMultiplier,
-                                }))
-                              }
-                            />
-                            <span>円</span>
-                            <small>カテゴリ内の確認済み最良条件を使う目安</small>
-                          </div>
-                        )}
+                        <span className={styles.spendIcon} data-index={index}>
+                          {option.icon}
+                        </span>
+                        <strong>{option[mainSpendPeriod] / 10_000}万円</strong>
+                        {selectedSpendId === option.id && <i aria-hidden="true">✓</i>}
+                      </button>
+                    ))}
+                    <label
+                      className={`${styles.customSpendCard} ${
+                        selectedSpendId === "custom" ? styles.choiceSelected : ""
+                      }`}
+                    >
+                      <span className={styles.customSpendIcon} aria-hidden="true">
+                        FREE
+                      </span>
+                      <strong>自由入力</strong>
+                      <div>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          inputMode="numeric"
+                          aria-label={`${mainSpendPeriod === "monthly" ? "月間" : "年間"}利用額を自由入力`}
+                          value={customSpendMan}
+                          onFocus={() => {
+                            setSelectedSpendId("custom");
+                            if (customSpendMan === "") setAnnualSpend(null);
+                          }}
+                          onChange={(event) => updateCustomSpend(event.target.value)}
+                        />
+                        <span>万円</span>
                       </div>
-                    );
-                  })}
-                </div>
-                {invalid && (
-                  <div className={styles.inlineError} role="alert">
-                    <strong>利用額の内訳が全体の利用額を超えています</strong>
-                    <span>
-                      {periodLabel}の内訳合計は
-                      {yen.format(allocated / periodMultiplier)}円です。全体の
-                      {periodLabel}利用額を
-                      {yen.format(Math.abs(remaining) / periodMultiplier)}
-                      円以上増やすか、 カテゴリ別利用額を減らしてください。
-                    </span>
+                      <small>
+                        {mainSpendPeriod === "monthly" ? "1か月分" : "1年分"}
+                      </small>
+                      {selectedSpendId === "custom" && customSpendMan !== "" && (
+                        <i aria-hidden="true">✓</i>
+                      )}
+                    </label>
+                  </div>
+                </section>
+
+                <section
+                  className={`${styles.questionBlock} ${styles.secondQuestion}`}
+                  aria-labelledby="profile-title"
+                >
+                  <div className={styles.questionHeader}>
+                    <p>つぎに、使い方を選択</p>
+                    <h2 id="profile-title">
+                      <span>Q2</span>あなたに近いタイプはどれですか？
+                    </h2>
+                  </div>
+                  <div className={styles.profileGrid}>
+                    {profiles.map((item) => (
+                      <button
+                        type="button"
+                        className={profile === item.id ? styles.profileSelected : ""}
+                        aria-pressed={profile === item.id}
+                        onClick={() => setProfile(item.id)}
+                        key={item.id}
+                      >
+                        <span>{item.icon}</span>
+                        <strong>{item.name}</strong>
+                        <small>{item.description}</small>
+                        <em>{item.badge}</em>
+                        {profile === item.id && <i aria-hidden="true">✓</i>}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                {profile === "custom" && (
+                  <div className={`${styles.detailPanel} ${styles.customDetail}`}>
+                    <div className={styles.detailHeading}>
+                      <p>
+                        <span>DETAIL SEARCH</span>こだわり条件を入力
+                      </p>
+                      <h2>よく使う場所と金額を教えてください</h2>
+                      <small>
+                        選択した年間利用額の中で、利用先ごとの内訳を設定できます。
+                      </small>
+                    </div>
+
+                    <div className={styles.customSummaryRow}>
+                      <div className={styles.selectedSpendSummary}>
+                        <span>選択中の年間利用額</span>
+                        <strong>
+                          {annualSpend ? `${yen.format(annualSpend)}円` : "未選択"}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className={styles.detailCategories}>
+                      <div className={styles.detailSectionTitle}>
+                        <span className={styles.detailNumber}>3</span>
+                        <div>
+                          <strong>よく使う場所と金額</strong>
+                          <small>使わない項目は選択しなくてOKです</small>
+                        </div>
+                        <fieldset className={styles.periodSwitch}>
+                          <legend>カテゴリ別金額の入力期間</legend>
+                          {(["monthly", "annual"] as const).map((period) => (
+                            <button
+                              type="button"
+                              aria-pressed={spendPeriod === period}
+                              onClick={() => setSpendPeriod(period)}
+                              key={period}
+                            >
+                              {period === "monthly" ? "月間" : "年間"}
+                            </button>
+                          ))}
+                        </fieldset>
+                      </div>
+                      <div className={styles.categoryGrid}>
+                        {categories.map((category) => {
+                          const selected = selectedCategories.includes(category);
+                          return (
+                            <div
+                              className={selected ? styles.categorySelected : ""}
+                              key={category}
+                            >
+                              <label className={styles.categoryToggle}>
+                                <input
+                                  type="checkbox"
+                                  checked={selected}
+                                  onChange={() => toggleCategory(category)}
+                                />
+                                <span aria-hidden="true">
+                                  {categoryMarks[category]}
+                                </span>
+                                <strong>{category}</strong>
+                              </label>
+                              {selected && (
+                                <label
+                                  className={styles.categoryAmount}
+                                  htmlFor={`amount-${category}`}
+                                >
+                                  <input
+                                    id={`amount-${category}`}
+                                    type="number"
+                                    min="0"
+                                    step="1000"
+                                    value={Math.round(
+                                      (amounts[category] ?? 0) / periodMultiplier,
+                                    )}
+                                    onChange={(event) =>
+                                      setAmounts((current) => ({
+                                        ...current,
+                                        [category]:
+                                          Number(event.target.value) * periodMultiplier,
+                                      }))
+                                    }
+                                  />
+                                  <span>
+                                    円／{spendPeriod === "monthly" ? "月" : "年"}
+                                  </span>
+                                </label>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div
+                        className={invalid ? styles.totalError : styles.totalSummary}
+                        role={invalid ? "alert" : undefined}
+                      >
+                        <div>
+                          <span>入力した内訳の年間合計</span>
+                          <strong>{yen.format(allocated)}円</strong>
+                        </div>
+                        <p>
+                          {!annualSpend
+                            ? "先に年間利用額を選択してください。"
+                            : invalid
+                              ? `年間利用額を ${yen.format(allocated - detailedAnnualSpend)}円 超えています。`
+                              : `残り ${yen.format(detailedAnnualSpend - allocated)}円は、その他の利用として判定します。`}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
-              </div>
-            )}
 
-            {step === 3 && (
-              <div className={styles.reviewGrid}>
-                <div className={styles.conditionPanel} data-step="3">
-                  <p className={styles.panelSticker} aria-label="ステップ3">
-                    <span>STEP</span>
-                    <strong>3</strong>
-                    <small>/ 3</small>
+                <div className={styles.unifiedActions}>
+                  <p>
+                    {!annualSpend
+                      ? "年間利用額を選択してください"
+                      : !profile
+                        ? "あなたのタイプを選択してください"
+                        : profile === "custom" && invalid
+                          ? "内訳の金額を調整してください"
+                          : "入力内容をもとに、おすすめを判定します"}
                   </p>
-                  <p className={styles.panelBand}>入力内容を最終確認</p>
-                  <h2>この条件で比べます</h2>
-                  <dl className={styles.reviewList}>
-                    <div>
-                      <dt>年間利用額</dt>
-                      <dd>{yen.format(annualSpend)}円</dd>
-                    </div>
-                    {selectedCategories.map((category) => (
-                      <div key={category}>
-                        <dt>{category}</dt>
-                        <dd>{yen.format(amounts[category] ?? 0)}円</dd>
-                      </div>
-                    ))}
-                    <div>
-                      <dt>その他の利用</dt>
-                      <dd>{yen.format(Math.max(remaining, 0))}円</dd>
-                    </div>
-                  </dl>
+                  <button
+                    type="button"
+                    className={styles.resultButton}
+                    disabled={
+                      !annualSpend || !profile || (profile === "custom" && invalid)
+                    }
+                    onClick={showResults}
+                  >
+                    おすすめ結果を見る <span>→</span>
+                  </button>
                 </div>
-                <aside className={invalid ? styles.summaryError : styles.summaryOk}>
-                  <strong>
-                    {invalid ? "内訳が年額を超えています" : "合計は一致しています"}
-                  </strong>
-                  <span>年間利用額 {yen.format(annualSpend)}円</span>
-                  <span>利用先内訳 {yen.format(allocated)}円</span>
-                  {invalid && (
-                    <p>{yen.format(Math.abs(remaining))}円減らしてください。</p>
-                  )}
-                  {!invalid && (
-                    <p>差額は「その他の利用」として通常還元の目安に含めます。</p>
-                  )}
-                </aside>
               </div>
-            )}
+            </section>
 
-            <div className={styles.stepActions}>
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                disabled={step === 1}
-                onClick={() => setStep((current) => Math.max(1, current - 1))}
-              >
-                ← 戻る
-              </button>
-              {step < 3 ? (
-                <button
-                  type="button"
-                  className={styles.primaryButton}
-                  disabled={step === 2 && invalid}
-                  onClick={() => setStep((current) => Math.min(3, current + 1))}
-                >
-                  次へ →
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.primaryButton}
-                  disabled={invalid}
-                  onClick={() => setView("results")}
-                >
-                  この条件で結果を見る！
-                </button>
-              )}
-            </div>
-          </section>
+            <section className={styles.typeGuide} aria-labelledby="type-guide-title">
+              <p>✦</p>
+              <div>
+                <span>かんたん検索なら</span>
+                <h2 id="type-guide-title">
+                  あなたのタイプに合わせて、比較ポイントを変えます
+                </h2>
+              </div>
+              <ul>
+                <li>
+                  <span>買</span>
+                  <strong>日常使い</strong>
+                </li>
+                <li>
+                  <span>P</span>
+                  <strong>ポイント</strong>
+                </li>
+                <li>
+                  <span>旅</span>
+                  <strong>旅行・交通</strong>
+                </li>
+                <li>
+                  <span>¥</span>
+                  <strong>年会費</strong>
+                </li>
+              </ul>
+            </section>
+          </>
         )}
 
         {view === "results" && (
-          <section aria-labelledby="results-title">
-            <div className={styles.resultsHeading}>
+          <section className={styles.resultsPage} aria-labelledby="results-title">
+            <div className={styles.resultsHero}>
+              <p>あなたの条件に合わせて判定しました</p>
+              <h1 id="results-title">おすすめカードは、この3枚！</h1>
               <div>
-                <p>年間 {yen.format(annualSpend)}円の合成結果</p>
-                <h1 id="results-title">あなたの条件では、この3枚に注目！</h1>
+                <span>
+                  年間利用額{" "}
+                  <strong>{yen.format(annualSpend ?? detailedAnnualSpend)}円</strong>
+                </span>
+                <span>
+                  {profile === "custom"
+                    ? `${selectedCategories.length}カテゴリを詳細入力`
+                    : (selectedProfile?.badge ?? "かんたん検索")}
+                </span>
               </div>
-              <button type="button" onClick={() => setView("conditions")}>
-                条件を変更
+            </div>
+
+            <div className={styles.resultsToolbar}>
+              <p>
+                <strong>{rankedCards.length}</strong>件の候補
+              </p>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={freeFeeOnly}
+                  onChange={(event) => setFreeFeeOnly(event.target.checked)}
+                />
+                年会費無料だけ表示
+              </label>
+              <button type="button" onClick={returnToSearch}>
+                ← 条件を変更する
               </button>
             </div>
-            <div className={styles.activeConditions} aria-label="適用中の条件">
-              <strong>適用中：</strong>
-              {selectedCategories.map((category) => (
-                <span key={category}>{category}</span>
-              ))}
-              <span>通常年が高い順</span>
-            </div>
 
-            <button
-              type="button"
-              className={styles.mobileFilterButton}
-              onClick={() => setFilterOpen(true)}
-              aria-expanded={filterOpen}
-              aria-controls="search-filters"
-            >
-              絞り込みを開く
-            </button>
-
-            <div className={styles.resultLayout}>
-              <aside
-                className={`${styles.filters} ${filterOpen ? styles.filtersOpen : ""}`}
-                id="search-filters"
-                aria-labelledby="filter-title"
-                aria-modal={filterOpen || undefined}
-                role={filterOpen ? "dialog" : undefined}
-              >
-                <button
-                  type="button"
-                  className={styles.mobileFilterClose}
-                  onClick={() => setFilterOpen(false)}
-                >
-                  閉じる
-                </button>
-                <h2 id="filter-title">絞り込み</h2>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={freeFeeOnly}
-                    onChange={(event) => setFreeFeeOnly(event.target.checked)}
-                  />
-                  年会費無料
-                </label>
-                <label>
-                  <input type="checkbox" /> 還元率1.0%以上
-                </label>
-                <label>
-                  <input type="checkbox" /> 家族・追加カード発行可
-                </label>
-                <label>
-                  <input type="checkbox" /> ETCカード発行可
-                </label>
-                <hr />
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={includeInvitation}
-                    onChange={(event) => setIncludeInvitation(event.target.checked)}
-                  />
-                  招待制を含める
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={includeClosed}
-                    onChange={(event) => setIncludeClosed(event.target.checked)}
-                  />
-                  新規受付停止を含める
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFreeFeeOnly(false);
-                    setIncludeInvitation(false);
-                    setIncludeClosed(false);
-                  }}
-                >
-                  すべて解除
-                </button>
-                <button
-                  type="button"
-                  className={styles.mobileFilterApply}
-                  onClick={() => setFilterOpen(false)}
-                >
-                  {visibleCards.length}件の結果を表示
-                </button>
-              </aside>
-
-              <div className={styles.results} aria-live="polite">
-                <p className={styles.resultCount}>{visibleCards.length}件を表示</p>
-                {visibleCards.map((card, index) => {
-                  const selected = compareIds.includes(card.id);
-                  return (
-                    <article className={styles.resultCard} key={card.id}>
-                      <div className={styles.resultRank}>
-                        <span>通常年の目安順</span>
-                        <strong>{index + 1}</strong>
-                      </div>
-                      <div
-                        className={`${styles.miniCard} ${styles[`mini_${card.accent}`]}`}
+            <div className={styles.resultList} aria-live="polite">
+              {rankedCards.map((card, index) => {
+                const selected = compareIds.includes(card.id);
+                return (
+                  <article className={styles.resultCard} key={card.id}>
+                    <div className={styles.resultRank}>
+                      <small>おすすめ</small>
+                      <strong>{index + 1}</strong>
+                      <span>位</span>
+                    </div>
+                    <div
+                      className={`${styles.cardMock} ${styles[`card_${card.accent}`]}`}
+                      aria-hidden="true"
+                    >
+                      <span />
+                      <small>CARD MIKKE</small>
+                      <strong>{card.name}</strong>
+                    </div>
+                    <div className={styles.resultContent}>
+                      <p>{card.label}</p>
+                      <h2>{card.name}</h2>
+                      <small>{card.issuer}</small>
+                      <ul>
+                        <li>{card.annualFeeLabel}</li>
+                        <li>{card.baseRewardLabel}</li>
+                      </ul>
+                    </div>
+                    <div className={styles.resultValue}>
+                      <span>年間のおトク目安</span>
+                      <p>
+                        <strong>{yen.format(card.regularYearValue)}</strong>円
+                      </p>
+                      <small>初年度 {yen.format(card.firstYearValue)}円</small>
+                    </div>
+                    <div className={styles.resultActions}>
+                      <button
+                        type="button"
+                        className={selected ? styles.compareSelected : ""}
+                        onClick={() => toggleCompare(card.id)}
                       >
-                        <small>UI PROTOTYPE</small>
-                        <strong>{card.name}</strong>
-                      </div>
-                      <div className={styles.resultMain}>
-                        <p className={styles.resultLabel}>{card.label}</p>
-                        <h2>{card.name}</h2>
-                        <p>{card.issuer}</p>
-                        <div className={styles.resultValue}>
-                          <span>通常年の年間正味還元額</span>
-                          <p>
-                            <strong>{yen.format(card.regularYearValue)}</strong>円
-                          </p>
-                          <small>初年度 {yen.format(card.firstYearValue)}円</small>
-                        </div>
-                        <ul>
-                          <li>{card.annualFeeLabel}</li>
-                          <li>{card.baseRewardLabel}</li>
-                        </ul>
-                      </div>
-                      <div className={styles.resultActions}>
-                        <div className={styles.resultState} data-state={card.state}>
-                          <strong>{card.stateLabel}</strong>
-                          <span>確認日 {card.confirmedOn}</span>
-                        </div>
-                        <button
-                          type="button"
-                          className={selected ? styles.compareSelected : ""}
-                          onClick={() => toggleCompare(card.id)}
-                        >
-                          {selected ? "✓ 比較に追加済み" : "+ 比較に追加"}
-                        </button>
-                        <details>
-                          <summary>算定内訳と根拠</summary>
-                          <p>{card.reason}</p>
-                          <p>通常還元・利用先還元・年会費を区別した合成説明です。</p>
-                        </details>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
+                        {selected ? "✓ 比較に追加済み" : "+ 比較に追加"}
+                      </button>
+                      <details>
+                        <summary>この判定の理由</summary>
+                        <p>{card.reason}</p>
+                      </details>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
         )}
 
         {view === "compare" && (
-          <section aria-labelledby="compare-title">
-            <div className={styles.resultsHeading}>
-              <div>
-                <p>同じ年間利用条件で比較</p>
-                <h1 id="compare-title">選んだカードの違い</h1>
-              </div>
-              <button type="button" onClick={() => setView("results")}>
-                ← 検索結果へ戻る
-              </button>
-            </div>
+          <section className={styles.comparePage} aria-labelledby="compare-title">
+            <p>選んだカードを同じ条件で比較</p>
+            <h1 id="compare-title">カードの違いをチェック</h1>
+            <button
+              type="button"
+              className={styles.backButton}
+              onClick={() => setView("results")}
+            >
+              ← 検索結果へ戻る
+            </button>
             <div className={styles.compareTableWrap}>
-              <table className={styles.compareTable}>
-                <caption>選択したカードの合成データ比較</caption>
+              <table>
                 <thead>
                   <tr>
-                    <th scope="col">比較項目</th>
+                    <th>比較項目</th>
                     {comparedCards.map((card) => (
-                      <th scope="col" key={card.id}>
-                        {card.name}
-                      </th>
+                      <th key={card.id}>{card.name}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <th scope="row">通常年</th>
+                    <th>通常年のおトク目安</th>
                     {comparedCards.map((card) => (
-                      <td key={card.id} className={styles.compareMoney}>
-                        {yen.format(card.regularYearValue)}円
+                      <td key={card.id}>
+                        <strong>{yen.format(card.regularYearValue)}円</strong>
                       </td>
                     ))}
                   </tr>
                   <tr>
-                    <th scope="row">初年度</th>
+                    <th>初年度のおトク目安</th>
                     {comparedCards.map((card) => (
                       <td key={card.id}>{yen.format(card.firstYearValue)}円</td>
                     ))}
                   </tr>
                   <tr>
-                    <th scope="row">年会費</th>
+                    <th>年会費</th>
                     {comparedCards.map((card) => (
                       <td key={card.id}>{card.annualFeeLabel}</td>
                     ))}
                   </tr>
                   <tr>
-                    <th scope="row">基本還元</th>
+                    <th>基本還元</th>
                     {comparedCards.map((card) => (
                       <td key={card.id}>{card.baseRewardLabel}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th scope="row">算定状態</th>
-                    {comparedCards.map((card) => (
-                      <td key={card.id}>
-                        <strong>{card.stateLabel}</strong>
-                        <br />
-                        <small>確認日 {card.confirmedOn}</small>
-                      </td>
                     ))}
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className={styles.mobileComparison}>
-              <label className={styles.differenceToggle}>
-                <input
-                  type="checkbox"
-                  checked={differencesOnly}
-                  onChange={(event) => setDifferencesOnly(event.target.checked)}
-                />
-                違いがある項目のみ表示
-              </label>
-
-              <section aria-labelledby="mobile-regular-year">
-                <h2 id="mobile-regular-year">通常年</h2>
-                {comparedCards.map((card) => (
-                  <div key={card.id}>
-                    <strong>{card.name}</strong>
-                    <span className={styles.compareMoney}>
-                      {yen.format(card.regularYearValue)}円
-                    </span>
-                  </div>
-                ))}
-              </section>
-
-              <section aria-labelledby="mobile-first-year">
-                <h2 id="mobile-first-year">初年度</h2>
-                {comparedCards.map((card) => (
-                  <div key={card.id}>
-                    <strong>{card.name}</strong>
-                    <span>{yen.format(card.firstYearValue)}円</span>
-                  </div>
-                ))}
-              </section>
-
-              <section aria-labelledby="mobile-fee">
-                <h2 id="mobile-fee">年会費</h2>
-                {comparedCards.map((card) => (
-                  <div key={card.id}>
-                    <strong>{card.name}</strong>
-                    <span>{card.annualFeeLabel}</span>
-                  </div>
-                ))}
-              </section>
-
-              <section aria-labelledby="mobile-reward">
-                <h2 id="mobile-reward">基本還元</h2>
-                {comparedCards.map((card) => (
-                  <div key={card.id}>
-                    <strong>{card.name}</strong>
-                    <span>{card.baseRewardLabel}</span>
-                  </div>
-                ))}
-              </section>
-
-              {!differencesOnly && (
-                <section aria-labelledby="mobile-evidence-policy">
-                  <h2 id="mobile-evidence-policy">算定に使うSource</h2>
-                  {comparedCards.map((card) => (
-                    <div key={card.id}>
-                      <strong>{card.name}</strong>
-                      <span>公式Sourceで確認済みの要素のみ</span>
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              <section aria-labelledby="mobile-state">
-                <h2 id="mobile-state">算定状態</h2>
-                {comparedCards.map((card) => (
-                  <div key={card.id}>
-                    <strong>{card.name}</strong>
-                    <span>{card.stateLabel}</span>
-                    <small>確認日 {card.confirmedOn}</small>
-                    <button type="button" onClick={() => toggleCompare(card.id)}>
-                      比較から外す
-                    </button>
-                  </div>
-                ))}
-              </section>
-            </div>
           </section>
         )}
       </main>
 
+      <footer className={styles.footer}>
+        <Link href="/" className={styles.footerBrand}>
+          <span aria-hidden="true">C</span>
+          <strong>カードみっけ</strong>
+        </Link>
+        <p>UI-only Mock — 合成Fixtureのみを使用しています。</p>
+        <nav aria-label="フッターナビゲーション">
+          <Link href="/">トップページ</Link>
+          <Link href="/#trust">掲載範囲</Link>
+          <Link href="/#trust">広告方針</Link>
+          <button type="button">誤情報を指摘</button>
+        </nav>
+      </footer>
+
       {view === "results" && compareIds.length > 0 && (
-        <div className={styles.compareBar} role="region" aria-label="比較候補">
+        <div className={styles.compareBar} aria-label="比較候補">
           <div>
             <strong>{compareIds.length}枚</strong>
-            <span>を比較候補に選択中（最大5枚）</span>
+            <span>選択中（最大3枚）</span>
           </div>
           <button type="button" onClick={() => setCompareIds([])}>
             全解除
           </button>
-          <button type="button" onClick={() => setView("compare")}>
-            比較する！ →
+          <button
+            type="button"
+            disabled={compareIds.length < 2}
+            onClick={() => setView("compare")}
+          >
+            比較する →
           </button>
         </div>
       )}
