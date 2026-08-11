@@ -12,6 +12,7 @@
 
 - `docs/research/02-market-corpus-v2-audited.md`
 - `docs/research/03-domain-counterexample-audit.md`
+- `docs/research/04-affinity-corporate-house-card-audit.md` から `docs/research/13-invitation-eligibility-audit.md`
 - `docs/spec/domain/`
 
 ## レビューチェックリスト
@@ -28,6 +29,10 @@
 - 根拠のない前提
 - 孤立した例外事例からの過度な一般化
 - Domain Specification文書間の矛盾
+- Contract / Account / Issuance / Payment Instrument / Credit Facilityの境界
+- Campaign、Insurance、Billing/Creditの独立責務と汎用Ruleへの過剰統合
+- 集計、判定、付与、利用、失効、補償、請求等の時間軸の混同
+- Research 04〜13の主要結論とUnknownの追跡可能性
 
 ## 出力形式
 

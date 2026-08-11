@@ -4,7 +4,7 @@
 
 ### Definition
 
-Productは、市場に提供され、名称、規約、発行主体または提供主体、申込・利用条件、Feature、Lifecycleを持つ商品またはサービスのまとまりである。
+Productは、市場に提供され、名称、規約、Feature、Lifecycleを持つ商品またはサービスのまとまりである。発行・提供主体や申込条件はProduct同一性を判断するEvidence signalだが、単独の決定要素ではない。
 
 ### Responsibility
 
@@ -12,11 +12,11 @@ Productは、市場で識別される商品単位を表し、Offering、Variant�
 
 ### Identity
 
-同一Productかどうかは、名称だけでなく、契約の連続性、発行主体、規約、会員移行、資産移行、申込条件、Feature構成、Evidenceを総合して判断する。
+同一Productかどうかは、契約・規約・権利義務・移行の連続性を主要な軸とし、名称、Issuer Role assignment、会員・資産移行、Feature構成、Evidenceを総合して判断する。Issuer差や申込条件差だけでProductを分割しない。
 
 ### Lifecycle
 
-募集開始、新規申込停止、改定、Feature停止、商品終了、既存会員のみ継続、強制または自動解約がありうる。
+市場投入、Product自体の改定、商品終了がありうる。Offering/Routeの新規申込停止、Feature停止、既存会員Rule、Contract解約、Issuance終了は関連Conceptで非同期に発生しうる。
 
 ### Relationships
 
@@ -45,7 +45,7 @@ Productは申込経路そのものではない。国際ブランド、券面、�
 
 ### Temporal Behavior
 
-ProductはFeatureごとに異なる時間軸を持つ。セゾンゲーミングカードDigitalでは、Offeringの新規入会停止、特典終了、クレジット機能のみ利用可能期間、自動解約が段階的に発生している。
+Productと関連Conceptは異なる時間軸を持つ。セゾンゲーミングカードDigitalでは、Offering/Routeの新規入会停止、Feature/Rewardの終了、Issuanceの機能限定、Contract/Issuanceの終了が段階的に発生している。
 
 ### Evidence Requirements
 
@@ -61,15 +61,15 @@ ProductはFeatureごとに異なる時間軸を持つ。セゾンゲーミング
 
 ### Definition
 
-Offeringは、Productが特定の対象者、申込経路、期間、条件で提供される形態である。
+Offeringは、Productが特定の市場・対象者へ、特定の期間と提供条件で提供される形態である。取得経路はApplication Routeとして分ける。
 
 ### Responsibility
 
-Offeringは、一般申込、招待、外部団体限定、既存会員切替、期間限定受付などを表現する。
+Offeringは、外部団体限定、地域限定、既存会員向け、期間限定受付等の対象市場・提供条件を表現する。一般申込、招待、切替等はApplication Routeが表す。
 
 ### Identity
 
-同一性はProduct、申込対象、申込経路、期間、Eligibility、Evidenceで判断する。IdentityはProductより細かい。
+同一性はProduct、対象市場・対象者、提供条件、期間、Evidenceで判断する。Route差だけではOfferingを分けず、1つのOfferingに複数Application Routeが関係しうる。
 
 ### Lifecycle
 
@@ -83,6 +83,7 @@ OfferingはProduct、Eligibility Rule、Application Route、External Membership�
 
 - 招待を受けた人がいることと、Product自体が招待制であることを混同しない。
 - Application RouteとEligibilityを同一視しない。
+- OfferingとApplication Routeを同一視せず、Route固有のFee・EligibilityはRouteに適用されるRuleとして扱う。
 - 外部団体限定Offeringを一般公開または純粋招待制の二値に押し込まない。
 
 ### Boundaries
@@ -91,8 +92,8 @@ OfferingはVariantではない。国際ブランド差やデザイン差では�
 
 ### Examples
 
-- アメックス・ゴールド・プリファードは一般ユーザーが直接Web申込可能で、既存ゴールド会員には切替ルートも並存する。
-- イオンゴールドカードは利用実績と審査に基づく招待制ランクアップカードである。
+- アメックス・ゴールド・プリファードでは、対象Offeringへ直接Web申込Routeと既存会員切替Routeが並存する。
+- イオンゴールドカードでは、既存会員向けOfferingに利用実績等を契機とする招待Routeがある。
 - 全弁協カードは弁護士協同組合員向けの外部団体限定Offeringを持つ。
 
 ### Counterexamples
@@ -120,7 +121,7 @@ Variantは、同一Product内で選択または区別される仕様差の候補
 
 ### Responsibility
 
-Variantは、国際ブランド、券面、カード形態、グレード、条件差などをProduct共通情報から分離する。
+Variantは、商品カタログ上で選択または区別される国際ブランド、design、grade等の構成差をProduct共通情報から分離する。
 
 ### Identity
 
@@ -142,6 +143,7 @@ VariantはProduct、Offering、Payment Instrument、Rule、Issuer Role、Brand /
 ### Boundaries
 
 VariantはOfferingではない。申込経路差や会員コホート差はOfferingまたはRuleで扱う可能性がある。
+Instrument Medium、Identifier、契約条件そのものはVariantではない。Variantごとの差はCompatibility、Feature、Fee等のRule assignmentで説明する。
 
 ### Examples
 
@@ -217,3 +219,15 @@ Feature単位の告知、スケジュール表、FAQ、規約改定通知が必�
 
 - Feature粒度をどこまで細分化するか。
 - Feature終了が既存会員の契約状態にどう作用するか。
+
+## Product Difference Axes Added By Research 04-13
+
+Product、Offering、Variantの同一性判断では、申込対象・経路・期間、Issuer・共同発行・地域発行主体、国際ブランド、grade、design、物理素材、Virtual、ETC、Credit機能有無を一つの階層へ押し込まない。
+
+- 申込対象・経路・期間はOfferingまたはApplication Route候補であり、RouteごとにFee、Eligibility、有効期間が異なりうる。
+- 統一商品名だけで、地域・提携先ごとのIssuer、契約主体、Offeringを同一としない。
+- 国際ブランド、grade、designはVariant候補だが、選択可否、Feature、Fee、再発行条件が異なる場合は境界を再評価する。
+- gradeを単調な序数や上位互換と仮定せず、各FeatureとRuleを確認する。
+- 物理素材、Virtual、ETCはInstrument Mediumまたは別Instrument候補であり、Product差、Issuance差、媒体差をEvidenceで分ける。
+- 複数軸の全組合せが有効とは仮定せず、互換性・選択可能性をRuleで説明する。
+- ブランド、design、grade変更が契約継続、再発行、新規申込のどれに当たるかは公式手続をEvidenceとする。

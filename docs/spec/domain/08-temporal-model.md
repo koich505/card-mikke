@@ -73,6 +73,17 @@ Source上の日付、取得日、本文中の有効日、告知日、適用対�
 | feature_available_from | Feature提供開始日 | Product提供開始日 |
 | feature_available_to | Feature提供終了日 | Product終了日 |
 | service_ended_at | ProductまたはServiceの終了日 | 提携終了日、Feature終了日 |
+| accumulation_from / to | 金額・回数等の集計期間 | Ruleの公開期間、Billing Cycle |
+| determination_at / period | 条件達成や資格を判定する時点・期間 | 集計期間、付与日 |
+| grant_at / period | Reward・Benefit等を付与する時点・期間 | 条件達成日、利用可能期間 |
+| usable_from / to | Reward・Benefit等を利用できる期間 | 付与期間、失効判定期間 |
+| expires_at | 残高、権利、資格等が失効する時点 | Feature終了日、Product終了日 |
+| coverage_from / to | 保険担保が有効な期間 | Insurance Productの販売期間、Claim期限 |
+| claim_available_to | 保険金・補償請求の期限 | 事故日、Coverage終了日 |
+| registration_from / to | Campaign等への登録・応募期間 | 対象利用期間、Offering受付期間 |
+| qualifying_activity_from / to | Campaign条件となる利用・行為の期間 | Campaign告知期間、集計処理期間 |
+| scheduled_end_at | 告知された予定終了時点 | 予算等によるactual end |
+| actual_end_at | 実際に受付・施策が終了した時点 | 当初の予定終了時点 |
 
 ## Concept: Lifecycle Event
 
@@ -101,6 +112,7 @@ Lifecycle EventはProduct、Feature、Rule、Member Cohort、Partnership、Evide
 - Product LifecycleとFeature Lifecycleを混同しない。
 - Partnership終了をProduct終了にしない。
 - 既存会員向け継続を新規申込可能と扱わない。
+- Product、Offering、Application Route、Feature、Rule、Benefit、Reward、Campaign、Insurance Product、Coverage、Funding Method、Payment Instrument、Issuance、Role AssignmentのLifecycleを相互に自動連動させない。
 
 ### Boundaries
 
@@ -179,3 +191,16 @@ Cohortは加入期間や移行元により定義され、Rule有効期間と重�
 ### Open Questions
 
 - CohortをDomain Conceptとして明示するか、Ruleの対象条件として扱うか。
+
+## Independent Lifecycles And Periods
+
+追加Researchは、単一のProduct statusや単一の有効期間では説明できないことを繰り返し示す。各対象は独自のLifecycle Eventを持ち、関係先の終了を自動的に意味しない。
+
+- Product終了とOffering・Application Routeの受付停止を分ける。
+- Product、VariantまたはIssuanceの存続と、Feature、Benefit、Reward Rule、Insurance Coverageの終了を分ける。
+- Ruleの公開・有効期間と、集計・判定・付与・利用・失効期間を分ける。
+- Campaignの告知・応募・対象利用・集計・抽選・付与・利用期間を分ける。
+- Insurance Product・Coverage・Underwriting関係・事故発生・遡及期間・請求期限を分ける。
+- Authorization、売上確定、請求、支払、取消、返金、枠回復の時点を分ける。
+
+同名制度の改定、終了と後継制度の新設、引受会社だけの変更は、名称の連続だけで同じDomain FactまたはIdentityとしない。変更前後の期間とEvidenceを保持し、移行・継承が明記されなければUnknownとする。

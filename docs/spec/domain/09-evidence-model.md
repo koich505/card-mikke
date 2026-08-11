@@ -280,3 +280,14 @@ Disclosure Statusの評価単位は、個別claim、Observation、Extracted Fact
 | partially_disclosed | 個別claimの一部は明示されるが条件や詳細が不足 | 分解可能な不足部分を別claimとしてunknownまたはundisclosedに分ける。分解粒度が不明な場合はOpen Questionに残す |
 | undisclosed | 存在は示されるが非公開 | 推測しない |
 | unknown | 調査で確認できない | 「存在しない」とは扱わない |
+
+## Evidence Application For Research 04-13
+
+- Research文書は複数Sourceからの調査成果物であり、それ自体を全claimの一次Sourceとして扱わない。重要なDomain Factは、Research内で参照された個別Source、取得日、対象箇所へ追跡する。
+- Tier4または第三者Sourceだけで示された商品・条件は、探索Evidenceまたはlow confidenceとして扱い、確定Example、Invariant、固定分類の唯一の根拠にしない。
+- Research内の「存在を確認できない」は`unknown`であり、「存在しない」ではない。条件や審査ロジックが存在するが非公開と公式に判断できる場合だけ`undisclosed`とする。
+- 同名Campaign、Reward制度、Fee、Insurance約款等は世代と適用期間を分け、旧Sourceと新Sourceの差を単純な矛盾にしない。
+- 「最大」「無料」「自動付帯」「招待」等の要約表示は複合claimになりうるため、対象、条件、上限、期間、例外、受益者を分解する。
+- PDF、告知、Campaign等の消失可能なSourceについて、保存・版管理方針はOQ-14のままとし、Source消失をFact不存在へ変換しない。
+
+追加Researchから移送したUnknownの代表例は、法人・house cardの一次情報、カードレス購買の契約境界、Campaign予算・抽選、Fee例外、再引落し・海外手数料、特殊保険、招待・審査ロジックである。完全な対応は`13-research-traceability.md`と`12-open-questions.md`を参照する。

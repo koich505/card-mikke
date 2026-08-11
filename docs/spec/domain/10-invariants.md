@@ -24,6 +24,18 @@ Research Evidenceから導くDomain Invariantを以下に定義する。Invarian
 | 18 | 名称上の後継関係から契約・資産連続性を推論しない | セゾンゲーミングカードからDigitalは新規契約で、コイン自動移行なし | Product、Lifecycle | high |
 | 19 | 単一事例だけで新しい独立Conceptを確定しない | NominalSuccessorRelationはセゾンゲーミング1事例のみ | Product | high |
 | 20 | Tier4だけで重要Legal Factを確定しない | v1の誤りはTier4依存や一次確認不足から発生した | Evidence | high |
+| 21 | Applicant、Reviewed Party、Contract Party、Member、Cardholder/User、Beneficiaryを相互に自動変換しない | 法人・家族・招待・保険でRoleが分かれる | Actor、Membership | high |
+| 22 | Issuer、Billing Entity、Benefit Provider、Campaign Sponsor、Insurance Underwriter、Claims Handlerを同一Actor Roleと仮定しない | 複数主体が商品・請求・特典・保険に関与する | Actor | high |
+| 23 | Product、Offering、Variant、契約、Account、Issuance、Payment Instrument、媒体、Identifier、Credit Facilityを同一視しない | 複数媒体、ETC、法人カード、共有枠 | Product、Issuance、Credit | high |
+| 24 | 1契約、1Issuance、1Instrument、1媒体、1Identifier、1Credit Facilityが常に一対一になると仮定しない | 複数素材カード、追加カード、共有枠 | Issuance、Credit | high |
+| 25 | Product、Offering、Route、Feature、Rule、Reward、Benefit、Campaign、Insurance、Coverage、Issuance、TransactionのLifecycleを統合しない | 追加Research 06〜13の非同期変更 | Temporal | high |
+| 26 | Ruleの公開・有効期間と集計・判定・付与・利用・失効期間を同一視しない | Reward、Fee、Campaign、Insuranceで複数期間が存在 | Rule、Temporal | high |
+| 27 | Campaign条件充足をReward確定付与または抽選当選と同一視しない | 抽選、予算、早期終了が存在 | Campaign | high |
+| 28 | Feeの「無料」を他のFee、全期間、全Issuanceへ拡張しない | 本カード、家族、ETC、発行料で条件が異なる | Rule | high |
+| 29 | Billing Cycle、Reward/Campaign集計期間、Coverage periodを相互に自動導出しない | 各期間の責務が異なる | Temporal、Billing | high |
+| 30 | Credit Limit、利用可能額、媒体別統制上限、取引上限を同じ値として扱わない | 法人・家族・共有枠 | Credit | high |
+| 31 | Insurance Product、Coverage、Benefit表示、会員保障制度を名称だけで同一分類にしない | 担保別条件と法的性質が異なる | Insurance | high |
+| 32 | 複数保険・カードの補償額をEvidenceなしに単純加算しない | 最大値キャップが複数事例で確認された | Insurance | high |
 
 ## Conflict Handling
 

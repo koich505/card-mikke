@@ -4,15 +4,15 @@
 
 ### Definition
 
-Member Rewardは、カード会員または対象利用者へ利用等に応じて発生・付与され、残高、数量、金額等として算定または蓄積される還元価値である。現時点のworking boundaryではポイント、マイル、キャッシュバック、資産変換前の価値を含む。
+Member Rewardは、カードまたは関連利用に基づいて発生・付与され、残高、数量、金額等として算定または蓄積される還元価値である。通常はMember向けだが、実際のBeneficiaryはTransaction channelとRuleのEvidenceで判断する。
 
 ### Responsibility
 
-Member Rewardは、受益者、発生条件、算定方法、付与タイミング、失効、変換、対象Featureを説明する。
+Member Rewardは、Beneficiary、発生条件、算定方法、付与先Account、派生価値、付与タイミング、利用、失効、変換、対象Featureを説明する。
 
 ### Identity
 
-同一性はReward type、受益者、ProductまたはFeature、算定Rule、期間、Evidenceで判断する。
+同一性はReward type、Beneficiary Role assignment、Product/Feature、Transaction channel、算定Rule、受領Account、期間、Evidenceで判断する。
 
 ### Lifecycle
 
@@ -20,13 +20,15 @@ Member Rewardは、受益者、発生条件、算定方法、付与タイミン�
 
 ### Relationships
 
-Member RewardはMember、Reward Operator、Product Feature、Reward Rule、External Membership、Asset Conversion、Evidenceと関係する。
+Member RewardはMember、Beneficiary、Account、Reward Operator、Product Feature、Transaction、Reward Rule、External Membership、変換元/先RewardまたはAsset、Asset Conversion、Evidenceと関係する。
 
 ### Invariants
 
 - Member本人へのRewardと、提携団体への収益分配を同じRewardにしない。
 - Reward OperatorとAsset Operatorを同一視しない。
 - 外部会員資格が必要なBenefitを、カード保有だけで成立扱いしない。
+- Rewardの受益者、算定主体、付与主体、残高運営主体、利用先が同一Actorであると仮定しない。
+- ポイント以外の金券、景品、交換可能証書、外部残高を名称だけでRewardまたは非Reward Benefitへ分類しない。
 
 ### Boundaries
 
@@ -42,7 +44,7 @@ Member RewardはBenefitの下位概念だが、Benefit全体でもEconomic Flow�
 
 ### Temporal Behavior
 
-RewardはProductやFeatureより細かい期間を持つ。付与期間、失効日、変換日、旧会員適用Ruleを分ける。
+RewardはProductやFeatureより細かい期間を持つ。集計、判定、付与、利用、失効、変換、旧会員適用Ruleを分ける。通常付与、期間限定付与、派生・交換後残高は独自の期間を持ちうる。
 
 ### Evidence Requirements
 
@@ -74,12 +76,12 @@ Asset Conversionは、変換元、変換先、変換主体、変換タイミン�
 
 ### Relationships
 
-Asset ConversionはMember Reward、Reward Operator、Asset Operator、External Account、Evidenceと関係する。
+Asset ConversionはMember Reward、Reward Operator、Asset Operator、Account、Evidenceと関係する。
 
 ### Invariants
 
 - `CryptoConversionRule`相当のConcept自体を否定しない。
-- Issuer、Reward Operator、Asset Operator、External Account Operatorを分離する。
+- Issuer、Reward Operator、Asset Operator、Account Operatorを分離する。
 - 中間ポイントと変換後資産の性質を混同しない。
 
 ### Boundaries
@@ -106,20 +108,21 @@ bitFlyer クレカでは、アプラスポイントが市場レートでBTCに�
 
 - RewardからAssetへ変わる境界時点。
 - 暗号資産の評価額変動をDomain Factとして扱うか。
+- Asset Conversionを独立した変換process、Reward redemption Rule、Economic Flowのどの関係として扱うか。
 
 ## Concept: Benefit
 
 ### Definition
 
-Benefitは、Member Rewardを含む会員向け便益の総称である。現時点のworking boundaryでは、ラウンジ、コンシェルジュ、無料宿泊、ホテルステータス、ダイニング優待等の資格・サービス便益を非Reward Benefitとして扱う。
+Benefitは、Member Rewardを含み、Member、Userまたは別のBeneficiaryへ提供される便益の総称である。現時点のworking boundaryでは、ラウンジ、コンシェルジュ、無料宿泊、ホテルステータス、ダイニング優待等を非Reward Benefitとして扱う。
 
 ### Responsibility
 
-Benefitは、誰に、どの条件で、どの期間、どの外部資格と連動して成立するかを説明する。
+Benefitは、何を、どのBenefit Providerが、どのUser/Beneficiaryへ、どの利用・申込経路、登録・予約、Limit、Exclusion、条件・期間で提供するかを説明する。
 
 ### Identity
 
-同一性はBenefit type、Product/Feature、対象Member、条件、期間、Evidenceで判断する。
+同一性はBenefit type、Provider、Product/Feature、対象User/Beneficiary、利用経路、条件、期間、Evidenceで判断する。
 
 ### Lifecycle
 
@@ -127,12 +130,14 @@ Benefitは、誰に、どの条件で、どの期間、どの外部資格と連�
 
 ### Relationships
 
-BenefitはProduct Feature、Member、External Membership、Rule、Evidenceと関係する。
+BenefitはProduct Feature、Benefit Provider、Member、Cardholder/User、Beneficiary、External Membership、Account、利用経路、Limit/Exclusion Rule、Evidenceと関係する。
 
 ### Invariants
 
 - Benefit eligibilityとApplication eligibilityを混同しない。
 - 外部会員資格が必要なBenefitは、外部会員の状態を確認する。
+- BenefitのProvider、利用者、Beneficiary、利用経路、上限、除外、予約・登録要件をBenefit名称だけから推論しない。
+- ProductまたはIssuanceの保有だけで成立する便益と、登録・予約・対象Transaction等を要する便益を区別する。
 
 ### Boundaries
 
@@ -160,6 +165,14 @@ RewardはBenefitの下位概念である。同じ便益をRewardと非Reward Ben
 ### Open Questions
 
 - ホテル会員資格とカード会員資格の契約上の分離度。
+
+## Reward And Benefit Boundaries Added By Research 07-12
+
+- Member Rewardはポイントに限定せず、利用等に応じて算定・付与される金券、景品、マイル、外部残高等を含みうる。ただし、残高性、譲渡性、失効、交換可能性をEvidenceで確認し、名称だけで分類しない。
+- Rewardの通常RuleとCampaign由来の付与を区別し、合算・重複・上限はそれぞれのRuleまたはCampaign Evidenceに従う。
+- 中間ポイントから外部ポイント・マイル等への多段階交換では、各価値、交換Rule、交換時点、交換後の独自失効を分ける。
+- BenefitはProvider、対象Member/User/Beneficiary、利用経路、登録・予約条件、回数・金額上限、除外、期間を持ちうる。
+- Insuranceは会員向けBenefitとして表示されても、Insurance Product、Coverage、Underwriter、Claim Requirementの責務を`15-insurance.md`で分離する。
 
 ## Concept: Economic Flow
 

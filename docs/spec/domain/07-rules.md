@@ -28,6 +28,9 @@ RuleはProduct、Offering、Variant、Feature、Member Cohort、Payment Scheme�
 - 同じ対象、条件、期間で矛盾するRuleを無条件にCurrentとしない。
 - Unknownを推測値で補完しない。
 - Ruleの公開状態と有効状態を分ける。
+- 条件はAND、OR、否定、閾値および例外の意味を保ち、自然文上の並びから単純な全条件一致へ変換しない。
+- 適格性判定と効果算定を分け、条件の各段階とReward・Fee・Benefit等の効果との対応を保持する。
+- Rule単位、Member単位、期間単位、Campaign全体等の上限を同一の「上限」に潰さない。
 
 ### Boundaries
 
@@ -45,7 +48,7 @@ PaidyのActor登録区分をProduct単位のPaymentModel Ruleとして使うと�
 
 ### Temporal Behavior
 
-Ruleにはpublished_at、effective_from、effective_to、observed_at、retrieved_atに相当する時点がある。名称は暫定で、実装名ではない。
+Ruleにはpublished_at、effective_from、effective_to、observed_at、retrieved_atに相当する時点がある。さらに集計、判定、付与、利用、失効等の期間を持ちうるが、同じ期間として扱わない。名称は暫定で、実装名ではない。
 
 ### Evidence Requirements
 
@@ -118,7 +121,7 @@ Fee Ruleは、年会費、発行手数料、分割手数料、コンビニ払い
 
 ### Responsibility
 
-金額、免除条件、発生タイミング、対象Member、対象Variant、支払方法ごとの差を説明する。
+金額、免除・充当条件、発生タイミング、対象Member、Offering/Application Route、Issuance/Instrument Medium、対象Variant、支払方法、過去実績・移行元Contract/Cohortごとの差を説明する。
 
 ### Identity
 
@@ -130,7 +133,7 @@ Fee Ruleは、年会費、発行手数料、分割手数料、コンビニ払い
 
 ### Relationships
 
-Product、Variant、Offering、Member Cohort、Payment Scheme、Evidenceと関係する。
+Product、Variant、Offering、Application Route、Contract、Issuance、Instrument Medium、Member Cohort、Payment Scheme、Reward/Asset Conversion、Evidenceと関係する。
 
 ### Invariants
 
@@ -152,7 +155,7 @@ Paidyの3・6・12回あと払いを単一Schemeとして扱い、支払方法�
 
 ### Temporal Behavior
 
-Fee改定はpublished_atとeffective_fromを分ける。将来改定を現在値にしない。
+Fee改定はpublished_atとeffective_fromを分ける。Product/旧ブランド系統、契約世代、移行元、初年度/次年度ごとのscheduleを区別し、将来改定を現在値にしない。
 
 ### Evidence Requirements
 
@@ -161,6 +164,8 @@ Fee改定はpublished_atとeffective_fromを分ける。将来改定を現在値
 ### Open Questions
 
 - 条件達成期間と請求期間の対応をどこまでDomainで扱うか。
+- 別Product・別Contractの利用実績や免除資格を引き継ぐRuleを共通化できるか。
+- Reward/PointによるFee充当をFee Rule、Asset Conversion、Paymentのどの関係として扱うか。
 
 ## Concept: Reward Rule
 
@@ -315,3 +320,20 @@ Dual IssuanceとCross Card Synergyをすぐ別Conceptに分けるかは未決定
 ### Open Questions
 
 - Dual issuanceと複数Product保有のRuleを同じ上位Conceptで扱えるか。
+
+## Rule Composition And Limits
+
+追加Research 07〜13に基づき、Ruleは少なくとも次を区別して説明できなければならない。ただし、これは実装上の式構造を定めるものではない。
+
+- 対象: Product、Offering、Variant、Issuance、Transaction、Member Cohort、Application Route、Campaign Instance、Coverage。
+- 条件: AND、OR、否定、閾値、回数、金額、対象外、外部資格または支払設定。
+- 効果: 適格・不適格、Fee、Reward、Benefit、招待提示、枠・付与量等の算定。
+- 上限: 1回、期間、Rule、Reward、Member、Issuance、Campaign全体またはCoverageごとの上限。
+- 競合: 重複可能、排他、優先、より有利な一方、最大値キャップ。明示がなければUnknownとする。
+- 世代: 同名制度の改定前後、旧会員継続、終了制度と後継制度を別の有効期間として扱う。
+
+Fee Ruleは本カード、家族カード、ETC等の媒体・Issuance単位、初年度・次年度、Application Route、grade、支払設定、利用集計window、免除・割引・繰越条件を区別する。年会費無料の表示から、発行手数料、サービス利用料、追加媒体料金まで無料と推論しない。
+
+Reward Ruleは通常率、加算率、倍率、対象Transaction、除外、Rule単位cap、複数段階の中間価値、付与時期、利用・交換・失効、制度世代を区別する。率の合算方法やCampaignとの重複はEvidenceなしに決めない。
+
+Credit Limit RuleはCredit Facilityに適用される契約上の総枠・一時増枠・利用可能額への影響条件を表す。Spending Control RuleはIssuance、Authorized User、媒体、用途、期間等に対する運用上の利用制約を表し、信用供与そのものやFacility総枠と同一視しない。

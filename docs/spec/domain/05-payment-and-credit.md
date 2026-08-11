@@ -67,7 +67,7 @@ Payment Schemeは、Payment InstrumentやProductと独立して、支払回数�
 
 ### Identity
 
-同一性は支払方式、対象Productまたはサービス、利用条件、期間、Evidenceで判断する。現時点では名称・粒度ともSupported but provisionalである。
+同一性は支払方式、対象Product/Service、Billing Entity、Merchantまたはmerchant category、Brand/Network Identifier、利用条件、期間、Evidenceで判断する。現時点では名称・粒度ともSupported but provisionalである。
 
 ### Lifecycle
 
@@ -75,13 +75,14 @@ Schemeの開始、変更、停止、対象加盟店変更、手数料条件変�
 
 ### Relationships
 
-Payment SchemeはPayment Instrument、Funding Method、Credit Provider、Billing Entity、Transaction Legal Classification、Rule、Evidenceと関係する。
+Payment SchemeはPayment Instrument、Funding Method、Credit Provider、Billing Entity、Merchant/merchant category、Brand/Network Identifier、Transaction Legal Classification、Rule、Evidenceと関係する。
 
 ### Invariants
 
 - Product単位のPayment Modelで全支払方式を代表しない。
 - Actorの登録区分からPayment Schemeの法的分類を自動導出しない。
 - Payment Schemeごとに手数料、選択可否、変更可否を保持できる必要がある。
+- Merchant、Brand、Billing Entityの組合せによるScheme可否をProduct固定属性へ潰さない。ただし具体的な動的切替は一次Evidenceで確認する。
 
 ### Boundaries
 
@@ -109,6 +110,7 @@ Payment Schemeの条件はRuleとして有効期間を持つ。将来適用Rule�
 - Payment Schemeの最小粒度。
 - 一括、分割、リボ、BNPL、デポジットをどの分類軸で並べるか。
 - 名称をPayment Schemeとするか、別名にするか。
+- Merchant/category、Brand/Network、Billing EntityがScheme可否へ作用する共通範囲。
 
 ## Concept: Funding Method
 
@@ -268,3 +270,169 @@ v1の「デポジット型カードは未確認」という扱いはv2で訂正�
 ### Open Questions
 
 - DepositをRule、Value、またはFinancial Obligationのどれとして扱うか。
+
+## Concept: Credit Facility
+
+### Definition
+
+Credit Facilityは、Credit ProviderがContract Party等に供与する契約上の信用関係である。
+
+### Responsibility
+
+契約上の信用供与、Facilityに適用される総枠、複数Instrumentとの関係を説明する。媒体・利用者・用途ごとの運用上の制約はSpending Control Ruleへ分ける。
+
+### Identity
+
+Credit Provider、Contract Party、対象契約、通貨、期間、Evidenceで判断する。Product名、Instrumentまたは画面上の利用可能額だけでは同一性を決めない。
+
+### Lifecycle
+
+設定、増減、一時増枠、利用による消費、取消・返金・支払による回復、停止、終了がありうる。
+
+### Relationships
+
+Contract、Contract Party、Credit Provider、Issuance、Payment Instrument、Credit Limit Rule、Spending Control Rule、Transaction Lifecycle、Billing Cycle、Depositと関係する。
+
+### Invariants
+
+- Credit FacilityとPayment Instrumentを同一視しない。
+- 複数Issuanceが常に別枠を持つとも、常に一つの枠を共有するとも仮定しない。
+- Facility総枠・利用可能額と、利用者・媒体・用途別のSpending Controlを区別する。
+- 表示された「限度額」が信用供与、取引上限、月次統制枠のどれかをEvidenceなしに決めない。
+
+### Boundaries
+
+Credit FacilityはProductの固定属性ではなく、Payment Scheme、請求、法的分類またはDepositでもない。与信審査ロジックは`undisclosed`としてよく、推測しない。
+
+### Examples
+
+- 家族カードの利用が本会員の利用可能枠へ影響する場合、Issuanceは別でもCredit Facilityを共有しうる。
+- 法人カードではFacility総枠と社員カード別のSpending Controlが併存しうる。
+- デポジット型カードではDepositと利用限度額が対応しても、Deposit自体をCredit FacilityまたはFunding Methodにしない。
+
+### Counterexamples
+
+カード枚数ごとに独立した利用枠があると固定すると、家族カードや複数媒体の共有枠を説明できない。
+
+### Temporal Behavior
+
+利用、取消、売上確定、返金、請求、支払の各時点で利用可能額への影響が異なりうる。回復時点はEvidenceなしに支払日と同一視しない。
+
+### Evidence Requirements
+
+会員規約、利用可能枠説明、法人管理機能、追加カード規約、請求・返金FAQが必要である。
+
+### Open Questions
+
+- Contract、Account、Credit Facilityの最終的な境界。
+- 法定の信用供与枠と運用上の統制上限をどの粒度で区別するか。
+
+## Concept: Billing Cycle
+
+### Definition
+
+Billing Cycleは、反復する請求スケジュールにおける対象期間と個別のcycle occurrenceである。
+
+### Responsibility
+
+対象Transactionをまとめる期間、締め、個別回の請求確定・支払期限を説明する。締日選択・変更、休日調整、再引落し、支払方法は関連Ruleとして分ける。
+
+### Identity
+
+Billing Entity、Contract、schedule、対象期間、cycle occurrence、対象Transaction集合、Evidenceで判断する。
+
+### Lifecycle
+
+Cycleの開始、締め、請求確定、支払期日、入金、再請求または延滞対応がありうる。
+
+### Relationships
+
+Billing Entity、Contract Party、Transaction Lifecycle、Payment Scheme、Funding Method、Fee Rule、Credit Facilityと関係する。
+
+### Invariants
+
+- Billing CycleをProduct全体の不変な固定値として扱わない。
+- 締日、請求確定日、支払日、利用可能枠回復日を同一視しない。
+- CampaignやRewardの集計期間をBilling Cycleから自動導出しない。
+
+### Boundaries
+
+Billing Cycleは個別Transaction、Payment Scheme、締め・支払日変更RuleまたはCampaign periodではない。再引落しや延滞の法的扱いは確認済みEvidenceに限る。
+
+### Examples
+
+- カード利用を所定の締日でまとめ、後日の支払日に口座から支払う関係。
+- Payment Schemeや支払設定により、同じ利用期間でも請求回数・支払期日が異なりうる。
+
+### Counterexamples
+
+「毎月払い」という表示だけで締日、請求確定日、引落日、枠回復日を同一の日付として扱うと破綻する。
+
+### Temporal Behavior
+
+Cycle開始、締め、請求確定、支払期日、入金確認、再請求を分ける。休日や変更手続による日付差はEvidenceに従う。
+
+### Evidence Requirements
+
+会員規約、請求スケジュール、支払方法FAQ、変更・再請求案内が必要である。
+
+### Open Questions
+
+- 支払日変更、金融機関休日、再引落しの共通モデル化。
+- schedule、cycle occurrence、締日・支払日変更Ruleを独立Conceptにする最小条件。
+- 取引・加盟店種別によりBilling Entityが変わる事例の責任境界。
+
+## Concept: Transaction Lifecycle
+
+### Definition
+
+Transaction Lifecycleは、個別利用がAuthorizationから売上確定、請求、支払、取消、返金等へ遷移する過程である。
+
+### Responsibility
+
+利用日、売上確定、請求対象化、支払、取消・返金、Credit Facilityへの影響を、Product Lifecycleから独立して説明する。
+
+### Identity
+
+対象利用、Payment Instrument、利用先、金額・通貨、発生時点、状態遷移Evidenceで判断する。Authorization識別子等の実装識別子は本仕様で決めない。
+
+### Lifecycle
+
+Authorization、売上確定、請求対象化、支払、取消、返品、返金等がありうる。Authorizationには期限切れがありうるが、公開Evidenceなしに共通状態として固定しない。全Transactionが同じ経路を通るとは仮定しない。
+
+### Relationships
+
+Payment Instrument、Payment Scheme、Billing Cycle、Credit Facility、Billing Entity、Fee Rule、Reward Rule、Campaign、Evidenceと関係する。
+
+### Invariants
+
+- Authorizationを売上確定または請求確定と同一視しない。
+- 取消、返品、返金、支払を同じ状態遷移に潰さない。
+- 購入時に選択されたPayment Schemeと、購入後の支払方法変更Ruleを分ける。
+- Default、opt-in、merchant例外をPayment Schemeの名称だけから推論しない。
+
+### Boundaries
+
+Transaction Lifecycleは実装上の決済処理状態一覧ではない。公開Evidenceで説明できる利用・請求・支払上の状態だけを扱い、内部Processor状態はScope外とする。
+
+### Examples
+
+- 利用承認後に加盟店売上が確定し、締めを経て請求対象となる。
+- 取消・返品・返金により請求や利用可能額への影響時点が異なりうる。
+
+### Counterexamples
+
+利用通知を請求確定と扱うと、未確定売上、取消、金額変更、返金を説明できない。
+
+### Temporal Behavior
+
+利用日、売上確定日、締日、請求確定日、支払日、取消日、返金日、枠回復日は別のTemporal Factになりうる。
+
+### Evidence Requirements
+
+規約、利用明細・請求FAQ、取消・返金案内、支払方法変更案内が必要である。
+
+### Open Questions
+
+- 国内カード横断で共通化できる最小状態語彙。
+- 海外利用、為替確定、加盟店からの売上到着差を現Scopeに含める粒度。

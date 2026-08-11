@@ -53,13 +53,13 @@ Member RoleはActorそのものでも、契約や発行の状態保持対象で�
 ### Open Questions
 
 - 法人、法人代表者、家族・追加カード利用者、社員利用者のうち誰がMember Role、Contract Party、Cardholder/Userを担うか。
-- 外部団体が受益者になる場合、Memberとは別のBeneficiary Roleが必要か。
+- Reward、Benefit、Insurance、Economic Flowごとに、どのActorへBeneficiary Roleを割り当てるか。
 
-## Concept: External Membership And Account
+## Concept: External Membership
 
 ### Definition
 
-External Membership And Accountは、カード契約外の団体所属、ホテル会員、航空マイレージ会員、暗号資産サービスアカウントなどである。
+External Membershipは、カード契約外の団体所属、ホテル会員、航空マイレージ会員等の資格・会員関係である。これを保持・利用するAccountとは分ける。
 
 ### Responsibility
 
@@ -75,7 +75,7 @@ Eligibility、Application Route、Benefit eligibility、Reward destination、Ass
 
 ### Relationships
 
-External MembershipはMember、Actor Role、Offering、Eligibility Rule、Reward Destination、Asset Conversion、Economic Flowと関係する。
+External MembershipはMember、Account、Actor Role、Offering、Eligibility Rule、Reward Destination、Asset Conversion、Economic Flowと関係する。
 
 ### Invariants
 
@@ -110,42 +110,149 @@ bitFlyerの外部アカウントをEligibility RuleとCrypto Conversionの別々
 - ホテル会員資格とカード会員資格の契約上の分離度は今回Researchでは不足している。
 - External MembershipをEligibility、Application Route、Reward Destinationで共有参照する最小概念が必要か。
 
+## Concept: Contract
+
+### Definition
+
+Contractは、特定のProductまたはServiceについて、1以上のContract Party Role assignmentを伴う権利義務関係である。当事者の全体が開示されない場合は、不足部分をUnknownとして保持する。
+
+### Responsibility
+
+Contract Party、Member Contract Party、対象Product/Offering、適用規約、Account、Credit Facility、Billing Cycle、期間を結び、利用者・媒体・発行関係と契約関係を分ける。
+
+### Identity
+
+契約当事者Role assignment、対象Product/Offering、適用規約、成立・終了期間、Evidenceで判断する。申込、Account、Issuance、InstrumentまたはProduct名だけでは同一性を決めない。
+
+### Lifecycle
+
+申込・Screeningとは分離し、成立、変更、更新、停止、解約、終了がありうる。申込または承認だけで成立を推論しない。
+
+### Relationships
+
+Actor Role、Product、Offering、Account、Member Role、Issuance、Credit Facility、Billing Cycle、Rule、Evidenceと関係する。
+
+### Invariants
+
+- ContractをApplication、Screening、Member、Account、Issuanceと同一視しない。
+- Contract Party、User、Beneficiary、Billing Entityが同じActorであると仮定しない。
+- 1 Product、1 Contract、1 Account、1 Issuanceが常に一対一になると仮定しない。
+
+### Boundaries
+
+Contractは実装上の契約テーブルや電子契約文書を意味しない。約款はEvidenceおよび契約条件であり、Contractそのものと同一視しない。
+
+### Examples
+
+法人カードでは法人がContract Party、従業員がUserとなりうる。家族カードでは本会員側の契約関係と家族利用者へのIssuanceが分かれうる。
+
+### Counterexamples
+
+カードを利用するActorを必ずContract Partyとすると、法人・家族・社員利用者の責務を表現できない。
+
+### Temporal Behavior
+
+Contractの成立・終了と、Offering受付、Issuance有効性、Feature・Ruleの有効期間は独立しうる。
+
+### Evidence Requirements
+
+会員規約、申込同意、追加カード規約、法人規約、変更・解約告知が必要である。
+
+### Open Questions
+
+- Contractを独立Conceptとして保持する最小条件と、会員関係との境界。
+
+## Concept: Account
+
+### Definition
+
+Accountは、カードまたは外部ServiceがActorとの関係、利用資格、設定、残高・明細等を管理するサービス上の単位である。
+
+### Responsibility
+
+Card/Contract Account、External Service Account、Reward/Asset Account等を区別し、External Membership、Contract、Issuance、Asset holdingとの関係を説明する。
+
+### Identity
+
+運営Actor Role、Account type、対象Actor、関連Contract/Membership、期間、Evidenceで判断する。ログインIDや会員番号だけではDomain identityを決めない。
+
+### Lifecycle
+
+開設、連携、停止、復旧、統合、解除、閉鎖がありうる。
+
+### Relationships
+
+Actor、Contract、External Membership、Member Role、Issuance、Reward/Asset、Evidenceと関係する。
+
+### Invariants
+
+- AccountをActor、Contract、Membership、Issuance、資産残高と同一視しない。
+- Card AccountとExternal Service Accountの本人同一性をEvidenceなしに推論しない。
+
+### Boundaries
+
+Accountは実装上のユーザーテーブル、ログインCredentialまたは金融口座を意味しない。
+
+### Examples
+
+bitFlyerアカウントは申込前提とReward/Asset受領先に作用する。カードサービスAccountは契約・Issuance・利用明細と関係しうる。
+
+### Counterexamples
+
+External MembershipとAccountを同一視すると、団体所属とログイン可能なサービス単位の差を失う。
+
+### Temporal Behavior
+
+Accountの停止・連携解除と、Contract、External Membership、保有Assetの終了は自動連動しない。
+
+### Evidence Requirements
+
+公式アカウント案内、会員規約、連携条件、停止・閉鎖案内が必要である。
+
+### Open Questions
+
+- Card/Contract AccountとExternal/Reward/Asset Accountの最小共通項。
+
 ## Concept: Issuance
 
 ### Definition
 
-Issuanceは、Memberまたは利用者に対して、Payment Instrumentが発行または利用可能化された状態である。
+Issuanceは、契約またはAccountのもとで、特定ActorにPayment Instrumentまたはその利用権限を割り当てる関係である。
 
 ### Responsibility
 
-Issuanceは、誰に、どのProductまたはVariantの支払手段が、どの期間、どの権限で利用可能かを表す。
+Issuanceは、誰に、どの契約・Accountとの関係で、どのInstrumentまたは利用権限が、いつ割り当てられているかを表す。本カード、家族カード、社員追加カード、関連するETC Instrument、物理・Virtual媒体を区別するが、媒体差だけで別Issuanceと断定しない。
 
 ### Identity
 
-同一性はMember、Product/Variant、発行形態、本会員または追加利用者との関係、期間、Evidenceで判断する。
+同一性は割当先Actor、契約またはAccountとの関係、Payment Instrument、発行単位、期間、Evidenceで判断する。カード番号、券面素材、媒体は同一性の証拠になりうるが、単独で決定しない。
 
 ### Lifecycle
 
-申込、審査、発行、再発行、利用停止、機能限定、解約、自動解約がありうる。
+割当生成、Instrumentの発行・利用可能化、再発行・差替え、利用停止、機能限定、割当終了がありうる。Application、Screening、Contract formationは前段の別Lifecycleである。
 
 ### Relationships
 
-IssuanceはMember、Payment Instrument、Variant、Attached Card、Payment Scheme、Rule、Lifecycle Eventと関係する。
+IssuanceはActor Role、Contract、Account、Product、Variant、Payment Instrument、Instrument Medium、Credit Facility、Lifecycle Eventと関係する。Application Routeとは、どの申込・取得過程から生じたかを追跡する起源関係に限る。
 
 ### Invariants
 
 - ProductとIssuanceを同一視しない。
 - 複数カード発行を1つのProduct保有として潰さない。
 - Issuanceの終了とProductの終了を同一視しない。
+- 1契約、1Account、1Issuance、1Instrument、1媒体、1Identifierが常に一対一になると仮定しない。
+- 利用可能枠をIssuanceの固有属性とせず、Credit FacilityおよびCredit Limit Ruleとの関係で扱う。
 
 ### Boundaries
 
-Issuanceは契約そのものの全体ではない。契約、カード券面、アプリ内バーチャルカード、カード番号、利用者権限はEvidenceで区別する。
+IssuanceはProduct、契約、Account、Payment Instrument、媒体、Identifierまたは信用供与そのものではない。カード番号等の機密情報をどう保持するかは本仕様では決めない。
 
 ### Examples
 
 - Kyash Card Virtualは物理カードではないPayment Instrumentの利用可能化を示す。
 - 法人カードやパーチェシングサービスでは、法人契約と利用者単位の支払権限が分かれる可能性がある。
+- Amex Platinumのメタル製基本カードとプラスチック製セカンドカードは、異なるIdentifier・機能を持つ複数Instrumentである可能性を示し、単なる1 Instrumentの複数媒体とは確定しない。
+- ETCカードは本カードに関連しながら、別Instrument、Fee Rule、Lifecycleを持ちうる。
 
 ### Counterexamples
 
@@ -163,6 +270,9 @@ IssuanceはProduct受付停止後も存続しうる。既存会員のみ継続�
 
 - 社員追加カードと家族カードを同じAttached Card Conceptで扱えるか。
 - カードレスのパーチェシングサービスをIssuanceに含めるか。
+- Contract、Account、Issuance、Payment Instrument、Instrument Medium、Identifierの最終的な同一性境界。
+- ブランドまたはデザイン変更時に既存Issuanceの更新と再発行のどちらとして扱うか。
+- Instrument HolderとAuthorized Userを分ける必要があるか。
 
 ## Concept: Application Route
 
@@ -218,3 +328,9 @@ Application Routeは期間限定で開閉する。現在の受付状態と、将
 
 - Application Route typeの標準分類。
 - 非公開招待ロジックをundisclosedとしてどこまで表現するか。
+
+## Acquisition Decision Sequence
+
+Eligibility、Invitation、Application、Screening、Issuanceは責務を分離する。Eligibility Ruleは公開された必要条件、Invitationは特定Application Routeを提示した事実、Applicationは申込提出、ScreeningはReviewed Partyに対する非決定的な判断過程、Issuanceは承認または契約成立後に開始しうる割当である。
+
+招待条件、審査条件、発行条件を一つのEligibility Ruleへ統合しない。招待を受けても審査や発行が保証されない場合があり、一般申込Routeと招待Routeが同時に存在しうる。非公開審査ロジックは`undisclosed`とし、推測しない。

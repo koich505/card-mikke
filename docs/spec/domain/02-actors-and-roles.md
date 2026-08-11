@@ -35,7 +35,7 @@ Actorは商品、カード券面、支払方式、Ruleではない。団体所�
 ### Examples
 
 - アプラスはbitFlyer クレカでIssuer、Credit Provider、Billing Entity、Reward Operatorに相当するRoleを担う。
-- bitFlyerはbitFlyer クレカでAsset Operator、External Account Operatorに相当するRoleを担う。
+- bitFlyerはbitFlyer クレカでAsset Operator、Account Operatorに相当するRoleを担う。
 - PaidyはRegulatory Registrant、Credit Provider、Billing Entityに相当する。
 - 全弁協はExternal Membership Operator、Partner Organization、Economic Flowの受益者候補となる。
 
@@ -60,7 +60,7 @@ Actorを登録するには、公式サイト、規約、行政資料、団体公
 
 ### Definition
 
-Actor Roleは、Actorが特定の文脈で担う責務である。RoleはActorの属性ではなく、Product、Offering、Payment Scheme、Reward、Economic Flow、期間と結びつく。
+Actor Roleは、Actorが特定の文脈で担う責務である。RoleはActorの属性ではなく、Product、Offering、Contract、Account、Issuance、Transaction、Campaign、Insurance、Payment Scheme、Reward、Economic Flow等の対象、期間、Evidenceと結びつく。
 
 ### Responsibility
 
@@ -76,7 +76,7 @@ Role assignmentは開始、変更、終了しうる。提携終了や商品改�
 
 ### Relationships
 
-Actor RoleはActorと対象Conceptを結ぶ。対象はProduct、Offering、Payment Instrument、Payment Scheme、Reward、Economic Flow、External Membership等である。
+Actor RoleはActorと対象Conceptを結ぶ。対象はProduct、Offering、Contract、Account、Issuance、Payment Instrument、Payment Scheme、Transaction、Campaign、Insurance Product、Coverage、Reward、Benefit、Economic Flow、External Membership等である。
 
 ### Invariants
 
@@ -223,3 +223,15 @@ Tier1行政資料または同等の一次情報を優先する。商品サイト
 
 - Kyash「イマすぐ入金」提供元の登録状況はUnknown。
 - atoneの登録区分はUnknown。
+
+## Role Assignment Boundaries Added By Research 04-13
+
+追加Researchにより、Applicant、Reviewed Party、Contract Party、Cardholder / User、Beneficiary、Billing Entity、Benefit Provider、Campaign Sponsor、Insurance Underwriter、Claims HandlerはActorの恒久属性ではなく、対象Product、契約、取引、施策または保険と期間を伴うRole Assignmentとして扱う。
+
+- Applicantであることから契約主体、利用者、審査対象または発行先を自動決定しない。
+- Contract PartyであることからInstrumentの実利用者、Reward受益者または被保険者を自動決定しない。
+- Issuer、Billing Entity、Benefit Provider、Campaign Sponsor、Insurance Underwriter、Claims Handlerが同一Actorであると仮定しない。
+- 法人、代表者、従業員、家族、本会員、追加会員への具体的なRole割当は、Productごとの規約・申込条件・請求関係をEvidenceとして決める。
+- 共同発行、地域ごとのIssuer表示、取引または加盟店種別によるBilling Entityの差はProvisionalとし、Researchの示唆だけで一般化しない。
+
+加盟店会員、加盟店契約、Acquiringの詳細は現行サイトの発行側中心Scope外とする。発行商品・請求・Benefitの説明に直接必要なRoleだけを保持し、包括的な加盟店ドメインには拡張しない。

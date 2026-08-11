@@ -12,11 +12,15 @@
   - 既存Domain Modelに対する反証調査
   - 既存概念の境界問題、不足概念、過剰抽象化、未解決事項の検討材料として使用する
 
+- `docs/research/04-affinity-corporate-house-card-audit.md` から `13-invitation-eligibility-audit.md`
+  - 提携・法人、Product/Variant/Issuance、Lifecycle、Campaign、Reward、Benefit、Fee、Billing/Credit、Insurance、Invitation/Eligibilityの追加Evidenceとして使用する
+  - 各Research内の設計提案を完成仕様として扱わず、一次Source到達状況、confidence、Unknownを維持する
+
 `docs/research/01-market-corpus-v1.md` は監査履歴・調査経緯の確認用途に限る。
 v1とv2で内容が矛盾する場合はv2を優先する。
 
-ただし、v2および03も絶対的に正しい完成仕様として扱ってはならない。
-両ファイルはDomain Specificationを作るためのResearch Evidenceである。
+ただし、02〜13のResearchはいずれも絶対的に正しい完成仕様として扱ってはならない。
+各ファイルはDomain Specificationを作るためのResearch Evidenceである。
 
 ---
 

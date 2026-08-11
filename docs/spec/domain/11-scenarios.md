@@ -128,7 +128,7 @@ Given: カード利用で中間ポイントが発生し、外部資産へ変換�
 
 When: Reward Operatorがポイントを付与し、Asset OperatorがBTC付与先アカウントを管理する。
 
-Then: Member Reward、Asset Conversion、Reward Operator、Asset Operator、External Account Operatorを分ける。
+Then: Member Reward、Asset Conversion、Reward Operator、Asset Operator、Account Operatorを分ける。
 
 Evidence: bitFlyer クレカ。
 
@@ -201,3 +201,67 @@ When: Memberが対象年間利用額を満たし、ホテルステータスや�
 Then: Card Member Role、External Membership、非Reward Benefit、Benefitに適用されるRule、Member Cohortを分ける。無料宿泊・ホテルステータスをMember Rewardにも重複所属させない。ホテル会員資格とカード会員資格の契約上の分離度は追加調査事項として残す。
 
 Evidence: Marriott Bonvoy Amex、Hilton Honors Amex。
+
+## 21. 1契約に複数InstrumentまたはMediumがある
+
+Given: 基本カードに異なる素材のセカンドカードや、関連するETC Payment Instrumentが存在する。
+
+When: Instrumentまたは媒体ごとの利用・停止・Feeを説明する。
+
+Then: Product、契約、Issuance、Payment Instrument、Instrument Medium、Identifierを分ける。媒体枚数と契約数、Credit Facility数が一致すると推論しない。
+
+## 22. 法人契約と従業員利用・統制枠
+
+Given: 法人が契約し、従業員が追加媒体を利用する。
+
+When: 契約全体枠と利用者別上限が併存する。
+
+Then: Contract Party、Reviewed Party、Cardholder/User、Billing Entity、Issuance、Credit Facility、Credit Limit Ruleを分ける。具体的Role割当はProductごとのEvidenceに従う。
+
+## 23. 条件・上限を持つ期間限定Campaign
+
+Given: 登録、入会、対象利用、金額閾値を満たすとReward候補となり、全体予算で早期終了しうる。
+
+When: Campaignの有効性と付与可否を説明する。
+
+Then: Campaign Instance、Rule、対象Transaction、各期間、Member単位上限、Campaign全体上限を分ける。条件達成者全員への確定付与、通常Rewardとの重複、予定終了日までの継続を推論しない。
+
+## 24. 多段階Rewardと交換後の独自失効
+
+Given: 利用で中間ポイントが発生し、別ポイントまたはマイルへ交換される。
+
+When: 交換後に異なる有効期限が適用される。
+
+Then: 各Reward/Asset、Reward Rule、Asset Conversion、集計・付与・交換・失効期間を分ける。表示上の交換率だけから実質還元率や同一残高を決めない。
+
+## 25. Fee免除と複数媒体の料金
+
+Given: 本カード年会費は条件付き無料だが、家族カード、ETC、発行・再発行には別条件がある。
+
+When: 費用を比較する。
+
+Then: 対象Issuance/媒体、初年度・次年度、集計window、免除・繰越条件ごとにFee Ruleを分ける。「年会費無料」から全費用が無料と推論しない。
+
+## 26. 取引から請求・枠回復まで
+
+Given: 利用承認後に売上が確定し、締め・請求・支払を経て利用可能額が変化する。
+
+When: 取消・返金も起こりうる。
+
+Then: Transaction Lifecycle、Billing Cycle、Payment Scheme、Credit Facilityを分ける。利用日、売上確定日、請求日、枠回復日が一致すると推論しない。
+
+## 27. 招待から発行まで
+
+Given: Actorが招待を受け、申込後に審査される。一般申込Routeも並存しうる。
+
+When: 発行に至る過程を説明する。
+
+Then: Invitation、Application Route、Eligibility、Applicant、Reviewed Party、Screening、Contract Party、Issuanceを分ける。招待が資格充足、審査承認または発行を保証すると推論しない。
+
+## 28. 担保別条件を持つ付帯保険
+
+Given: 旅行傷害保険の担保ごとに利用付帯条件、対象者、Limitが異なる。
+
+When: 複数カードの補償に最大値キャップがある。
+
+Then: Benefit表示、Insurance Product、Coverage、Underwriter、Insured/Beneficiary、Trigger、Limit、Exclusion、Claim Requirement、合算Ruleを分ける。商品ページの最高額が全担保・全対象者へ適用されることや単純加算を推論しない。
