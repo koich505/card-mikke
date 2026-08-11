@@ -17,7 +17,7 @@ Requirements Agentの意図を補完して好意的に解釈せず、記載さ�
 - `.ai/requirements/checklists/domain-traceability-checklist.md`
 - `.ai/requirements/checklists/non-functional-requirements-checklist.md`
 - `docs/spec/domain/`
-- `docs/reviews/domain/domain-review-002.md`
+- `docs/reviews/domain/domain-review-003.md`
 - `docs/spec/requirements/`
 - `docs/process/02-quality-gates.md`
 
@@ -33,6 +33,8 @@ Requirements Agentの意図を補完して好意的に解釈せず、記載さ�
 - UI Mock工程へ渡す情報と、そこで検証すべき事項が識別されているか。
 - Open Questionに影響、決定者、必要な時期、次のActionがあるか。
 - TraceabilityがDomain、Requirement、Acceptance Criterionを結んでいるか。
+- Domain 13〜15、Campaign、Insurance、claim-level EvidenceがTraceabilityから欠落していないか。
+- Offering/Route、Issuance/Instrument、Campaign Instance/effect、Insurance/CoverageがProductの固定属性へ平坦化されていないか。
 
 ## Checklistの使用方法
 

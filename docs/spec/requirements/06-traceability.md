@@ -1,7 +1,7 @@
 # Requirements Traceability
 
 Status: Approved
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Product Owner Decisions
 
@@ -23,7 +23,7 @@ Last updated: 2026-08-10
 | RD-012 | 2026-08-09 | Accessibility WCAG 2.2 AA、公開2.5秒、検索2秒を初期目標とする | NFR-A11Y-001, NFR-PERF-001, NFR-PERF-002 |
 | RD-013 | 2026-08-09 | 非AI運用費は月額5,000円目標、4,000円警告、超過時自動停止なしとする | NFR-COST-001, NFR-COST-002 |
 | RD-014 | 2026-08-09 | Availability 99.0%、最小BackupのRPO / RTOを各24時間とする | NFR-AVAIL-001, NFR-AVAIL-002 |
-| RD-015 | 2026-08-10 | 招待制・受付停止カードを初期検索から除外し、Filterで含められるようにする | FR-013 |
+| RD-015 | 2026-08-10 | 一般申込Routeが確認できず招待Route等だけが確認されるOffering、および受付停止中のOffering/Routeを初期検索から除外し、Filterで含められるようにする | FR-013 |
 | RD-016 | 2026-08-10 | 比較最大5枚、お気に入り最大50枚、未登録お気に入り30日とする | FR-029, FR-030 |
 | RD-017 | 2026-08-10 | AIが公式情報を初回・継続収集し、項目差分を人間が承認する | FR-021, FR-022, FR-033, FR-034 |
 | RD-018 | 2026-08-10 | 商品同一性を判別できない新規カード候補は自動登録・統合せず人間判断へ回す | FR-033 |
@@ -38,7 +38,7 @@ Last updated: 2026-08-10
 | RD-027 | 2026-08-10 | 用途・読者像別の複数カード記事に加え、単一カードの新商品・機能・特典・変更内容を扱う特集記事を初期対象とする | FR-007, FR-008, FR-009, FR-031 |
 | RD-028 | 2026-08-10 | 管理者のみMFA必須、運営者Sessionは無操作30分で失効、高Risk操作はMFAを含む再認証から15分以内に限定する | NFR-SEC-001, NFR-SEC-003, AC-040 |
 | RD-029 | 2026-08-10 | 初期性能試験量をカード2,000件、Rule 20,000件、利用先5,000件、公開Review 100,000件、保存済み検索・比較履歴100,000件とし、各項目同時2倍も増加時試験に使用する。これらは保存上限としない | NFR-PERF-002, NFR-PERF-003, AC-034 |
-| RD-030 | 2026-08-10 | 家族・追加カード発行可およびETCカード発行可を検索Filterに含め、発行可否が未確認のカードは一致扱いにしない。除外件数・未確認理由の表示は必須としない | FR-013, FR-017, AC-010 |
+| RD-030 | 2026-08-10 | 家族・追加カードIssuanceおよび関連ETC Payment Instrumentの申込可能性を検索Filterに含め、対象Product/Offering/Routeとの関係が未確認の候補は一致扱いにしない。除外件数・未確認理由の表示は必須としない | FR-013, FR-017, AC-010 |
 | RD-031 | 2026-08-10 | 二軸比較マップは、AIが既存の承認済みカード情報から比較軸・評価基準・配置・理由をDraft生成し、人間が軸と配置を明示承認した後だけ記事として公開する。生成入力・出力は未信頼データとして分離し、人間の編集後も基準との整合を再検証する | FR-007–FR-009, FR-031, NFR-SEC-008, AC-016, AC-032 |
 | RD-032 | 2026-08-10 | 既存の手入力・Profile条件による探索を残し、運営者が事前設定した旅行好き、ショッピング好き、シンプルでお得重視等のテーマをワンクリックで適用して検索結果へ到達できる入口を追加する | FR-040, AC-041 |
 | RD-033 | 2026-08-10 | サイト名称を`カードみっけ`とする | `00-scope.md`, `docs/design/ui/00-ui-scope.md`, UIR-BRAND-001 |
@@ -49,17 +49,21 @@ Last updated: 2026-08-10
 | Domain source | Concept / Constraint | Requirements | Status |
 |---|---|---|---|
 | `00-scope.md` | 日本国内のカードおよび隣接領域、条件付きRequirements Ready | Requirements `00-scope.md`, FR-004, FR-027 | Adopted within narrowed initial scope |
+| `01-glossary.md` | Issuer、Contract/Account/Issuance/Instrument、Campaign、Insurance/Coverage、Evidence等の共通語彙 | FR-013, FR-015, FR-017, FR-020, FR-024, FR-028, FR-029, FR-032–FR-035, NFR-EVID-003 | 実装Entity名として扱わず、Provisional/OQを固定しない |
 | `02-actors-and-roles.md` | Actor / Role分離、運営者、利用者、発行主体 | FR-001, FR-022, FR-025, FR-032, NFR-SEC-001, NFR-SEC-003 | Traced |
-| `03-products.md` | Product / Offering / Variant、受付状態 | FR-013, FR-017, FR-027, FR-032, FR-033 | 商品同一性が不明な新規候補を自動登録・統合せず、OQ-3のProvisional境界を固定しない |
-| `04-membership-and-issuance.md` | Eligibility、Application Route、Member Role | FR-002, FR-004, FR-017, FR-019 | OQ-8を審査推測へ変換しない |
-| `05-payment-and-credit.md` | Payment Instrument / Scheme / Funding / Credit Provider分離 | FR-017, FR-020 | 一覧用固定分類へ先取りしない |
-| `06-rewards-and-economic-flows.md` | Reward / Benefit / Partner Revenue Share分離 | FR-005, FR-015, FR-016, FR-017 | OQ-16を保持。金銭換算境界を要件で限定 |
+| `03-products.md` | Product / Offering / Variant、受付状態 | FR-013, FR-017, FR-027, FR-032, FR-033 | 商品同一性が不明な新規候補を自動登録・統合せず、現行OQ-2のProvisional境界を固定しない |
+| `04-membership-and-issuance.md` | Contract、Account、Eligibility、Application Route、Member Role、Issuance | FR-002, FR-004, FR-013, FR-017, FR-019, FR-029, FR-033 | Invitationを審査・発行保証へ変換せず、家族等をBooleanへ平坦化しない |
+| `05-payment-and-credit.md` | Payment Instrument / Scheme / Funding / Credit Facility / Billing分離 | FR-005, FR-013, FR-017, FR-020, FR-029 | 初期Releaseに必要なFee/Instrument表示以外を固定分類へ先取りしない |
+| `06-rewards-and-economic-flows.md` | Reward / Benefit / Partner Revenue Share分離 | FR-005, FR-015, FR-016, FR-017 | 現行OQ-10/11を保持。金銭換算境界を要件で限定 |
 | `07-rules.md` | Fee、Reward、Eligibility、Campaign等の条件 | FR-005, FR-006, FR-012, FR-015, FR-016, FR-021, FR-032 | 適用条件・期間・上限を保持 |
 | `08-temporal-model.md` | Product / Feature Lifecycle、時点・期間 | FR-006, FR-011, FR-017, FR-021, FR-023, FR-024, FR-031 | 当時値と最新値を分離 |
 | `09-evidence-model.md` | Evidence chain、claim-level Disclosure Status | FR-014, FR-017, FR-020–FR-024, FR-026, FR-033, FR-034, NFR-EVID-001–003 | Source全体へ単一Statusを付与しない |
 | `10-invariants.md` | 未確認を不存在としない、各Conceptを混同しない | FR-005, FR-014, FR-020, NFR-LEGAL-002 | Traced |
 | `11-scenarios.md` | 検索・比較で必要となる主要境界Scenario | FR-004–FR-006, FR-012–FR-017, FR-023 | 未確認具体例をFact化しない |
 | `12-open-questions.md` | OQ-1–19 | Requirements `05-open-questions.md`, FR-014, FR-020, FR-024, NFR-EVID-003 | Blocks Requirements: Noを維持。Architectureへ先送りする境界を固定しない |
+| `13-research-traceability.md` | research 04〜13の主要結論・Unknown対応 | FR-013–FR-017, FR-020–FR-024, FR-029, FR-032–FR-035, NFR-EVID-001–004 | Unknown Registerを不存在・固定値へ変換しない |
+| `14-campaigns.md` | Campaign Instance/effect、確定/抽選、条件、上限、複数期間、早期終了 | FR-005, FR-006, FR-015, FR-016, FR-021, FR-023, FR-032–FR-034 | OQ-8/9を保持し、確認済みeffectだけ算定 |
+| `15-insurance.md` | Insurance Product / Coverage、Trigger、Limit、Exclusion、Claim、Underwriter | FR-017, FR-020–FR-024, FR-032–FR-034 | 初期Releaseは金銭算定外の確認済みCoverage表示。OQ-12/13を保持 |
 | `.ai/shared/evidence-policy.md` | 公式Source、確認日、Disclosure Status、外部送信制約 | FR-008, FR-014, FR-017, FR-020–FR-024, FR-026, NFR-PRIV-001, NFR-EVID-001–003 | Traced |
 
 ## Requirement to Acceptance Criteria
@@ -69,15 +73,16 @@ Last updated: 2026-08-10
 | FR-001 | AC-001, AC-003 |
 | FR-002, FR-003 | AC-002 |
 | FR-004, FR-010 | AC-001, AC-011 |
-| FR-005, FR-006, FR-015, FR-016 | AC-007, AC-008 |
+| FR-005, FR-006, FR-015, FR-016 | AC-007, AC-008, AC-009 |
 | FR-007, FR-008, FR-009, FR-031 | AC-016 |
 | FR-011 | AC-022 |
 | FR-012 | AC-005, AC-006 |
 | FR-013 | AC-010 |
 | FR-014, FR-023 | AC-009 |
-| FR-017, FR-018, FR-020, FR-035 | AC-014, AC-027 |
+| FR-017, FR-018, FR-020 | AC-014 |
+| FR-035 | AC-014, AC-027 |
 | FR-019 | AC-015 |
-| FR-021, FR-022 | AC-017 |
+| FR-021, FR-022, FR-023 | AC-017, AC-009 |
 | FR-024, FR-026 | AC-023 |
 | FR-025 | AC-004 |
 | FR-027 | AC-019 |
@@ -122,7 +127,9 @@ Last updated: 2026-08-10
 | 単一カード特集記事 | FR-007, FR-019 / AC-015, AC-016 | 対象カード、特徴、適用条件、確認時点、公式Sourceおよび広告・Affiliate関係の理解を検証 |
 | 二軸比較記事 | FR-007–FR-009, FR-031, NFR-SEC-008 / AC-016, AC-032 | 軸・方向・評価基準・配置理由・配置不能理由・確認時点・Source・代替表現の理解、総合順位としての誤認、AI入力・出力の信頼境界および編集後の整合性を検証 |
 | テーマ別プリセット検索 | FR-040 / AC-041, AC-042 | テーマの発見性、ワンクリック到達、適用条件の理解、通常検索との併存、条件変更導線、運営管理、および優位性を保証する表現への誤認を検証 |
+| Campaign算定 | FR-005, FR-006, FR-015, FR-016 / AC-007–009 | 実施回、確定/抽選、複数期間、上限、算定除外理由の理解を検証 |
+| Benefit・Insurance表示 | FR-017 / AC-014 | Provider/Beneficiary、Coverageごとの条件・上限・除外・確認状態を最高額や単一特典へ誤認しないか検証 |
 
 ## Architecture-blocking Domain Questions
 
-`docs/spec/domain/12-open-questions.md`に従い、少なくともOQ-1、OQ-2、OQ-3、OQ-5、OQ-7、OQ-8、OQ-14、OQ-16、OQ-17、OQ-19は未解決のままArchitectureへ進めない。本RequirementsはDB、API、固定列挙または実装構造によってこれらを解決済みにしない。
+`docs/spec/domain/12-open-questions.md`の現行Architecture Blocking Setに従う。初期Releaseの対象Featureでは、少なくともOQ-2（Product/Offering/Variant）、OQ-3（Contract/Account/Issuance/Instrument）、OQ-6（共同/地域Issuer・Billing Entity）、OQ-8/9（Campaign）、OQ-10/11（Reward/Benefit）、OQ-12/13（Insurance）、OQ-15/16（Evidence/claim）、OQ-17（Brand/Network）を対象範囲に応じてArchitecture前に解決する。OQ-5、OQ-7、OQ-14、OQ-18/19は、家族・ETC表示、Scope拡張または該当機能に関係する場合だけBlockingとする。本RequirementsはDB、API、固定列挙または実装構造によってこれらを解決済みにしない。

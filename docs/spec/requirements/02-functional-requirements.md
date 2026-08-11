@@ -1,7 +1,7 @@
 # Functional Requirements
 
 Status: Approved
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Account and Profile
 
@@ -75,7 +75,7 @@ Last updated: 2026-08-10
 - Need: 利用者が自身の条件に合う個人向けクレジットカードへ到達する。
 - Expected behavior: 年間利用額、利用先別金額、および今後確定する任意条件を基に候補を検索・比較できる。
 - Expected behavior: 条件に一致する候補が0件の場合は、結果がないことと緩和可能な条件を提示し、利用者が条件を変更して再検索できる。
-- Constraint: 0件の場合でも、利用者の許可なく条件を自動変更せず、招待制カードまたは新規受付停止カードを結果へ追加しない。
+- Constraint: 0件の場合でも、利用者の許可なく条件を自動変更せず、一般申込Routeが確認できないOfferingまたは新規受付停止中のOffering/Routeを結果へ追加しない。
 - Constraint: 非公開の審査基準から審査通過を推測しない。
 
 ### FR-040: テーマ別プリセット検索
@@ -106,12 +106,14 @@ Last updated: 2026-08-10
 - Priority: Required
 - Need: 利用者が金銭的に有利な候補へ短時間で到達し、別の条件でも候補を調整できるようにする。
 - Expected behavior: 検索結果は、利用者の条件に基づく年間正味還元額が高い順を基本順位とする。
-- Expected behavior: 利用者は、少なくとも年会費無料、還元率等の条件で結果を絞り込める。
-- Expected behavior: 利用者は、家族・追加カードを発行可能なカード、およびETCカードを発行可能なカードに結果を絞り込める。
-- Constraint: 家族・追加カードまたはETCカードの発行可否が未確認のカードは、対応カードへ絞り込む条件に一致させない。
+- Expected behavior: 利用者は、少なくとも年会費無料、および現在適用される確認済みの基本Reward Ruleによる通常還元率等の条件で結果を絞り込める。
+- Constraint: 還元率FilterへCampaign、利用先別加算、交換先別価値または期間限定倍率を混在させず、対象Rule、適用期間、上限と基本/実効値の違いを確認できるようにする。
+- Constraint: 現在有効な基本Reward Ruleとその対象利用・付与率をclaim単位で確認できる候補だけを還元率Filterへ一致させる。Rule世代、適用期間、対象利用または付与率がunknownもしくはpartially_disclosedで判定不能な候補を、推定値で一致させない。
+- Expected behavior: 利用者は、対象となる個人向けProduct/Offeringに、家族・追加カードのIssuanceまたは関連するETC Payment Instrumentを申し込めることが確認済みの候補へ絞り込める。
+- Constraint: 家族・追加カードまたはETCについて、対象Product/Offering、申込可能なApplication Route、Eligibilityおよび有効期間との関係が確認できない候補は、対応候補へ絞り込む条件に一致させない。
 - Constraint: 上記の未確認カードについて、除外件数または未確認である旨の表示を必須としない。
-- Expected behavior: 招待制カードおよび新規受付停止カードを検索結果へ含めるかを利用者が選択できる。
-- Constraint: 招待制カードおよび新規受付停止カードは、通常検索の初期状態では結果から除外する。
+- Expected behavior: 一般申込Routeが確認できず招待Route等だけが確認されるOffering、および新規受付停止中のOffering/Routeを検索結果へ含めるかを利用者が選択できる。
+- Constraint: 上記Offeringは通常検索の初期状態では結果から除外する。招待の存在だけでProduct全体を招待制と判定せず、InvitationをEligibility充足、審査承認またはIssuance保証として扱わない。
 - Constraint: 算定不完全な候補も順位から除外しないが、確認済み要素だけによる金額であることと、実際の順位が変わり得ることを識別可能にする。
 
 ### FR-012: 利用先カテゴリと企業・サービスによる条件指定
@@ -131,7 +133,7 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 利用者の想定利用状況におけるカード間の金銭的な違いを、共通する仮定による目安として比較する。
-- Expected behavior: 確認済みの年会費、通常還元、利用先別還元、Campaign、適用条件、期間および上限に基づき、年間正味還元額の目安を算定する。
+- Expected behavior: 対象Product/Offering/Variant、Application Route、Contract世代、関連Issuanceに適用されることを確認できた年会費、通常還元、利用先別還元、Campaign、適用条件、期間および上限に基づき、年間正味還元額の目安を算定する。
 - Expected behavior: 月次利用額が入力されておらず月次・期間別条件の判定が必要な場合は、年間利用額を12か月へ均等配分した仮定で算定し、その仮定を表示する。
 - Expected behavior: 取引ごとの金額や付与単位が必要だが明細がない場合は、入力された年間・カテゴリ・企業別金額へ公式還元条件を適用した概算とし、取引単位の端数を再現していないことを表示する。
 - Expected behavior: 公式Ruleに付与単位・端数処理が明示されている場合は計算説明へ表示し、入力情報で再現可能な範囲ではそのRuleを使用する。
@@ -141,15 +143,18 @@ Last updated: 2026-08-10
 - Expected behavior: 交換先により現金相当価値が変わる場合は、利用者が希望する交換先を指定したときだけ、確認可能な当該交換価値を使用する。
 - Expected behavior: 公式Sourceで固定の円換算価値を確認できるカード請求額への充当、現金への交換、広く支払いに利用できる共通ポイント、および固定額で利用できる電子マネーへの交換を金銭換算の対象とする。
 - Constraint: マイル、交換商品、用途が限定されたCoupon、または交換時期・条件等により価値が変動するものは年間正味還元額へ含めない。
+- Constraint: 本カード、家族・追加カード、ETC等のFeeを同一料金にせず、初年度/次年度、免除、割引、過去実績のcarryover、ポイント充当が対象利用者へ適用されることを確認できる範囲だけ算定する。
+- Constraint: 初期Releaseの年間正味還元額は本カード1契約・本会員向けのFeeを対象とし、利用者が取得枚数を指定する機能を持たない家族・追加カードおよびETCの任意Feeは合計へ含めず、詳細情報として区別して表示する。
 
 ### FR-015: Campaignの算定対象
 
 - Priority: Required
 - Need: 一時的な還元を過大評価せず、利用者に適用可能なCampaignを初年度計算へ反映する。
-- Expected behavior: 必ず付与されることを確認でき、利用者の入力条件から適用条件の充足を判定できるCampaignを初年度の算定へ含める。
+- Expected behavior: 対象Campaign Instance、Application Route、対象者、対象利用、登録、条件構造、確定付与されるReward、Beneficiary、上限および各期間を確認でき、利用者の入力条件から充足を判定できるCampaignだけを初年度の算定へ含める。
 - Expected behavior: エントリーその他の利用者操作が必要な場合は、その条件を明示したうえで算定へ含める。
-- Constraint: 抽選による特典は年間正味還元額へ含めない。
-- Constraint: 申込経路、対象者、期間、利用額、還元上限その他の条件を確認できないCampaignは推測で含めない。
+- Constraint: 抽選候補、当選確率を確認できない効果、および確定付与との対応を分離できない効果は年間正味還元額へ含めない。
+- Constraint: 申込経路、対象者、登録・応募期間、対象利用期間、判定・付与期間、利用額、Reward/会員/期間/Campaign全体等の上限、重複可否その他の条件を確認できないCampaignは推測で含めない。
+- Constraint: 予定終了日と実際の早期終了を区別し、早期終了が既登録者または発行済み権利へ及ぼす効果をEvidenceなしに推論しない。
 
 ### FR-014: 不完全な算定結果
 
@@ -174,7 +179,7 @@ Last updated: 2026-08-10
 - Priority: Required
 - Need: 候補間の差を同一の利用条件と基準で確認し、選択判断を行えるようにする。
 - Expected behavior: 利用者は検索結果等から複数のカードを選択し、同一の入力条件に基づく年間正味還元額と内訳を比較できる。
-- Expected behavior: 少なくとも年会費、基本還元率、年間正味還元額、ポイント名称、利用先別還元、Campaign、申込条件、国際ブランド、家族・追加カード、ETCカード、確認日および算定状態をカード間で比較できる。
+- Expected behavior: 少なくとも対象Product/Offering、年会費、基本還元率、年間正味還元額、Reward名称、利用先別還元、Campaign Instance、Application RouteとEligibility、国際ブランド/Variant、関連する家族・追加カードIssuance、ETC Payment Instrument、確認日、適用期間および算定状態を候補間で比較できる。
 - Constraint: 初期Releaseで同時に比較できるカードは最大5枚とする。
 - Constraint: 初年度と通常年、確認済み結果と変更確認中・算定不完全な結果を混同しない。
 
@@ -193,8 +198,8 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 初年度限定Campaignによる一時的な便益と継続的な便益を誤認させない。
-- Expected behavior: Campaign等を含む初年度の結果と、Campaign終了後の通常年の結果を区別して提示する。
-- Constraint: 計算基準日、対象期間、Campaign適用条件を追跡可能にする。
+- Expected behavior: 対象Campaign Instance等を含む初年度の結果と、当該実施回終了後の通常年の結果を区別して提示する。
+- Constraint: 計算基準日、Contract/Fee/Reward Ruleの世代、集計・判定・付与・利用期間、Campaign適用条件を追跡可能にする。
 
 ## Editorial Content
 
@@ -251,6 +256,7 @@ Last updated: 2026-08-10
 - Priority: Required
 - Need: 年間正味還元額と比較結果の根拠を信頼できる情報へ限定する。
 - Expected behavior: 年会費、還元率、ポイント価値、Campaign、適用条件等、検索順位または算定結果へ使用する情報は、カード会社、ポイント運営会社その他の当該情報について責任を持つ公式Sourceで確認できたものだけを採用する。
+- Constraint: Sourceの公式性はclaimごとに責任を持つ発行主体と内容を確認し、Source全体の一部が公式であることから、別のActor、Benefit、Insurance、Campaign等のclaimまで確認済みとしない。
 - Constraint: 比較サイト、個人投稿、生成内容等の非公式情報だけを根拠として算定値を確定しない。
 - Constraint: 公式Sourceでも確認できない内容は、推測で補完せずDisclosure Statusに従って扱う。
 
@@ -258,7 +264,7 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 「網羅的」という価値を検証可能にし、未掲載商品がないとの誤認を防ぐ。
-- Expected behavior: 掲載会社数、掲載カード数、現在新規受付中として確認できたカード数、対象範囲および最終確認日を確認できる。
+- Expected behavior: 掲載会社数、Product/Offeringとして数える掲載カード数、現在有効な一般申込Routeを確認できた候補数、各集計単位、対象範囲および最終確認日を確認できる。
 - Expected behavior: 未対応の会社・商品・利用先カテゴリ等の範囲を確認でき、段階的なCoverage拡大に伴って更新できる。
 - Constraint: 国内のすべてのカードを掲載していると根拠なく断定しない。
 - Constraint: 初期公開時点で国内すべての対象を掲載することを完了条件にしない。
@@ -271,6 +277,7 @@ Last updated: 2026-08-10
 - Expected behavior: 既知のURLの監視に加え、新しく登場したカード商品および新しく開始されたCampaignの候補を継続的に探索できる。
 - Constraint: 探索結果だけでCampaignを確定せず、当該Campaignについて責任を持つ公式Sourceを確認できた場合だけ更新案へ採用する。
 - Expected behavior: 変更を検知したSourceを再確認し、変更内容、根拠、適用開始・終了時期、影響するカード情報、計算結果および記事を追跡可能な更新案として運営者へ提示する。
+- Expected behavior: 更新案では、影響するProduct/Offering/Route/Feature/Rule version/Campaign Instance/effect/Benefit/Coverage/Issuance/Instrumentと対象期間を区別し、影響範囲を特定できない場合はその状態を保持する。
 - Expected behavior: HTML等のSource内容に差分がある場合は、年会費、還元率、Campaign条件等の変更された可能性がある項目を特定し、候補として提示する。
 - Expected behavior: ページ全体の変更有無だけでなく、管理対象の各項目について前回承認値、今回の抽出候補、差分、Source上の根拠箇所、取得時点および抽出確度を対応づけて提示する。
 - Constraint: HTMLまたは文言の差分だけからDomain Factの変更を確定せず、項目別の変更候補と、確実に特定できない差分を区別する。
@@ -283,7 +290,7 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 自動検知・抽出の誤りが検索順位や記事へ反映されることを防ぐ。
-- Expected behavior: 権限を持つ運営者は、更新案の公式Source、変更差分、適用条件、時点および影響範囲を確認し、必要に応じて訂正したうえで承認または却下できる。
+- Expected behavior: 権限を持つ運営者は、更新案のclaim分割、公式SourceとSource tier、根拠箇所、変更差分、適用条件、各時点、Disclosure Status、confidence、競合・訂正・supersedes関係および影響範囲を確認し、必要に応じて訂正したうえでclaimごとに承認または却下できる。
 - Expected behavior: 承認された更新だけを公開情報、以後の計算および記事更新の入力へ反映する。
 - Constraint: 誰がいつ何を承認・却下したかと、更新前後の内容を追跡可能にする。
 - Constraint: 初期Releaseでは同一の運営者が編集と承認を行うことを許容する。ただし、編集と承認は別の明示的な操作とし、両方の時刻・内容・実行者を記録する。
@@ -293,15 +300,17 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 初回データ投入と継続更新をすべて人手入力に依存させず、運営者の確認・軽微な訂正を中心とする運用を可能にする。
-- Expected behavior: 対象カードまたは公式Sourceを指定すると、AIを利用した自動処理が、カード詳細、年会費、還元率、ポイント、利用先別条件、Campaign、申込条件、国際ブランド、家族・追加カード、ETCカード、受付状態、適用期間その他の管理対象項目を収集・抽出し、未承認Draftとして構造化する。
-- Expected behavior: 各抽出候補に、公式Source、取得日、根拠箇所、適用期間、抽出確度、およびDisclosure Status候補を対応づける。
+- Expected behavior: 対象カードまたは公式Sourceを指定すると、AIを利用した自動処理が、Product/Offering/Variant候補、年会費、Reward/Benefit、Campaign Instance/effect、Application Route/Eligibility、国際ブランド、家族・追加カードIssuance、ETC Payment Instrument、Insurance/Coverage、受付状態、各条件・期間その他の管理対象情報を収集・抽出し、未承認Draftとして構造化する。
+- Expected behavior: 各抽出claim候補に、公式Source、Source tier、取得・公開・発表・発効等の確認可能な時点、根拠箇所、適用期間、抽出confidence、およびDisclosure Status候補を対応づける。
 - Expected behavior: 初回収集と、既存データに対する継続的な再収集の両方を行える。
 - Expected behavior: 定期探索で発見した新しいカード商品について、公式Sourceを確認し、既存商品との重複候補を示したうえで新規カードDraftを作成できる。
 - Expected behavior: 新しいカード候補が既存商品の改定、Variant、後継商品または独立した新商品かを判別できない場合は、「商品同一性の確認待ち」として人間判断へ回す。
 - Constraint: 非公式Sourceだけを根拠として項目値を確定しない。検索結果やAIの既有知識を公式Factとして扱わない。
 - Constraint: AI出力は未承認の候補であり、運営者の確認・必要な訂正・明示承認なしに、公開、年間正味還元額、順位または記事生成の確定入力へ使用しない。
 - Constraint: 商品同一性が確認されるまで、新規商品として自動登録せず、既存商品へ自動統合しない。
+- Constraint: Product、Offering、Variant、Application Route、Rule version、Campaign Instance/effect、Benefit、Insurance/Coverage、Issuance/Instrumentの候補を単一のカード共通値へ自動昇格または上書きしない。
 - Constraint: SourceのAccess制限、利用条件、robots等の適用事項を確認せずに取得を強行しない。
+- Constraint: Source本文、PDF、metadataその他の取得内容を未信頼データとして扱い、そこに含まれる命令、Tool実行、外部通信、権限変更またはSecret要求をAI収集・構造化処理の命令として実行しない。
 
 ### FR-034: 管理項目単位の差分確認
 
@@ -309,6 +318,7 @@ Last updated: 2026-08-10
 - Need: Sourceのレイアウト変更と、商品条件の実質的変更を区別し、運営者が確認すべき差分を絞り込む。
 - Expected behavior: 再収集時は、管理対象の各項目について、追加、変更、削除候補、変更なし、抽出不能を区別する。
 - Expected behavior: 前回承認値と今回候補を並べ、変更された可能性がある値、条件、期間および根拠箇所を運営者が確認できる。
+- Expected behavior: 差分は、影響するProduct/Offering/Variant、Application Route、Feature、Rule version、Campaign Instance/effect、Benefit、Coverage、Issuance/Instrumentの対象範囲と期間を区別して確認できる。
 - Expected behavior: SourceのHTML等に差分があっても管理対象項目に変更候補がない場合は、Source差分の要約と項目比較結果をまとめて確認し、一括承認できる。
 - Constraint: 追加、変更、削除候補または抽出不能となった項目は、一括承認の対象にせず個別確認を必須とする。
 - Constraint: Source自体にも管理対象項目にも差分がない場合は、データ更新承認を要求せず、確認成功の記録だけを残す。
@@ -320,6 +330,7 @@ Last updated: 2026-08-10
 - Priority: Required
 - Need: 日常的な情報追加・訂正をApplication codeの変更に依存させない。
 - Expected behavior: 権限を持つ運営者は、カード、利用先カテゴリ、企業・店舗・サービス、ポイント換算基準、Campaignその他の検索・計算に必要な業務情報を追加、訂正、無効化できる。
+- Expected behavior: 業務情報は、Product、Offering、Variant、Application Route、Rule version、Campaign Instance/effect、Benefit、Insurance/Coverage、関連Issuance/Instrument等のDomain上の対象と関係を区別して管理できる。
 - Constraint: 変更は公式Source、適用時期、変更理由および承認記録と対応づける。
 - Constraint: 無効化した情報を削除扱いにして過去の計算・記事・Evidenceとの追跡関係を失わない。
 - Constraint: 初期Releaseでは同一運営者による編集と承認を許容するが、承認操作を編集操作と統合または省略しない。
@@ -328,8 +339,10 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 更新確認中であってもカード候補の掲載を継続し、同時に古い可能性のある情報を確定情報と誤認させない。
-- Expected behavior: 公式Sourceの変更を検知してから承認が完了するまで、対象カードの掲載を継続する。
-- Expected behavior: 過去に公式Sourceで確認・承認された値は、変更項目を特定できた場合とできない場合のいずれも、再確認が完了するまで年間正味還元額の算定と順位へ継続して使用する。
+- Expected behavior: 公式Sourceの変更を検知してから承認が完了するまで、対象Product/Offeringの掲載を継続する。
+- Expected behavior: 過去に公式Sourceで確認・承認されたclaimは、影響するOffering/Route/Feature/Rule/Campaign effect/Coverageと有効期間を特定でき、旧claimが引き続き有効である合理的な根拠がある場合だけ、注意表示付きで算定と順位へ継続使用する。
+- Constraint: 影響範囲または旧claimの有効性を特定できない場合は、自動的に旧値を継続せず、算定から除外するか、根拠を確認した運営者の明示判断を要求する。
+- Constraint: 算定対象外のBenefitまたはInsurance情報でも、影響範囲または旧claimの有効性を特定できない場合は確定情報として継続表示せず、変更確認中または該当するDisclosure Statusとして表示する。
 - Expected behavior: 対象情報が変更確認中であること、使用している値の確認日、旧値に基づく暫定的な結果であること、結果と順位が変わり得ること、および申込前に最新情報を公式Sourceで確認する必要があることを明示する。
 - Constraint: 変更検知後の旧値を使用する場合と、一度も公式Sourceで確認できていない値を区別する。後者は`FR-014`に従い推測で算定へ含めない。
 
@@ -337,7 +350,7 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 公式Sourceの消失・移動後も、過去に採用したFactの確認根拠を追跡できるようにする。
-- Expected behavior: 少なくとも過去に採用した値、取得日、確認日、適用期間、Sourceの発行主体・タイトル・URLまたは識別子、Source type、確認結果、および関連する更新・承認履歴を保持する。
+- Expected behavior: 採用・不採用のclaimごとに、Observation、Extracted Fact、Domain Factへの関係、値または記述、根拠箇所、取得・公開・発表・発効・観測等の確認可能な時点、適用期間、Sourceの発行主体・タイトル・URLまたは識別子、Source type/tier、Disclosure Status、confidence、確認結果、競合・訂正・supersedes関係、および更新・承認履歴を保持する。
 - Constraint: 掲載・計算に使用している期間中は保持し、使用終了後も最低3年間保持する。
 - Expected behavior: 使用終了後3年を経過し、未解決の監査、訂正または保持例外がないEvidence metadataと関連履歴を削除する。
 - Constraint: Source全文または画像等の複製保存は本要件に含めず、権利、必要性、保存量を確認せずに必須化しない。
@@ -358,9 +371,10 @@ Last updated: 2026-08-10
 
 - Priority: Required
 - Need: 利用者が候補の条件、便益、申込可否と情報根拠を確認できるようにする。
-- Expected behavior: カード詳細では、少なくとも年会費、基本還元率、貯まるポイントの名称、利用先別還元、Campaign、申込条件、対応する国際ブランド、保険・ラウンジ等の特典、家族・追加カードの有無、ETCカードの有無、新規受付中・停止等の状態、確認日、適用期間、Sourceを確認できる。
+- Expected behavior: カード詳細では、少なくとも対象Product/Offering、年会費、基本還元率、Reward名称、利用先別還元、Campaign Instanceと確定/抽選の区別、Application Route/Eligibility、対応する国際ブランド/Variant、Benefit、関連する家族・追加カードIssuance、ETC Payment Instrument、Offering/Routeの新規受付状態、確認日、適用期間、Sourceを確認できる。
+- Expected behavior: Benefitは確認できるProvider、対象User/Beneficiary、利用経路、登録・予約条件、上限、除外および期間を表示できる。保険はInsurance Product名だけでなく、確認できるCoverageごとのInsured、Beneficiary、Eligibility/Attachment条件、補償事故、Limit、Deductible、Exclusion、Claim Requirement、期間およびUnderwriterを区別して表示できる。
 - Constraint: 確認できない項目を推測で補完せず、Disclosure Statusに従って扱う。
-- Constraint: 家族・追加カードは初期Releaseの独立した商品検索対象ではなく、対象カードの付随情報として扱う。ただし、FR-013に従い、発行可能な対象カードへの絞り込みには使用できる。
+- Constraint: 家族・追加カードとETCは初期Releaseの独立した商品検索対象ではなく、対象Product/OfferingとのIssuanceまたはPayment Instrument関係として扱う。ただし、FR-013に従い、関係と申込可能性を確認できた対象カードへの絞り込みには使用できる。
 
 ### FR-018: ブランド等の視覚的識別
 
@@ -382,6 +396,7 @@ Last updated: 2026-08-10
 - Constraint: AIが取得した画像を、人間の承認なしに公開情報へ使用しない。
 - Constraint: 券面画像だけに商品識別を依存せず、カード名称等のText情報を併用する。
 - Constraint: 券面デザイン変更時に旧画像を無条件で上書きせず、適用期間と履歴を保持する。
+- Constraint: 券面画像またはdesignの変更だけからProduct、Contract、Issuanceまたは再発行の同一性・変更を推論しない。
 - Expected behavior: 運営者が却下したAI取得画像の本体は通常領域から却下後30日以内、Backupからも却下後30日以内に削除し、Source、取得日、却下理由等のmetadataは却下後3年間保持して期限後に削除する。
 
 ## User Reviews
@@ -425,6 +440,7 @@ Last updated: 2026-08-10
 - Expected behavior: 検索結果、カード詳細または記事から、対象カードの申込先へAffiliate Linkを通じて移動できる。
 - Expected behavior: Affiliate Link付近および該当記事では、広告・PRを含むことを利用者が識別できるようにする。
 - Constraint: Link先、対象カード、申込経路およびCampaign条件の対応を確認できない場合に、同一の申込条件であると推測しない。
+- Constraint: Affiliate Linkは確認済みのApplication Routeへ対応づけ、Linkの存在をEligibility充足、審査承認、Contract成立またはIssuance保証として表示しない。
 - Constraint: Affiliate報酬の有無または金額を、年間正味還元額による検索順位、絞り込み結果、記事のおすすめ選定または選定順位へ影響させない。
 - Expected behavior: Affiliate経由で申込条件または利用者負担が変わるかを確認し、差異がある場合は申込前に明示する。確認できない場合は、その状態を明示する。
 

@@ -1,7 +1,7 @@
 # Requirements Scope
 
 Status: Approved
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Purpose
 
@@ -78,3 +78,8 @@ Last updated: 2026-08-10
 - Campaign、Fee Rule、Reward Ruleの適用条件、期間、対象者、上限および確認時点を無視して計算しない。
 - カテゴリ内最良条件、年間額の月次均等利用、取引単位の概算等、計算に使用した仮定を表示する。
 - Product LifecycleとFeature Lifecycleを混同せず、確認時点や適用期間を考慮する。
+- Product、Offering、Application Route、Contract、Issuance、Payment InstrumentおよびCredit Facilityを同一の「カード」属性へ潰さない。
+- 新規受付可否はOfferingまたはApplication Route、家族・ETC等は関連するIssuanceまたはPayment Instrumentとして扱い、Product全体の固定状態にしない。
+- BenefitはProvider、User、Beneficiary、利用経路、条件、上限および除外を、InsuranceはInsurance ProductとCoverage単位の条件を確認できる範囲で扱う。
+- Campaignの条件充足、確定付与、抽選、上限、実施回および複数期間を混同しない。
+- Domainに存在する法人、BNPL、カードレス購買等のConceptを、初期Releaseの機能対象へ自動的に追加しない。

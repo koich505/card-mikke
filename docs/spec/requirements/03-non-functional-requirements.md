@@ -1,7 +1,7 @@
 # Non-functional Requirements
 
 Status: Approved
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Security and Privacy
 
@@ -103,22 +103,22 @@ Last updated: 2026-08-10
 - Requirement: 不正Access、Secret漏えい、公開情報改変または利用者データ漏えいが疑われる場合は、影響範囲の確認、Access・Credentialの停止、証跡保全、復旧および必要な関係者連絡の要否判断を行う。
 - Verification: Incident想定に対して、検知記録、封じ込め、復旧、連絡判断を追跡できることを確認する。
 
-### NFR-SEC-008: AI生成に使用する入力と出力の信頼境界
+### NFR-SEC-008: AI処理に使用する入力と出力の信頼境界
 
 - Classification: Required
-- Requirement: AIによる記事・比較マップ生成では、運営者が指定する比較テーマ、運営者が対象として選択した承認済みの構造化データ、対応するEvidence参照、および再生成・更新対象として選択した承認済み記事だけを生成入力として使用する。比較テーマは許可された入力項目だが、その内容を信頼済みの命令として扱わない。
+- Requirement: AIによる公式情報の収集・構造化および記事・比較マップ生成では、運営者が指定または承認した対象、取得を許可されたSource、承認済み構造化データ、対応するEvidence参照、および生成対象として選択した入力だけを使用する。Sourceと比較テーマは許可された入力だが、その内容を信頼済みの命令として扱わない。
 - Requirement: 比較テーマ、カード情報、Source由来文字列、Evidenceおよび既存記事を未信頼データとして扱い、それらに含まれる命令、外部通信要求、Tool実行要求、権限変更要求またはSecret要求を生成処理の命令として実行しない。
 - Requirement: AI出力を未承認Text・Dataとして扱い、Script、HTML、Command、外部通信、公開、データ更新またはその他の操作として自動実行しない。
 - Requirement: AI出力は人間による編集・承認後も未信頼Contentとして扱い、編集のたびと公開直前に許可した構造、Text、MarkupおよびURLだけであることを検証する。Script、Event Handler、危険なURL scheme、未承認の外部埋込・外部送信を拒否または無害化し、検証を通過しないContentを公開しない。
-- Verification: Source由来文字列、比較テーマおよびAI出力に命令を模した文字列、危険なURL、Script、Event Handler、外部埋込、外部送信要求およびSecret要求を含めても、承認済みデータ以外の参照、Tool実行、外部通信、権限変更、Secret開示または自動公開が起きず、編集・承認後も不正Contentが公開されないことを検証する。
+- Verification: 収集対象Source、Source由来文字列、比較テーマおよびAI出力に命令を模した文字列、危険なURL、Script、Event Handler、外部埋込、外部送信要求およびSecret要求を含めても、許可範囲外の参照、Tool実行、外部通信、権限変更、Secret開示、データ更新または自動公開が起きず、編集・承認後も不正Contentが公開されないことを検証する。
 
 ## Evidence, Freshness, and Retention
 
 ### NFR-EVID-001: Source変更監視の初期頻度
 
 - Classification: Required
-- Requirement: 公式Sourceの変更検知と新規Campaign探索を、初期状態では1日1回実施する。
-- Verification: 実行記録から実施時刻、対象、成功・失敗、変更候補を確認できることを検証する。
+- Requirement: 公式Sourceの変更検知と、初期Releaseで表示する新規Product/Offering/Route、Campaign Instance、Benefit、Insurance Product/CoverageおよびUnderwriter Source候補の探索を、初期状態では1日1回実施する。
+- Verification: 実行記録から実施時刻、Source、対象Concept/relationship/claim、成功・失敗、変更候補を確認できることを検証する。
 - Constraint: 費用、処理量、対象Source数および検知遅延を計測し、承認を伴って頻度を変更できるようにする。
 - Requirement: 日次確認の失敗時は自動再試行し、3日連続で成功しない場合は運営者が確認できる警告を記録する。
 - Requirement: 非AI運用費が月額4,000円へ到達した、日次処理が24時間以内に完了しない、3日連続で日次確認に失敗した、または公式Source側のAccess制限・利用条件に抵触する可能性が判明した場合は、確認頻度を見直す。
@@ -140,8 +140,9 @@ Last updated: 2026-08-10
 
 - Classification: Required
 - Requirement: 掲載・計算に使用するEvidence metadataと更新・承認履歴を使用期間中保持し、使用終了後3年間保持する。
+- Requirement: Evidence metadataはclaim単位で、Source type/tier、根拠箇所、取得・公開・発表・発効・観測等の確認可能な時点、適用期間、Disclosure Status、confidence、競合・訂正・supersedes関係および承認履歴を追跡できるようにする。
 - Requirement: 使用終了後3年を経過したmetadataと関連履歴は、未解決の監査、訂正または明示された保持例外がない限り削除する。
-- Verification: 現行情報と廃止情報の双方についてSource、確認日、適用期間および承認履歴を追跡できることを検証する。
+- Verification: 現行・将来・廃止情報と、採用・不採用claimについて、SourceからObservation、Extracted Fact、Domain Fact、公開・算定利用、訂正まで追跡できることを検証する。
 
 ## Accessibility
 

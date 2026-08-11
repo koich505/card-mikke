@@ -18,7 +18,7 @@
 - `.ai/requirements/checklists/domain-traceability-checklist.md`
 - `.ai/requirements/checklists/non-functional-requirements-checklist.md`
 - `docs/spec/domain/`
-- `docs/reviews/domain/domain-review-002.md`
+- `docs/reviews/domain/domain-review-003.md`
 - `docs/process/00-development-workflow.md`
 - `docs/process/02-quality-gates.md`
 
@@ -26,6 +26,7 @@ Researchの詳細確認が必要な場合は、現行baselineである以下を�
 
 - `docs/research/02-market-corpus-v2-audited.md`
 - `docs/research/03-domain-counterexample-audit.md`
+- `docs/research/04-affinity-corporate-house-card-audit.md`から`docs/research/13-invitation-eligibility-audit.md`（必要な領域だけを参照する）
 
 `docs/research/01-market-corpus-v1.md`は履歴用途に限り、現行Factとして採用しない。
 
@@ -72,9 +73,11 @@ docs/spec/requirements/
 - Payment Instrument、Payment Scheme、Funding Method、Credit Providerを混同しない。
 - Member RewardとPartner Revenue Shareを混同しない。
 - Product LifecycleとFeature Lifecycleを混同しない。
-- OQ-8、OQ-16、OQ-17、OQ-18、OQ-19を確定済みの境界またはFactとして扱わない。
+- `docs/spec/domain/12-open-questions.md`の現行OQ番号・名称・Architecture Blocking Setを参照し、旧OQ番号の意味を流用しない。
+- Product、Offering、Application Route、Contract、Account、Issuance、Payment Instrument、Credit Facilityを混同しない。
+- Campaign Instance/effect、Reward、Benefit、Insurance Product/Coverageを平坦なProduct属性へ変換しない。
 - `docs/spec/domain/12-open-questions.md`のArchitecture blocking事項を、Requirementsで固定的な設計へ変換しない。
-- OQ-14のEvidence retention policyを非機能要件として検討する。
+- 現行OQ-15のEvidence retentionとOQ-16のclaim分解を非機能要件・Open Questionとして検討する。
 
 ## 禁止事項
 

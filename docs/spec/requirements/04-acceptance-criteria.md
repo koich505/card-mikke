@@ -1,7 +1,7 @@
 # Acceptance Criteria
 
 Status: Approved
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Account, Profile, and Privacy
 
@@ -61,7 +61,11 @@ Last updated: 2026-08-10
 - Requirements: FR-005, FR-006, FR-015, FR-016
 - Given: 年間利用額と適用可能なカード条件がある
 - When: 年間正味還元額を算定する
-- Then: 初年度と通常年が分離され、通常還元、利用先別還元、対象Campaign、年会費、対象外項目、カテゴリ内最良条件、月次均等配分、取引単位概算の内訳・仮定・根拠を確認できる
+- Then: 初年度と通常年が分離され、通常還元、利用先別還元、対象Campaign Instanceの確定付与部分、対象Contract/Issuanceに適用される年会費、対象外項目、カテゴリ内最良条件、月次均等配分、取引単位概算の内訳・仮定・根拠を確認できる
+- And: Campaignの登録・対象利用・判定・付与期間、上限scope、抽選除外、予定/実終了と、Fee/Reward Ruleの制度世代を確認できる
+- And: 複数Campaignまたは通常Rewardが並行する場合は、確認済みの重複・排他・優先条件に従い、同じeffectを二重加算しない
+- And: Campaign effectごとの対象者、Application Route、条件構造、BeneficiaryとRewardの対応を確認し、紹介者等の別Beneficiary向けeffectを利用者本人の算定へ加算しない
+- And: 家族・追加カードおよびETCの任意Feeは本カードの年間正味還元額へ自動加算せず、詳細情報として区別される
 
 ### AC-008: 金銭換算境界
 
@@ -69,21 +73,26 @@ Last updated: 2026-08-10
 - Given: ポイントまたはBenefitに複数の利用・交換方法がある
 - When: 年間正味還元額へ換算する
 - Then: 公式Sourceで固定円価値を確認できる対象だけが含まれ、マイル、商品、用途限定Coupon、変動価値は含まれない
+- And: 交換先によって価値が異なる場合、利用者が交換先を指定しなければ算定から除外され、指定した場合だけ確認済みの当該交換価値が使用される
 
 ### AC-009: 不完全・変更確認中の算定
 
 - Requirements: FR-014, FR-023
 - Given: 一度も確認できない要素、または過去確認済みだが変更確認中の値がある
 - When: 算定と順位表示を行う
-- Then: 前者は算定から除外され、後者は旧値で算定を継続し、それぞれの状態、確認日、除外・暫定理由、順位変動可能性を確認できる
+- Then: 前者は算定から除外され、後者は影響対象と期間を特定でき、旧claimが引き続き有効である根拠がある場合だけ旧値で算定を継続し、それぞれの状態、確認日、除外・暫定理由、順位変動可能性を確認できる
+- And: 影響範囲または旧claimの有効性を特定できない場合は自動継続せず、算定除外または根拠を伴う運営者判断となる
 
 ### AC-010: 検索順位とFilter
 
 - Requirements: FR-013
 - Given: 複数の候補が検索条件に一致する
 - When: 初期結果を表示し、Filterを変更する
-- Then: 年間正味還元額の高い順を基本とし、年会費無料、還元率、家族・追加カード発行可、ETCカード発行可、招待制・受付停止を含む条件で絞り込め、招待制・受付停止は初期状態で除外される
-- And: 家族・追加カードまたはETCカードの発行可否が未確認のカードは、各発行可能Filterに一致せず、その除外件数または未確認理由の表示は要求されない
+- Then: 年間正味還元額の高い順を基本とし、年会費無料、還元率、関連する家族・追加カードIssuance、ETC Payment Instrument、一般申込Routeなし・受付停止中のOffering/Routeを含む条件で絞り込め、後二者は初期状態で除外される
+- And: 還元率Filterは現在適用される確認済みの基本Reward Ruleによる通常還元率を使用し、Campaign、利用先別加算、交換先別価値または期間限定倍率を混在させず、対象Rule、期間、上限と基本/実効値を区別する
+- And: Rule世代、対象利用、適用期間または付与率が判定不能な候補を、unknownまたはpartially_disclosedなclaimの推定値で還元率Filterへ一致させない
+- And: 家族・追加カードまたはETCと対象Product/Offering/Routeの関係・申込可能性が未確認の候補は各Filterに一致せず、その除外件数または未確認理由の表示は要求されない
+- And: 一般Routeと招待Routeが併存するOfferingを「招待Routeあり」だけで通常検索から除外せず、InvitationをEligibility、審査承認またはIssuance保証として表示しない
 
 ### AC-011: 0件とキーワード検索
 
@@ -131,7 +140,8 @@ Last updated: 2026-08-10
 - Requirements: FR-017, FR-018, FR-020, FR-035
 - Given: カード詳細を閲覧する
 - When: 各商品条件と識別情報を確認する
-- Then: 必須情報、確認日、適用期間、公式Source、Disclosure Statusを確認でき、許諾確認済みAssetだけが名称とともに表示される
+- Then: Product/Offering/Variant、Application Route、関連Issuance/ETC Instrumentを混同せず、必須情報、確認日、適用期間、公式Source、claim単位のDisclosure Statusを確認でき、許諾確認済みAssetだけが名称とともに表示される
+- And: Campaignは実施回、確定/抽選、条件、上限、複数期間を、BenefitはProvider/User/Beneficiary/利用条件を、保険はCoverageごとのInsured、Beneficiary、付帯条件、補償事故、Limit、免責・除外、請求要件、期間および確認できるUnderwriterを区別して確認できる
 
 ### AC-027: 券面画像の登録と履歴
 
@@ -210,7 +220,7 @@ Last updated: 2026-08-10
 - Requirements: NFR-EVID-001, NFR-EVID-002, NFR-EVID-004, NFR-SEO-001, NFR-SEO-002
 - Given: 日次Source確認、訂正受付、カード詳細または記事公開がある
 - When: Evidence・SEO要件を検証する
-- Then: 日次実行・失敗・3営業日着手を追跡でき、Index対象・非対象、Metadata、変更確認中・Unknownの検索向け表現が公開内容と一致する
+- Then: 日次実行・失敗・3営業日着手をSource、対象Concept/relationship/claim単位で追跡でき、Index対象・非対象、Metadata、変更確認中・Unknownの検索向け表現が公開内容と一致する
 
 ### AC-037: Observability
 
@@ -261,14 +271,18 @@ Last updated: 2026-08-10
 - Given: 公式Sourceの変更、URL変更、取得不能または新Campaign候補が検知される
 - When: 更新案を確認する
 - Then: 変更候補と不明差分が区別され、3営業日以内に確認へ着手し、別の明示的な承認操作後だけ新情報へ更新され、日次確認の失敗は再試行されて3日連続失敗時に警告される
+- And: 影響範囲はProduct全体へ固定せず、Product/Offering/Variant/Application Route/Feature/Rule version/Campaign Instanceまたはeffect/Benefit/Insurance Product/Coverage/Issuance/Instrumentと期間を区別し、範囲不明または旧claimの有効性不明なら旧値を自動継続しない
+- And: 承認者はclaim分割、Source tier、根拠箇所、各時点、Disclosure Status、confidence、競合・訂正・supersedes関係を確認し、必要な訂正後にclaimごとに承認または却下する
 
 ### AC-025: AI支援の初回収集・項目差分
 
 - Requirements: FR-033, FR-034
 - Given: 未登録の公式Source、または前回承認値を持つ公式Sourceがある
 - When: AI支援の収集・再収集を行う
-- Then: 管理項目ごとの候補値、Source、取得日、根拠箇所、適用期間、抽出確度、Disclosure Status候補、および前回値との差分状態が未承認Draftとして提示される
+- Then: Domain Concept/relationship/Rule version/対象期間ごとのclaim候補、Source tier、取得・公開・発表・発効等の時点、根拠箇所、適用期間、抽出confidence、Disclosure Status候補、および前回claimとの差分・競合・supersedes状態が未承認Draftとして提示される
+- And: Offering/Variant/Route、Campaign Instance/effect、Benefit/Coverage、Issuance/Instrumentの差をProduct共通値へ自動昇格しない
 - And: 運営者の明示承認前は公開、計算、順位、記事生成の確定入力に使用されない
+- And: Source本文に命令、Tool実行、外部通信、権限変更またはSecret要求を模した文字列があっても、それを命令として実行せず、許可された収集・構造化以外の操作を行わない
 
 ### AC-026: 新規カード探索と差分承認単位
 
@@ -278,27 +292,29 @@ Last updated: 2026-08-10
 - Then: 新規カード候補は公式Sourceと既存商品との重複候補を伴うDraftになり、HTML差分のみで管理項目が同一の場合は一括確認できる
 - And: 追加・変更・削除候補・抽出不能の項目は個別確認が必要で、Sourceと項目の双方に差分がなければ確認成功記録だけが残る
 - And: 商品同一性を判別できない新規候補は人間判断待ちとなり、自動登録も既存商品への自動統合も行われない
+- And: 同名ProductのOffering/Variant/Route差、Rule世代、Campaign実施回、Coverageまたは関連Instrument差を共通値の変更として自動承認しない
 
 ### AC-018: 業務情報管理
 
 - Requirements: FR-032, NFR-MAINT-001
 - Given: 権限を持つ運営者が業務情報を変更する
 - When: 追加、訂正、無効化、承認を行う
-- Then: Application codeを変更せず反映でき、Source、適用時期、変更者、承認者、変更前後を追跡できる
+- Then: Application codeを変更せず反映でき、Domain上の対象・関係・Rule versionを区別して、Source、適用時期、変更者、承認者、変更前後を追跡できる
 
 ### AC-019: Coverage
 
 - Requirements: FR-027
 - Given: Coverage情報を確認する
 - When: 掲載範囲が拡大または変更される
-- Then: 掲載会社数、カード数、新規受付中カード数、未対応範囲、最終確認日が更新され、全件網羅を断定しない
+- Then: 掲載会社数、Product/Offeringとして数えるカード数、現在有効な一般申込Routeを確認できた候補数、未対応範囲、集計単位および最終確認日が更新され、全件網羅を断定しない
 
 ### AC-023: Evidence保持と訂正受付
 
 - Requirements: FR-024, FR-026, NFR-EVID-003
 - Given: 採用情報が使用終了する、または訂正連絡を受け付ける
 - When: 保持期限または訂正処理を確認する
-- Then: Evidence metadataは使用終了後3年間追跡でき、例外がなければ期限後に削除され、Login不要の指摘は状態・判断理由を記録して処理され、訂正は公式Source確認と明示承認後だけ反映される
+- Then: 採用・不採用claimのSource tier、根拠箇所、各時点、適用期間、Disclosure Status、confidence、競合・訂正・supersedes、Observation→Extracted Fact→Domain Factおよび承認履歴を使用終了後3年間追跡でき、例外がなければ期限後に削除される
+- And: Login不要の指摘は状態・判断理由を記録して処理され、訂正は公式Source確認と明示承認後だけ反映される
 
 ## Quality Goals
 
