@@ -3,7 +3,16 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import SiteHeader from "@/app/components/site-header";
+import {
+  calculatePrototypeCard,
+  withPrototypeScenario,
+} from "@/features/card-detail/prototype-scenario";
+import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
 import { featuredCards } from "@/fixtures/home";
+import type {
+  PrototypeCategoryId,
+  PrototypeSearchScenario,
+} from "@/types/card-detail-prototype";
 import styles from "./search.module.css";
 
 const spendOptions = [
@@ -93,22 +102,53 @@ const categoryMarks: Record<Category, string> = {
   ネット通販: "WEB",
 };
 
-export default function SearchPrototype() {
-  const [view, setView] = useState<View>("search");
-  const [annualSpend, setAnnualSpend] = useState<number | null>(null);
+const categoryIdByLabel: Record<Category, PrototypeCategoryId> = {
+  コンビニ: "convenience",
+  スーパー: "supermarket",
+  ドラッグストア: "drugstore",
+  飲食店: "restaurant",
+  ガソリン: "gas",
+  公共料金: "utilities",
+  携帯電話: "mobile",
+  交通: "transit",
+  "旅行・宿泊": "travel",
+  ネット通販: "online",
+};
+
+export default function SearchPrototype({
+  initialScenario,
+}: {
+  initialScenario: PrototypeSearchScenario | null;
+}) {
+  const initialCategories: Category[] = initialScenario
+    ? categories.filter(
+        (category) =>
+          (initialScenario.usageByCategory[categoryIdByLabel[category]] ?? 0) > 0,
+      )
+    : ["コンビニ", "スーパー"];
+  const initialAmounts: Partial<Record<Category, number>> = initialScenario
+    ? Object.fromEntries(
+        initialCategories.map((category) => [
+          category,
+          initialScenario.usageByCategory[categoryIdByLabel[category]] ?? 0,
+        ]),
+      )
+    : { コンビニ: 120_000, スーパー: 360_000 };
+  const [view, setView] = useState<View>(initialScenario ? "results" : "search");
+  const [annualSpend, setAnnualSpend] = useState<number | null>(
+    initialScenario?.annualSpend ?? null,
+  );
   const [mainSpendPeriod, setMainSpendPeriod] = useState<SpendPeriod>("annual");
   const [selectedSpendId, setSelectedSpendId] = useState<string | null>(null);
   const [customSpendMan, setCustomSpendMan] = useState("");
-  const [profile, setProfile] = useState<ProfileId | null>(null);
+  const [profile, setProfile] = useState<ProfileId | null>(
+    initialScenario?.profileId ?? null,
+  );
   const [spendPeriod, setSpendPeriod] = useState<SpendPeriod>("monthly");
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([
-    "コンビニ",
-    "スーパー",
-  ]);
-  const [amounts, setAmounts] = useState<Partial<Record<Category, number>>>({
-    コンビニ: 120_000,
-    スーパー: 360_000,
-  });
+  const [selectedCategories, setSelectedCategories] =
+    useState<Category[]>(initialCategories);
+  const [amounts, setAmounts] =
+    useState<Partial<Record<Category, number>>>(initialAmounts);
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
@@ -119,6 +159,21 @@ export default function SearchPrototype() {
     [amounts],
   );
   const invalid = allocated > detailedAnnualSpend;
+
+  const currentScenario = useMemo<PrototypeSearchScenario | null>(() => {
+    if (!annualSpend) return null;
+    return {
+      annualSpend,
+      profileId: profile ?? undefined,
+      usageByCategory: Object.fromEntries(
+        selectedCategories.map((category) => [
+          categoryIdByLabel[category],
+          amounts[category] ?? 0,
+        ]),
+      ),
+      source: "search",
+    };
+  }, [amounts, annualSpend, profile, selectedCategories]);
 
   const rankedCards = useMemo(() => {
     const preference: Record<ProfileId, string[]> = {
@@ -592,6 +647,15 @@ export default function SearchPrototype() {
             <div className={styles.resultList} aria-live="polite">
               {rankedCards.map((card, index) => {
                 const selected = compareIds.includes(card.id);
+                const calculated = currentScenario
+                  ? calculatePrototypeCard(
+                      redesignedCardDetails[card.id],
+                      currentScenario,
+                    )
+                  : null;
+                const detailHref = currentScenario
+                  ? withPrototypeScenario(`/cards/${card.id}`, currentScenario)
+                  : `/cards/${card.id}`;
                 return (
                   <article className={styles.resultCard} key={card.id}>
                     <div className={styles.resultRank}>
@@ -619,15 +683,21 @@ export default function SearchPrototype() {
                     <div className={styles.resultValue}>
                       <span>年間のおトク目安</span>
                       <p>
-                        <strong>{yen.format(card.regularYearValue)}</strong>円
+                        <strong>
+                          {yen.format(
+                            calculated?.regularNetYen ?? card.regularYearValue,
+                          )}
+                        </strong>
+                        円
                       </p>
-                      <small>初年度 {yen.format(card.firstYearValue)}円</small>
+                      <small>
+                        初年度{" "}
+                        {yen.format(calculated?.firstYearNetYen ?? card.firstYearValue)}
+                        円
+                      </small>
                     </div>
                     <div className={styles.resultActions}>
-                      <Link
-                        href={`/cards/${card.id}`}
-                        className={styles.cardDetailLink}
-                      >
+                      <Link href={detailHref} className={styles.cardDetailLink}>
                         詳細を見る <span>→</span>
                       </Link>
                       <button
@@ -675,14 +745,34 @@ export default function SearchPrototype() {
                     <th>通常年のおトク目安</th>
                     {comparedCards.map((card) => (
                       <td key={card.id}>
-                        <strong>{yen.format(card.regularYearValue)}円</strong>
+                        <strong>
+                          {yen.format(
+                            currentScenario
+                              ? calculatePrototypeCard(
+                                  redesignedCardDetails[card.id],
+                                  currentScenario,
+                                ).regularNetYen
+                              : card.regularYearValue,
+                          )}
+                          円
+                        </strong>
                       </td>
                     ))}
                   </tr>
                   <tr>
                     <th>初年度のおトク目安</th>
                     {comparedCards.map((card) => (
-                      <td key={card.id}>{yen.format(card.firstYearValue)}円</td>
+                      <td key={card.id}>
+                        {yen.format(
+                          currentScenario
+                            ? calculatePrototypeCard(
+                                redesignedCardDetails[card.id],
+                                currentScenario,
+                              ).firstYearNetYen
+                            : card.firstYearValue,
+                        )}
+                        円
+                      </td>
                     ))}
                   </tr>
                   <tr>

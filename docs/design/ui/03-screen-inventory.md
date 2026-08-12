@@ -1,8 +1,8 @@
 # Screen Inventory
 
-Status: Draft under UI dialogue  
+Status: Card detail v0.2 implemented; human UI approval pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Inventory policy
 
@@ -18,7 +18,7 @@ Last updated: 2026-08-10
 | SCR-PUB-002 | 条件入力 | 年間利用額、利用先カテゴリ、企業Serviceを段階的に指定する | Primary mock | FR-003, FR-004, FR-010, FR-012, AC-001, AC-002, AC-005, AC-006 |
 | SCR-PUB-003 | 検索結果 | 順位、算定状態、Filterを確認し比較候補を選ぶ | Primary mock | FR-005, FR-006, FR-013, FR-014, FR-023, AC-007, AC-009–AC-011 |
 | SCR-PUB-004 | カード比較 | 最大5枚を同一条件で比較する | Primary mock | FR-016, FR-029, AC-012 |
-| SCR-PUB-005 | カード詳細 | 条件、内訳、Evidence、確認日、申込前確認を理解する | Primary mock | FR-017–FR-020, FR-035, AC-014, AC-015 |
+| SCR-PUB-005 | カード詳細 | 券面、費用、還元、Campaign、年間利用特典、追加Card、Benefit、Insurance、Review、Evidence、確認日、申込前確認を理解する | Primary mock implemented in v0.2 | FR-017–FR-020, FR-035, AC-014, AC-015 |
 | SCR-PUB-006 | 記事一覧 | 用途別記事と単一カード特集を探す | Supporting mock | FR-007, FR-031 |
 | SCR-PUB-007 | 用途別記事 | 対象読者、選定理由、候補、根拠を理解する | Supporting mock | FR-007–FR-009, FR-019, AC-015, AC-016 |
 | SCR-PUB-008 | 単一カード特集 | 特徴、変更点、条件、確認時点、Sourceを理解する | Supporting mock | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |

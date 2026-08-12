@@ -1,8 +1,8 @@
 # UI Requirements
 
-Status: Draft under UI dialogue  
+Status: Card detail v0.2 implemented; human UI approval pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
 ## Purpose and boundary
 
@@ -193,6 +193,59 @@ Last updated: 2026-08-10
 - 申込前に公式Sourceで最新情報を確認する必要性を示す。
 - UI MockのActionは外部へ遷移しない。
 - Traceability: FR-019, AC-015, AC-038
+
+### UIR-DETAIL-004: Card face gallery
+
+- 1 Cardに複数のCSS合成券面を表示でき、前後Button、Thumbnail、現在位置を提供する。自動再生しない。
+- 券面ごとに名称、素材、国際Brand、Grade、選択可否、追加料金、変更・再発行条件、適用期間、代替Textを確認できる。
+- 金属製等の特殊素材を年会費・発行手数料と混同せず明示する。
+- 券面変更で商品・契約そのものが切り替わったように表現しない。
+
+### UIR-DETAIL-005: Rewards, Campaigns, and annual benefits
+
+- 基本Point Program、選択Course、交換先、還元Ruleを分離し、付与単位、端数、付与時期、有効期限、対象外、上限、重複を確認できる。
+- 入会特典と期間限定Campaignは、実施回、対象Route、確定／抽選、条件、各期間、対象外、上限、付与時期を確認できる。
+- 恒常的な年間利用額達成RuleはCampaignと分けて表示する。
+
+### UIR-DETAIL-006: Fees, benefits, and insurance
+
+- 本会員年会費、初年度／通常年、条件付き無料、海外事務・再発行手数料、家族Card、ETC Cardを別項目で表示する。
+- BenefitはProvider、対象者、保有／登録／予約／利用条件、上限、同伴者、除外、期間を表示する。
+- Insurance ProductごとにCoverageを並べ、対象者、付帯条件、補償事故、限度額、免責、除外、請求要件、期間、引受主体を確認できる。
+
+### UIR-DETAIL-007: Application, review, and evidence
+
+- 公開Eligibility、一般申込／招待／切替、受付状態、発行目安、締め日・支払日、Touch決済、Mobile Wallet、利用通知、Card Lock、本人認証を表示する。
+- 審査難易度・通過予測は表示せず、審査の有無と非公開であることだけを扱う。
+- Reviewは平均、件数、分布、本文、投稿日、掲載方針を示し、`ログインユーザーの投稿`と表現する。
+- 利用者向けには公式確認済み相当、一部未確認、非公開、確認できず、確認日、適用期間、Source相当情報を表示し、内部IDを出さない。
+
+### UIR-DETAIL-008: Search scenario continuity
+
+- 検索結果と詳細で年間利用額、Profile、カテゴリ別利用額を共有し、同じ合成計算結果を表示する。
+- 関連Cardと検索への戻りでも有効な条件を維持する。
+- Queryは既知Categoryと安全な数値範囲へ限定し、無効値を無視する。
+- 直接アクセスまたは有効条件がない場合は、合成Fixtureの`標準試算例`であることを明示する。
+- Canonical URLは検索Queryを含めない。
+
+### UIR-DETAIL-009: Detail tab panel and freshness icon
+
+- Hero下の詳細情報は単一の表示領域とし、選択したTabに対応するPanelだけを表示する。
+- TabはPointerとKeyboardで操作でき、選択状態、TabとPanelの対応、左右Key、Home／End Keyを支援技術へ伝える。
+- Disclosure Statusと情報鮮度は画面上ではIconで簡潔に示し、状態名はTooltipと読み上げ名で補完する。
+
+### UIR-DETAIL-010: Hero campaign carousel
+
+- Heroで複数のCampaignを横スライド方式により1件ずつ表示する。
+- 複数件では前後Button、現在位置、Indicator、左右Swipeを提供し、1件だけの場合は切替操作を表示しない。
+- 自動再生せず、Campaign Tabの全件一覧は詳細な条件比較用として維持する。
+
+### UIR-DETAIL-011: Inline custom calculation
+
+- 詳細のおトク試算は、検索・プロフィール相当条件を引き継ぎ、有効条件がない場合は合成Fixtureの標準条件を初期値にする。
+- 利用者は年間／月間を切り替え、総利用額と使い道別利用額を入力して同じ合成計算Utilityで再試算できる。
+- 月間入力は年額へ換算し、使い道合計が総利用額を超える場合は適用を停止して修正理由を表示する。
+- 詳細内のカスタム条件はBrowser Memory内だけで扱い、プロフィール更新、保存、外部送信を行わない。
 
 ## Correction report
 
