@@ -1,0 +1,116 @@
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+
+test.describe("カード詳細UIモック", () => {
+  test("単一Tab PanelをKeyboardで切り替える", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    const valueTab = page.getByRole("tab", { name: "おトク試算" });
+    await valueTab.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByRole("tab", { name: "ポイント" })).toBeFocused();
+    await expect(page.getByRole("tabpanel")).toHaveCount(1);
+    await expect(page.getByRole("heading", { name: "ポイント・還元" })).toBeVisible();
+  });
+
+  test("複数Campaignを手動で横切替でき自動再生しない", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    const carousel = page.getByRole("region", { name: "注目のキャンペーン" });
+    await expect(carousel.getByText("新規入会・利用特典")).toBeVisible();
+    await carousel.getByRole("button", { name: "次のキャンペーンを見る" }).click();
+    await expect(carousel.getByText("秋のタッチ決済Campaign")).toBeVisible();
+    await page.waitForTimeout(700);
+    await expect(carousel.getByText("秋のタッチ決済Campaign")).toBeVisible();
+  });
+
+  test("確認済み上限とCampaign成立Scenarioを試算へ反映する", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    await expect(page.getByText("24,200円", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("27,200円", { exact: true }).first()).toBeVisible();
+    await page.getByRole("tab", { name: "ポイント" }).click();
+    await expect(
+      page.locator("dd").filter({ hasText: "月300ポイント（合成）" }).last(),
+    ).toBeVisible();
+  });
+
+  test("カスタム試算はError理由と更新結果を通知する", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    await page.getByRole("button", { name: "条件を変更して試算" }).click();
+    const total = page.getByRole("spinbutton", {
+      name: "年間利用額 円",
+      exact: true,
+    });
+    await total.fill("0");
+    await expect(page.getByText("利用額を1円以上で入力してください。")).toBeVisible();
+    await total.fill("2000000");
+    await page.getByRole("button", { name: "この条件で試算する" }).click();
+    await expect(page.getByRole("status")).toContainText("試算を更新しました");
+    await expect(page.getByText("カスタム条件")).toBeVisible();
+  });
+
+  test("カテゴリ内の具体的な架空Serviceを選べる", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    await page.getByRole("button", { name: "条件を変更して試算" }).click();
+    await page
+      .getByRole("combobox", { name: "コンビニで使う店舗・サービス" })
+      .selectOption("featured");
+    await page.getByRole("button", { name: "この条件で試算する" }).click();
+    await expect(page.getByText("デイリー24（架空）", { exact: true })).toBeVisible();
+  });
+
+  test("カスタム条件を関連Cardと検索へ引き継ぐ", async ({ page }) => {
+    await page.goto(
+      "/cards/everyday-plus?annualSpend=1200000&profile=everyday&usage=convenience%3A180000&usage=supermarket%3A420000&service=convenience%3Abest&service=supermarket%3Aother",
+    );
+    await page.getByRole("button", { name: "条件を変更して試算" }).click();
+    await page
+      .getByRole("spinbutton", { name: "年間利用額 円", exact: true })
+      .fill("2000000");
+    await page.getByRole("button", { name: "この条件で試算する" }).click();
+    const related = page.getByRole("link", {
+      name: /トラベルステップカード.*現在の利用額・使い道/,
+    });
+    await expect(related).toHaveAttribute("href", /annualSpend=2000000/);
+    await expect(related).toHaveAttribute("href", /service=supermarket%3Aother/);
+    await related.click();
+    await expect(page.getByText("年間 2,000,000円")).toBeVisible();
+    await page.getByRole("link", { name: "検索結果へ戻る" }).click();
+    await expect(page.getByText("年間利用額 2,000,000円")).toBeVisible();
+  });
+
+  test("鮮度IconはFocus時に意味を取得できる", async ({ page }) => {
+    await page.goto("/cards/travel-step");
+    const freshness = page.getByRole("img", {
+      name: "旅行還元の一部を変更確認中",
+    });
+    await freshness.focus();
+    await expect(freshness).toBeFocused();
+    await expect(freshness).toHaveAttribute(
+      "data-tooltip",
+      "旅行還元の一部を変更確認中",
+    );
+  });
+
+  test("Not FoundとMobile overflowを確認する", async ({ page }) => {
+    await page.goto("/cards/not-a-card");
+    await expect(
+      page.getByRole("heading", { name: "カードが見つかりませんでした" }),
+    ).toBeVisible();
+    await page.goto("/cards/everyday-plus");
+    await expect(
+      page.getByRole("heading", { name: "まいにちプラスカード", level: 1 }),
+    ).toBeVisible();
+    const overflows = await page.evaluate(
+      () => document.documentElement.scrollWidth > window.innerWidth,
+    );
+    expect(overflows).toBe(false);
+  });
+
+  test("自動Accessibility検査に重大違反がない", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    await expect(
+      page.getByRole("heading", { name: "まいにちプラスカード", level: 1 }),
+    ).toBeVisible();
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations).toEqual([]);
+  });
+});

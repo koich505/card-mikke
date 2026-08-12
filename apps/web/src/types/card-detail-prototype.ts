@@ -18,7 +18,8 @@ export type PrototypeCategoryId =
   | "mobile"
   | "transit"
   | "travel"
-  | "online";
+  | "online"
+  | "other";
 
 export type PrototypeProfileId =
   "everyday" | "points" | "travel" | "simple" | "shopping" | "custom";
@@ -27,6 +28,13 @@ export type PrototypeSearchScenario = {
   annualSpend: number;
   profileId?: PrototypeProfileId;
   usageByCategory: Partial<Record<PrototypeCategoryId, number>>;
+  serviceByCategory?: Partial<
+    Record<PrototypeCategoryId, "best" | "featured" | "other">
+  >;
+  /** UI-only: このScenarioで申込経路・対象者・登録・期間まで成立確認済みのCampaign。 */
+  eligibleCampaignIds?: string[];
+  /** UI-only: Campaign固有の対象利用期間内に充足確認済みの利用額。 */
+  campaignQualifyingSpendYen?: Record<string, number>;
   source: "search" | "default" | "custom";
 };
 
@@ -51,6 +59,10 @@ export type PrototypeFeeRule = {
   label: string;
   firstYearYen?: number;
   regularYearYen?: number;
+  regularYearWaiver?: {
+    thresholdYen: number;
+    appliesTo: "翌年度";
+  };
   displayValue: string;
   freeCondition: string;
   measurementPeriod: string;
@@ -84,9 +96,13 @@ export type PrototypeRewardRule = {
   eligibleTransactions: string;
   excludedTransactions: string;
   grantUnit: string;
+  grantUnitYen?: number;
   rounding: string;
   grantedOn: string;
   cap: string;
+  monthlyCapYen?: number;
+  annualCapYen?: number;
+  assumedService?: string;
   stacking: string;
   effectivePeriod: string;
   disclosureStatus: PrototypeDisclosureStatus;
@@ -96,9 +112,12 @@ export type PrototypeCampaign = {
   id: string;
   title: string;
   status: string;
+  instanceLabel?: string;
   routeIds: string[];
   registrationPeriod: string;
   qualifyingPeriod: string;
+  decisionPeriod: string;
+  grantPeriod: string;
   entryRequired: string;
   eligibleTransactions: string;
   excludedTransactions: string;
@@ -112,6 +131,7 @@ export type PrototypeCampaign = {
     rewardYen?: number;
     certainty: "確定付与" | "抽選";
     beneficiary: string;
+    disclosureStatus?: PrototypeDisclosureStatus;
   }>;
   disclosureStatus: PrototypeDisclosureStatus;
 };
@@ -125,6 +145,12 @@ export type PrototypeAnnualBenefit = {
   excludedTransactions: string;
   reward: string;
   rewardYen?: number;
+  effectType?: "会員ポイント" | "用途限定クーポン";
+  provider?: string;
+  user?: string;
+  beneficiary?: string;
+  rewardProgramId?: string;
+  valuationBasis?: string;
   grantedOn: string;
   validUntil: string;
   stacking: string;
@@ -182,6 +208,8 @@ export type PrototypeCoverage = {
 export type PrototypeInsuranceProduct = {
   id: string;
   name: string;
+  classification?: "保険" | "会員保障" | "分類未確認";
+  classificationStatus?: PrototypeDisclosureStatus;
   underwriter: string;
   claimsHandler: string;
   attachment: string;
@@ -236,7 +264,6 @@ export type PrototypeReviewSummary = {
 export type PrototypeEvidenceSource = {
   id: string;
   label: string;
-  status: PrototypeDisclosureStatus;
   confirmedOn: string;
   effectivePeriod: string;
   sourceTitle: string;
@@ -285,4 +312,6 @@ export type PrototypeCardCalculation = {
   regularNetYen: number;
   firstYearNetYen: number;
   excluded: string[];
+  assumptions: string[];
+  isIncomplete: boolean;
 };

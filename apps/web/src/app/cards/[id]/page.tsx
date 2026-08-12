@@ -59,7 +59,6 @@ export default async function CardDetailPage({
     .map((card) => ({
       id: card.id,
       name: card.name,
-      href: withPrototypeScenario(`/cards/${card.id}`, scenario),
     }));
 
   return (

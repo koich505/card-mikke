@@ -1,7 +1,7 @@
 # UI Requirements
 
 Status: Card detail v0.2 implemented; human UI approval pending
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 Last updated: 2026-08-11
 
 ## Purpose and boundary
@@ -285,5 +285,5 @@ Last updated: 2026-08-11
 - 記事一覧の分類・Filterと、用途別記事／単一カード特集の視覚的区別
 - Account・Profile・履歴Flowの詳細
 - 運営画面のIAと主要Flow
-- RQ-011の理解可能性を判定する具体的なUser Test観測項目
-- RQ-017の変更確認中表示範囲
+- RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
+- RQ-017の変更確認中表示は、Heroの全体Iconに加え、影響する個別Rule/effectのIconへ限定して示し、影響外のClaimへ伝播させない。

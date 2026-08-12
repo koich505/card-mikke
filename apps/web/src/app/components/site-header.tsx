@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
-  currentPage: "home" | "search" | "card";
+  currentPage: "home" | "search" | "card" | "article";
 };
 
 export default function SiteHeader({ currentPage }: SiteHeaderProps) {
@@ -22,7 +22,12 @@ export default function SiteHeader({ currentPage }: SiteHeaderProps) {
         <nav className={styles.primaryNav} aria-label="メインナビゲーション">
           <Link href="/#how-it-works">使い方</Link>
           <Link href="/#featured">注目カード</Link>
-          <Link href="/#articles">特集記事</Link>
+          <Link
+            href="/#articles"
+            aria-current={currentPage === "article" ? "page" : undefined}
+          >
+            特集記事
+          </Link>
           <Link
             href="/search"
             className={styles.navSearch}

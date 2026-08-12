@@ -3,7 +3,7 @@
   --navy-2: #123b6d;
   --yellow: #ffd52f;
   --yellow-soft: #fff2a6;
-  --red: #ec304d;
+  --red: #a71834;
   --cream: #fffaf0;
   --ink-soft: #536276;
   --line: #ded8cc;
@@ -95,6 +95,7 @@
 }
 
 .freshness strong {
+  position: relative;
   display: grid;
   place-items: center;
   width: 1.8rem;
@@ -916,6 +917,7 @@
 }
 
 .statusBadge {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -929,6 +931,58 @@
   font-size: 0.85rem;
   font-weight: 1000;
   white-space: nowrap;
+}
+
+.statusBadge:focus-visible,
+.freshness strong:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+
+.statusBadge::after,
+.freshness strong::after {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.45rem);
+  left: 50%;
+  width: max-content;
+  max-width: 15rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.4rem;
+  color: white;
+  background: var(--navy);
+  content: attr(data-tooltip);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.statusBadge:hover::after,
+.statusBadge:focus-visible::after,
+.freshness strong:hover::after,
+.freshness strong:focus-visible::after {
+  opacity: 1;
+}
+
+.statusLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border: 2px solid var(--navy);
+  border-radius: 14px;
+  background: white;
+}
+
+.statusLegend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .statusBadge[data-status="unknown"],
@@ -1174,6 +1228,30 @@
 
 .categoryEditor input[type="number"] {
   width: 100%;
+}
+
+.categoryEditor > div > div > div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.categoryEditor > div > div > div label:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.categoryEditor select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.45rem;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  color: var(--navy);
+  background: white;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
 }
 
 .scenarioEditorFooter {

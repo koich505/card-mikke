@@ -233,9 +233,9 @@ export default function Home() {
                   <p>{article.audience}</p>
                   <h3>{article.title}</h3>
                   <small>{article.description}</small>
-                  <button type="button">
+                  <Link href={`/articles/${article.id}`}>
                     この記事を読む <span>→</span>
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}

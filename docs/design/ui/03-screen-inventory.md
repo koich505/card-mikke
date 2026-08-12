@@ -1,7 +1,7 @@
 # Screen Inventory
 
 Status: Card detail v0.2 implemented; human UI approval pending
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 Last updated: 2026-08-11
 
 ## Inventory policy

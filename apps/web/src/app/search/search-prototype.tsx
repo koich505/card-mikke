@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import SiteHeader from "@/app/components/site-header";
 import {
   calculatePrototypeCard,
+  featuredServiceLabel,
   withPrototypeScenario,
 } from "@/features/card-detail/prototype-scenario";
 import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
@@ -80,6 +81,7 @@ const categories = [
   "交通",
   "旅行・宿泊",
   "ネット通販",
+  "その他",
 ] as const;
 
 type Category = (typeof categories)[number];
@@ -100,6 +102,7 @@ const categoryMarks: Record<Category, string> = {
   交通: "IC",
   "旅行・宿泊": "旅",
   ネット通販: "WEB",
+  その他: "他",
 };
 
 const categoryIdByLabel: Record<Category, PrototypeCategoryId> = {
@@ -113,6 +116,7 @@ const categoryIdByLabel: Record<Category, PrototypeCategoryId> = {
   交通: "transit",
   "旅行・宿泊": "travel",
   ネット通販: "online",
+  その他: "other",
 };
 
 export default function SearchPrototype({
@@ -149,6 +153,18 @@ export default function SearchPrototype({
     useState<Category[]>(initialCategories);
   const [amounts, setAmounts] =
     useState<Partial<Record<Category, number>>>(initialAmounts);
+  const [services, setServices] = useState<
+    Partial<Record<Category, "best" | "featured" | "other">>
+  >(
+    initialScenario
+      ? Object.fromEntries(
+          initialCategories.map((category) => [
+            category,
+            initialScenario.serviceByCategory?.[categoryIdByLabel[category]] ?? "best",
+          ]),
+        )
+      : {},
+  );
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
@@ -171,24 +187,32 @@ export default function SearchPrototype({
           amounts[category] ?? 0,
         ]),
       ),
+      serviceByCategory: Object.fromEntries(
+        selectedCategories.map((category) => [
+          categoryIdByLabel[category],
+          services[category] ?? "best",
+        ]),
+      ),
       source: "search",
     };
-  }, [amounts, annualSpend, profile, selectedCategories]);
+  }, [amounts, annualSpend, profile, selectedCategories, services]);
 
   const rankedCards = useMemo(() => {
-    const preference: Record<ProfileId, string[]> = {
-      everyday: ["everyday-plus", "smart-basic", "travel-step"],
-      points: ["everyday-plus", "travel-step", "smart-basic"],
-      travel: ["travel-step", "everyday-plus", "smart-basic"],
-      simple: ["smart-basic", "everyday-plus", "travel-step"],
-      shopping: ["everyday-plus", "travel-step", "smart-basic"],
-      custom: ["everyday-plus", "travel-step", "smart-basic"],
-    };
-    const order = profile ? preference[profile] : featuredCards.map((card) => card.id);
     return [...featuredCards]
       .filter((card) => !freeFeeOnly || card.annualFeeLabel.includes("無料"))
-      .toSorted((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-  }, [freeFeeOnly, profile]);
+      .toSorted((a, b) => {
+        if (!currentScenario) return 0;
+        const aValue = calculatePrototypeCard(
+          redesignedCardDetails[a.id],
+          currentScenario,
+        ).regularNetYen;
+        const bValue = calculatePrototypeCard(
+          redesignedCardDetails[b.id],
+          currentScenario,
+        ).regularNetYen;
+        return bValue - aValue;
+      });
+  }, [currentScenario, freeFeeOnly]);
 
   const selectedProfile = profiles.find((item) => item.id === profile);
   const comparedCards = featuredCards.filter((card) => compareIds.includes(card.id));
@@ -216,13 +240,21 @@ export default function SearchPrototype({
   }
 
   function toggleCategory(category: Category) {
+    const isSelected = selectedCategories.includes(category);
     setSelectedCategories((current) =>
       current.includes(category)
         ? current.filter((item) => item !== category)
         : [...current, category],
     );
-    if (selectedCategories.includes(category)) {
+    if (isSelected) {
       setAmounts((current) => ({ ...current, [category]: 0 }));
+      setServices((current) => {
+        const next = { ...current };
+        delete next[category];
+        return next;
+      });
+    } else {
+      setServices((current) => ({ ...current, [category]: "best" }));
     }
   }
 
@@ -230,7 +262,7 @@ export default function SearchPrototype({
     setCompareIds((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
-        : current.length < 3
+        : current.length < 5
           ? [...current, id]
           : current,
     );
@@ -506,30 +538,58 @@ export default function SearchPrototype({
                                 <strong>{category}</strong>
                               </label>
                               {selected && (
-                                <label
-                                  className={styles.categoryAmount}
-                                  htmlFor={`amount-${category}`}
-                                >
-                                  <input
-                                    id={`amount-${category}`}
-                                    type="number"
-                                    min="0"
-                                    step="1000"
-                                    value={Math.round(
-                                      (amounts[category] ?? 0) / periodMultiplier,
-                                    )}
-                                    onChange={(event) =>
-                                      setAmounts((current) => ({
-                                        ...current,
-                                        [category]:
-                                          Number(event.target.value) * periodMultiplier,
-                                      }))
-                                    }
-                                  />
-                                  <span>
-                                    円／{spendPeriod === "monthly" ? "月" : "年"}
-                                  </span>
-                                </label>
+                                <div>
+                                  <label
+                                    className={styles.categoryAmount}
+                                    htmlFor={`amount-${category}`}
+                                  >
+                                    <input
+                                      id={`amount-${category}`}
+                                      type="number"
+                                      min="0"
+                                      step="1000"
+                                      value={Math.round(
+                                        (amounts[category] ?? 0) / periodMultiplier,
+                                      )}
+                                      onChange={(event) =>
+                                        setAmounts((current) => ({
+                                          ...current,
+                                          [category]:
+                                            Number(event.target.value) *
+                                            periodMultiplier,
+                                        }))
+                                      }
+                                    />
+                                    <span>
+                                      円／{spendPeriod === "monthly" ? "月" : "年"}
+                                    </span>
+                                  </label>
+                                  <label className={styles.categoryService}>
+                                    <span className={styles.srOnly}>
+                                      {category}で使う店舗・サービス
+                                    </span>
+                                    <select
+                                      value={services[category] ?? "best"}
+                                      onChange={(event) =>
+                                        setServices((current) => ({
+                                          ...current,
+                                          [category]: event.target.value as
+                                            "best" | "featured" | "other",
+                                        }))
+                                      }
+                                    >
+                                      <option value="best">カテゴリ内最良条件</option>
+                                      <option value="featured">
+                                        {featuredServiceLabel(
+                                          categoryIdByLabel[category],
+                                        )}
+                                      </option>
+                                      <option value="other">
+                                        その他の店舗・サービス
+                                      </option>
+                                    </select>
+                                  </label>
+                                </div>
                               )}
                             </div>
                           );

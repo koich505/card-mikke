@@ -699,7 +699,7 @@
 }
 
 .detailButton,
-.articleCard button,
+.articleCard a,
 .trust button {
   border: 0;
   cursor: pointer;
@@ -873,7 +873,7 @@
   line-height: 1.55;
 }
 
-.articleCard button {
+.articleCard a {
   width: 100%;
   margin-top: 0.8rem;
   display: flex;

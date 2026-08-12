@@ -8,9 +8,9 @@ Approval date:
 
 ## Approval target
 
-- Requirements: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
+- Requirements: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 - UI Mock: `docs/design/ui/mocks/ui-v0.2-card-detail.md`
-- UI code version / Commit: Working tree（未Commit）
+- UI code version / Commit: Card detail scope manifest hash `4c56fa5d4affe35ac9b99003d61e132cfbb392122ef43d90100ec8d840c94725`（未Commit差分を含む。Mock文書記載のCommandで再現）
 - Screens: SCR-PUB-003、SCR-PUB-005、Card detail Loading／Not Found
 - Flow: Search result → Card detail → Related Card / Search result return
 

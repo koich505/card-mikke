@@ -4,9 +4,9 @@ Status: In progress; human UI Mock Approval pending
 
 Created: 2026-08-11
 
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 
-UI code: `apps/web/` working tree（未Commit）
+UI code baseline: Card detail scope manifest hash `4c56fa5d4affe35ac9b99003d61e132cfbb392122ef43d90100ec8d840c94725`（Card detail、共有Scenario、条件引継ぎ対象Search／Header、Fixture／型、Test／設定だけを対象）
 
 ## Purpose
 
@@ -22,7 +22,7 @@ UI code: `apps/web/` working tree（未Commit）
 - 有効な検索Query経由: 検索条件と合成試算額を検索結果・詳細・関連Card・検索への戻りで共有。
 - 無効または未知のQuery: 無視して対象Cardの`標準試算例`へFallback。
 
-Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜008、UIR-G-003〜004、UIR-A11Y-001、UIR-RESP-001
+Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜011、UIR-G-003〜004、UIR-A11Y-001、UIR-RESP-001
 
 ## Screen structure
 
@@ -43,7 +43,7 @@ Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜008、U
 
 - `PrototypeCardDetailViewModel`、`PrototypeSearchScenario`は表示検証専用の暫定型であり、Domain Entity、DB Model、API Contractではない。
 - `cardFaces[]`、`feeRules[]`、`rewardPrograms[]`、`rewardRules[]`、`campaigns[]`、`annualBenefits[]`、`benefits[]`、`insuranceProducts[].coverages[]`等を複数保持する。
-- 合成試算は通常Point、カテゴリ追加還元、金銭額を持つ年間利用特典、確定Campaign、本会員年会費だけを対象にする。
+- 合成試算は確認済みの通常Point、カテゴリ追加還元、固定円価値の年間利用特典、全成立条件をScenarioで確認できる確定Campaign、本会員年会費だけを対象にする。月次上限、年次上限、付与単位、条件付き年会費を反映する。
 - 詳細の「おトク試算」では、検索・プロフィール相当条件または標準試算例を初期値にし、年間／月間利用額と使い道別金額を変更できる。月間入力は年額へ換算し、検索と同じ`calculatePrototypeCard`で再試算する。
 - 家族・ETC任意費用、抽選Campaign、非金銭Benefit、Insurance、未確認条件は算定外として明示する。
 - Queryは既知のProfile、Category、`default`のScenario種別、0〜100,000,000円の整数だけを受理し、カテゴリ配分合計が年間利用額を超える場合はScenario全体を無効とする。
@@ -65,6 +65,8 @@ Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜008、U
 
 Screenshotは上部Hierarchy確認用であり、操作可能なSource of Truthは`apps/web/`である。
 
+Source manifest hash再現Command: `{ printf '%s\n' apps/web/package.json apps/web/package-lock.json apps/web/playwright.config.ts apps/web/src/app/components/site-header.module.css apps/web/src/app/components/site-header.tsx apps/web/src/app/search/search-prototype.tsx apps/web/src/app/search/search.module.css apps/web/src/fixtures/card-detail-v2.ts apps/web/src/fixtures/home.ts apps/web/src/types/card-detail-prototype.ts; find apps/web/src/app/cards apps/web/src/features/card-detail apps/web/tests -type f; } | sort -u | while IFS= read -r file; do shasum -a 256 "$file"; done | shasum -a 256`
+
 ## Verification
 
 | Check | Result |
@@ -76,11 +78,15 @@ Screenshotは上部Hierarchy確認用であり、操作可能なSource of Truth�
 | Slideshow Pointer / Keyboard / current position / accessible name | Pass |
 | Desktop 1440×1000 | Pass |
 | Mobile 390×844 | Pass |
+| Playwright Desktop Chrome / Mobile Chrome | 18 tests Pass |
+| axe automated accessibility | Pass（Color contrastを含む） |
 | Browser console Error | 0件 |
 | `npm run quality` | Pass |
 | 変更対象Source／UI文書のSecret scan | Pass、no leaks found |
 | Repository全体のSecret scan | Fail、既存`docs/research/`内の署名付きSource URL 18件を検出。今回の変更外のため未編集 |
 | `git diff --check` | Pass |
+
+Browser Test再現手順: `cd apps/web && npm run test:ui`。対象URLは3カード詳細、`/cards/not-a-card`、Desktop Chrome、Pixel 5相当である。Tabの左右Key、Campaign手動切替、自動再生なし、カスタム試算Error／更新通知、鮮度Icon Focus、Not Found、横Overflow、axeを確認する。
 
 Repository全体のSecret scanは今回の差分に含まれない既存Research文書を検出する。検出値は画面・Fixture・Screenshotへ含まれず、変更対象の`apps/web/src`と`docs/design/ui`は個別ScanでPassしている。
 

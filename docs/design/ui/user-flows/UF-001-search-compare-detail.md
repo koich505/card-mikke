@@ -1,7 +1,7 @@
 # UF-001: 条件入力から検索・比較・カード詳細へ進む
 
 Status: Approved primary flow; interaction details under UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-10 Approved）
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 Decision date: 2026-08-10
 
 ## Goal

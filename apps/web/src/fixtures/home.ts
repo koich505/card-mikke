@@ -2411,15 +2411,6 @@ export const recommendedArticles: PrototypeArticle[] = [
     accent: "yellow",
   },
   {
-    id: "first-card",
-    kind: "用途別",
-    title: "はじめての1枚、年会費だけで決めない比較ポイント",
-    description: "通常年・初年度・利用先別還元を混ぜずに見るコツ。",
-    audience: "初めてカードを作る人向け",
-    updatedOn: "2026-08-08",
-    accent: "orange",
-  },
-  {
     id: "everyday-plus-feature",
     kind: "カード特集",
     title: "まいにちプラスカードの特徴を合成データでチェック",
@@ -2427,6 +2418,15 @@ export const recommendedArticles: PrototypeArticle[] = [
     audience: "特定カードを詳しく見たい人向け",
     updatedOn: "2026-08-07",
     accent: "teal",
+  },
+  {
+    id: "card-balance-map",
+    kind: "用途別",
+    title: "年会費と通常年のおトク目安で見るカード比較マップ",
+    description: "3枚の合成カードを二つの軸で整理し、配置理由も確認。",
+    audience: "カードの違いを視覚的に見たい人向け",
+    updatedOn: "2026-08-10",
+    accent: "orange",
   },
 ];
 

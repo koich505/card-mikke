@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   calculatePrototypeCard,
   categoryLabel,
+  featuredServiceLabel,
   prototypeCategories,
+  withPrototypeScenario,
 } from "@/features/card-detail/prototype-scenario";
 import type {
   PrototypeCardCalculation,
@@ -21,7 +23,7 @@ type Props = {
   scenario: PrototypeSearchScenario;
   calculation: PrototypeCardCalculation;
   searchHref: string;
-  relatedCards: Array<{ id: string; name: string; href: string }>;
+  relatedCards: Array<{ id: string; name: string }>;
 };
 
 const yen = new Intl.NumberFormat("ja-JP");
@@ -66,14 +68,40 @@ const profileLabel = {
 const clampYen = (value: number) =>
   Number.isFinite(value) ? Math.min(Math.max(Math.round(value), 0), 100_000_000) : 0;
 
-function StatusBadge({ status }: { status: keyof typeof disclosureLabel }) {
+function StatusBadge({
+  status,
+  confirmedOn,
+  sourceTitle = "合成Fixture Source",
+  effectivePeriod,
+}: {
+  status: keyof typeof disclosureLabel;
+  confirmedOn?: string;
+  sourceTitle?: string;
+  effectivePeriod?: string;
+}) {
+  const dateLabel =
+    status === "disclosed"
+      ? "公式情報を確認した日"
+      : status === "partially_disclosed"
+        ? "一部条件の確認日"
+        : "確認を試みた日";
+  const tooltip = [
+    disclosureLabel[status],
+    confirmedOn ? `${dateLabel} ${confirmedOn}` : undefined,
+    effectivePeriod ? `適用期間 ${effectivePeriod}` : undefined,
+    sourceTitle,
+  ]
+    .filter(Boolean)
+    .join("・");
   return (
     <span
       className={styles.statusBadge}
       data-status={status}
+      data-tooltip={tooltip}
+      tabIndex={0}
       role="img"
-      aria-label={disclosureLabel[status]}
-      title={disclosureLabel[status]}
+      aria-label={tooltip}
+      title={tooltip}
     >
       <span aria-hidden="true">{disclosureIcon[status]}</span>
     </span>
@@ -105,15 +133,25 @@ function SectionHeading({
 
 function DefinitionGrid({
   items,
+  evidence,
 }: {
   items: Array<{ label: string; value: React.ReactNode }>;
+  evidence?: {
+    status: keyof typeof disclosureLabel;
+    confirmedOn: string;
+    effectivePeriod: string;
+    sourceTitle: string;
+  };
 }) {
   return (
     <dl className={styles.definitionGrid}>
       {items.map((item) => (
         <div key={item.label}>
           <dt>{item.label}</dt>
-          <dd>{item.value}</dd>
+          <dd>
+            {item.value}
+            {evidence && <StatusBadge {...evidence} />}
+          </dd>
         </div>
       ))}
     </dl>
@@ -162,8 +200,14 @@ export default function CardDetailView({
   const [draftUsage, setDraftUsage] = useState<
     Partial<Record<PrototypeCategoryId, number>>
   >(scenario.usageByCategory);
+  const [draftServices, setDraftServices] = useState<
+    NonNullable<PrototypeSearchScenario["serviceByCategory"]>
+  >(scenario.serviceByCategory ?? {});
   const [reviewMessage, setReviewMessage] = useState("");
+  const [calculationMessage, setCalculationMessage] = useState("");
+  const totalSpendRef = useRef<HTMLInputElement>(null);
   const galleryId = useId();
+  const calculationResultId = useId();
   const face = detail.cardFaces[faceIndex];
   const mainFee = detail.feeRules.find((item) => item.target === "本会員");
   const baseRule = detail.rewardRules.find((item) => item.kind === "base");
@@ -189,6 +233,34 @@ export default function CardDetailView({
     0,
   );
   const scenarioInvalid = draftAnnualSpend <= 0 || draftAllocated > draftAnnualSpend;
+  const unallocated = Math.max(
+    activeScenario.annualSpend -
+      Object.values(activeScenario.usageByCategory).reduce(
+        (total, amount) => total + (amount ?? 0),
+        0,
+      ),
+    0,
+  );
+  const activeSearchHref = withPrototypeScenario("/search", activeScenario);
+  const claimEvidence = (
+    status: keyof typeof disclosureLabel,
+    effectivePeriod: string,
+    sourceId: "product" | "rewards" | "benefits",
+  ) => {
+    const source = detail.evidence.find((item) => item.id === sourceId);
+    return {
+      status,
+      confirmedOn: source?.confirmedOn ?? detail.confirmedOn,
+      effectivePeriod,
+      sourceTitle: source?.sourceTitle ?? "合成Fixture Source",
+    };
+  };
+
+  useEffect(() => {
+    if (!calculationMessage) return;
+    const timer = window.setTimeout(() => setCalculationMessage(""), 4_000);
+    return () => window.clearTimeout(timer);
+  }, [calculationMessage]);
 
   function selectAdjacentFace(direction: -1 | 1) {
     setFaceIndex(
@@ -205,20 +277,33 @@ export default function CardDetailView({
   }
 
   function applyCustomScenario() {
-    if (scenarioInvalid) return;
-    setActiveScenario({
+    if (scenarioInvalid) {
+      totalSpendRef.current?.focus();
+      return;
+    }
+    const nextScenario: PrototypeSearchScenario = {
       annualSpend: draftAnnualSpend,
       profileId: activeScenario.profileId,
       usageByCategory: draftUsage,
+      serviceByCategory: draftServices,
+      // @invariant 利用額を編集した後はCampaign期間内の達成額を推測せず算定外にする。
+      eligibleCampaignIds: undefined,
+      campaignQualifyingSpendYen: undefined,
       source: "custom",
-    });
+    };
+    const nextCalculation = calculatePrototypeCard(detail, nextScenario);
+    setActiveScenario(nextScenario);
     setIsScenarioEditorOpen(false);
+    setCalculationMessage(
+      `試算を更新しました。通常年${yen.format(nextCalculation.regularNetYen)}円、初年度${yen.format(nextCalculation.firstYearNetYen)}円です。`,
+    );
   }
 
   function resetScenario() {
     setActiveScenario(scenario);
     setDraftAnnualSpend(scenario.annualSpend);
     setDraftUsage(scenario.usageByCategory);
+    setDraftServices(scenario.serviceByCategory ?? {});
     setDraftPeriod("annual");
     setIsScenarioEditorOpen(false);
   }
@@ -229,7 +314,13 @@ export default function CardDetailView({
         <div className={styles.heroFlagRow}>
           <p>{detail.eyebrow}</p>
           <div className={styles.freshness} data-state={detail.state}>
-            <strong role="img" aria-label={detail.stateLabel} title={detail.stateLabel}>
+            <strong
+              role="img"
+              aria-label={detail.stateLabel}
+              title={detail.stateLabel}
+              data-tooltip={detail.stateLabel}
+              tabIndex={0}
+            >
               <span aria-hidden="true">
                 {detail.state === "complete"
                   ? "✓"
@@ -314,6 +405,7 @@ export default function CardDetailView({
                 <em>{face.material}</em>
               </div>
               <DefinitionGrid
+                evidence={claimEvidence("disclosed", face.effectivePeriod, "product")}
                 items={[
                   { label: "国際ブランド", value: face.brand },
                   { label: "グレード", value: face.grade },
@@ -360,11 +452,11 @@ export default function CardDetailView({
               <div
                 className={styles.campaignCarousel}
                 role="region"
-                aria-label="開催中のキャンペーン"
+                aria-label="注目のキャンペーン"
                 aria-roledescription="カルーセル"
               >
                 <div className={styles.campaignCarouselHeader}>
-                  <span>開催中のキャンペーン</span>
+                  <span>注目のキャンペーン</span>
                   {detail.campaigns.length > 1 && (
                     <span aria-live="polite">
                       {campaignIndex + 1} / {detail.campaigns.length}
@@ -478,8 +570,15 @@ export default function CardDetailView({
               </p>
             )}
             <p className={styles.adDisclosure}>広告を含む想定のUIモックです</p>
-            <Link href={searchHref} className={styles.secondaryAction}>
-              {scenario.source === "search" ? "検索結果へ戻る" : "自分の条件で試算する"}{" "}
+            <Link
+              href={activeScenario.source === "custom" ? activeSearchHref : searchHref}
+              className={styles.secondaryAction}
+            >
+              {activeScenario.source === "custom"
+                ? "この条件で検索する"
+                : scenario.source === "search"
+                  ? "検索結果へ戻る"
+                  : "自分の条件で試算する"}{" "}
               →
             </Link>
           </div>
@@ -535,6 +634,9 @@ export default function CardDetailView({
       </div>
 
       <div className={styles.pageBody}>
+        <p className={styles.srOnly} role="status" aria-live="polite">
+          {calculationMessage}
+        </p>
         <section
           className={styles.contentSection}
           id="detail-panel-value"
@@ -569,16 +671,29 @@ export default function CardDetailView({
               </small>
             </div>
             <div className={styles.scenarioSummaryActions}>
-              {scenarioUsage.length > 0 && (
-                <ul>
-                  {scenarioUsage.map(([category, amount]) => (
-                    <li key={category}>
-                      {categoryLabel(category as PrototypeCategoryId)}
-                      <strong>{yen.format(amount ?? 0)}円</strong>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <ul>
+                {scenarioUsage.map(([category, amount]) => (
+                  <li key={category}>
+                    {categoryLabel(category as PrototypeCategoryId)}
+                    <strong>{yen.format(amount ?? 0)}円</strong>
+                    <small>
+                      {activeScenario.serviceByCategory?.[
+                        category as PrototypeCategoryId
+                      ] === "other"
+                        ? "その他の店舗・サービス"
+                        : activeScenario.serviceByCategory?.[
+                              category as PrototypeCategoryId
+                            ] === "featured"
+                          ? featuredServiceLabel(category as PrototypeCategoryId)
+                          : "カテゴリ内最良条件"}
+                    </small>
+                  </li>
+                ))}
+                <li>
+                  その他の利用
+                  <strong>{yen.format(unallocated)}円</strong>
+                </li>
+              </ul>
               <button
                 type="button"
                 onClick={() => setIsScenarioEditorOpen((current) => !current)}
@@ -619,10 +734,15 @@ export default function CardDetailView({
                 <span>{draftPeriod === "annual" ? "年間" : "月間"}利用額</span>
                 <span>
                   <input
+                    ref={totalSpendRef}
                     type="number"
                     min="0"
                     max={draftPeriod === "annual" ? 100_000_000 : 8_333_333}
                     step="1000"
+                    aria-invalid={draftAnnualSpend <= 0}
+                    aria-describedby={
+                      draftAnnualSpend <= 0 ? "total-spend-error" : undefined
+                    }
                     value={
                       draftPeriod === "annual"
                         ? draftAnnualSpend
@@ -655,8 +775,17 @@ export default function CardDetailView({
                             onChange={(event) => {
                               setDraftUsage((current) => {
                                 if (event.target.checked) {
+                                  setDraftServices((services) => ({
+                                    ...services,
+                                    [category.id]: "best",
+                                  }));
                                   return { ...current, [category.id]: 0 };
                                 }
+                                setDraftServices((services) => {
+                                  const nextServices = { ...services };
+                                  delete nextServices[category.id];
+                                  return nextServices;
+                                });
                                 const next = { ...current };
                                 delete next[category.id];
                                 return next;
@@ -666,33 +795,58 @@ export default function CardDetailView({
                           {category.label}
                         </label>
                         {selected && (
-                          <label>
-                            <span className={styles.srOnly}>
-                              {category.label}の
-                              {draftPeriod === "annual" ? "年間" : "月間"}利用額
-                            </span>
-                            <input
-                              type="number"
-                              min="0"
-                              step="1000"
-                              value={
-                                draftPeriod === "annual"
-                                  ? annualAmount
-                                  : Math.round(annualAmount / 12)
-                              }
-                              onChange={(event) => {
-                                const value = clampYen(Number(event.target.value));
-                                setDraftUsage((current) => ({
-                                  ...current,
-                                  [category.id]:
-                                    draftPeriod === "annual"
-                                      ? value
-                                      : clampYen(value * 12),
-                                }));
-                              }}
-                            />
-                            円
-                          </label>
+                          <div>
+                            <label>
+                              <span className={styles.srOnly}>
+                                {category.label}の
+                                {draftPeriod === "annual" ? "年間" : "月間"}利用額
+                              </span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="1000"
+                                value={
+                                  draftPeriod === "annual"
+                                    ? annualAmount
+                                    : Math.round(annualAmount / 12)
+                                }
+                                onChange={(event) => {
+                                  const value = clampYen(Number(event.target.value));
+                                  setDraftUsage((current) => ({
+                                    ...current,
+                                    [category.id]:
+                                      draftPeriod === "annual"
+                                        ? value
+                                        : clampYen(value * 12),
+                                  }));
+                                }}
+                              />
+                              円
+                            </label>
+                            <label>
+                              <span className={styles.srOnly}>
+                                {category.label}で使う店舗・サービス
+                              </span>
+                              <select
+                                value={draftServices[category.id] ?? "best"}
+                                onChange={(event) =>
+                                  setDraftServices((current) => ({
+                                    ...current,
+                                    [category.id]: event.target.value as
+                                      "best" | "featured" | "other",
+                                  }))
+                                }
+                              >
+                                <option value="best">カテゴリ内最良条件</option>
+                                <option value="featured">
+                                  {featuredServiceLabel(category.id)}
+                                </option>
+                                <option value="other">
+                                  その他の店舗・サービス（通常還元のみ）
+                                </option>
+                              </select>
+                            </label>
+                          </div>
                         )}
                       </div>
                     );
@@ -709,6 +863,11 @@ export default function CardDetailView({
                   {yen.format(draftAnnualSpend)}円
                   {draftAllocated > draftAnnualSpend && (
                     <strong>利用先合計を年間利用額以下に調整してください。</strong>
+                  )}
+                  {draftAnnualSpend <= 0 && (
+                    <strong id="total-spend-error">
+                      利用額を1円以上で入力してください。
+                    </strong>
                   )}
                 </p>
                 <div>
@@ -727,7 +886,11 @@ export default function CardDetailView({
             </div>
           )}
 
-          <div className={styles.calculationColumns}>
+          <div
+            className={styles.calculationColumns}
+            id={calculationResultId}
+            aria-label="更新後の試算結果"
+          >
             {[
               {
                 title: "通常年",
@@ -766,7 +929,19 @@ export default function CardDetailView({
 
           <details className={styles.excludedDetails}>
             <summary>算定対象外と仮定を確認</summary>
+            {activeCalculation.isIncomplete && (
+              <p>
+                この試算は一部不完全です。未確認の還元は加算していないため、実際より過小になる可能性があります。
+              </p>
+            )}
             <p>対象外は価値が0円と確定した項目ではありません。</p>
+            <h3>共通の仮定</h3>
+            <ul>
+              {activeCalculation.assumptions.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <h3>算定対象外</h3>
             <ul>
               {activeCalculation.excluded.map((item) => (
                 <li key={item}>{item}</li>
@@ -795,6 +970,12 @@ export default function CardDetailView({
                 <h3>{program.name}</h3>
                 <p>{program.selectionRule}</p>
                 <DefinitionGrid
+                  evidence={claimEvidence(
+                    program.disclosureStatus,
+                    detail.evidence.find((item) => item.id === "rewards")
+                      ?.effectivePeriod ?? "確認できず",
+                    "rewards",
+                  )}
                   items={[
                     { label: "運営", value: program.operator },
                     { label: "有効期限", value: program.expiry },
@@ -807,7 +988,10 @@ export default function CardDetailView({
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-                <StatusBadge status={program.disclosureStatus} />
+                <StatusBadge
+                  status={program.disclosureStatus}
+                  confirmedOn={detail.confirmedOn}
+                />
               </article>
             ))}
           </div>
@@ -821,6 +1005,11 @@ export default function CardDetailView({
                   <strong>{rule.displayRate}</strong>
                 </div>
                 <DefinitionGrid
+                  evidence={claimEvidence(
+                    rule.disclosureStatus,
+                    rule.effectivePeriod,
+                    "rewards",
+                  )}
                   items={[
                     { label: "対象利用", value: rule.eligibleTransactions },
                     { label: "対象外", value: rule.excludedTransactions },
@@ -832,7 +1021,10 @@ export default function CardDetailView({
                     { label: "適用期間", value: rule.effectivePeriod },
                   ]}
                 />
-                <StatusBadge status={rule.disclosureStatus} />
+                <StatusBadge
+                  status={rule.disclosureStatus}
+                  confirmedOn={detail.confirmedOn}
+                />
               </article>
             ))}
           </div>
@@ -856,9 +1048,15 @@ export default function CardDetailView({
               {detail.campaigns.map((campaign) => (
                 <article key={campaign.id}>
                   <div className={styles.campaignHeader}>
-                    <span>{campaign.status}</span>
+                    <span>
+                      {campaign.status}・
+                      {campaign.instanceLabel ?? "実施回を確認できず"}
+                    </span>
                     <h3>{campaign.title}</h3>
-                    <StatusBadge status={campaign.disclosureStatus} />
+                    <StatusBadge
+                      status={campaign.disclosureStatus}
+                      confirmedOn={detail.confirmedOn}
+                    />
                   </div>
                   <div className={styles.effectGrid}>
                     {campaign.effects.map((effect) => (
@@ -868,15 +1066,49 @@ export default function CardDetailView({
                         </span>
                         <strong>{effect.reward}</strong>
                         <small>{effect.beneficiary}</small>
+                        <StatusBadge
+                          {...claimEvidence(
+                            effect.disclosureStatus ?? campaign.disclosureStatus,
+                            campaign.qualifyingPeriod,
+                            "rewards",
+                          )}
+                        />
                       </div>
                     ))}
                   </div>
                   <details>
                     <summary>Campaign条件をすべて確認</summary>
                     <DefinitionGrid
+                      evidence={claimEvidence(
+                        campaign.disclosureStatus,
+                        campaign.qualifyingPeriod,
+                        "rewards",
+                      )}
                       items={[
+                        {
+                          label: "対象申込経路",
+                          value:
+                            campaign.routeIds
+                              .map(
+                                (routeId) =>
+                                  detail.applicationRoutes.find(
+                                    (route) => route.id === routeId,
+                                  )?.label,
+                              )
+                              .filter(Boolean)
+                              .join("／") || "確認できず",
+                        },
                         { label: "登録・応募期間", value: campaign.registrationPeriod },
                         { label: "対象利用期間", value: campaign.qualifyingPeriod },
+                        {
+                          label: "最低利用額",
+                          value:
+                            campaign.minimumSpendYen === undefined
+                              ? "金額条件なし"
+                              : `${yen.format(campaign.minimumSpendYen)}円`,
+                        },
+                        { label: "判定期間", value: campaign.decisionPeriod },
+                        { label: "付与期間", value: campaign.grantPeriod },
                         { label: "エントリー", value: campaign.entryRequired },
                         { label: "対象取引", value: campaign.eligibleTransactions },
                         { label: "対象外", value: campaign.excludedTransactions },
@@ -909,6 +1141,11 @@ export default function CardDetailView({
                     <span>年間 {yen.format(benefit.thresholdYen)}円利用で</span>
                     <strong>{benefit.reward}</strong>
                     <DefinitionGrid
+                      evidence={claimEvidence(
+                        benefit.disclosureStatus,
+                        benefit.measurementPeriod,
+                        "rewards",
+                      )}
                       items={[
                         { label: "集計期間", value: benefit.measurementPeriod },
                         { label: "対象利用", value: benefit.eligibleTransactions },
@@ -916,9 +1153,23 @@ export default function CardDetailView({
                         { label: "付与時期", value: benefit.grantedOn },
                         { label: "有効期限", value: benefit.validUntil },
                         { label: "重複", value: benefit.stacking },
+                        {
+                          label: "便益種別",
+                          value: benefit.effectType ?? "分類確認中",
+                        },
+                        { label: "提供者", value: benefit.provider ?? "確認できず" },
+                        { label: "利用者", value: benefit.user ?? "確認できず" },
+                        { label: "受益者", value: benefit.beneficiary ?? "確認できず" },
+                        {
+                          label: "換算根拠",
+                          value: benefit.valuationBasis ?? "確認できず",
+                        },
                       ]}
                     />
-                    <StatusBadge status={benefit.disclosureStatus} />
+                    <StatusBadge
+                      status={benefit.disclosureStatus}
+                      confirmedOn={detail.confirmedOn}
+                    />
                   </article>
                 ))}
               </div>
@@ -963,9 +1214,16 @@ export default function CardDetailView({
                     <td>
                       {fee.measurementPeriod}
                       <small>{fee.chargedOn}</small>
+                      <small>集計対象外：{fee.excludedTransactions}</small>
                     </td>
                     <td>
-                      <StatusBadge status={fee.disclosureStatus} />
+                      <StatusBadge
+                        {...claimEvidence(
+                          fee.disclosureStatus,
+                          fee.effectivePeriod,
+                          fee.target === "本会員" ? "rewards" : "benefits",
+                        )}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -979,6 +1237,12 @@ export default function CardDetailView({
                 <span>{card.kind}</span>
                 <h3>{card.availability}</h3>
                 <DefinitionGrid
+                  evidence={claimEvidence(
+                    card.disclosureStatus,
+                    detail.evidence.find((item) => item.id === "benefits")
+                      ?.effectivePeriod ?? "確認できず",
+                    "benefits",
+                  )}
                   items={[
                     { label: "対象者", value: card.eligibleUser },
                     { label: "枚数", value: card.count },
@@ -991,7 +1255,10 @@ export default function CardDetailView({
                     { label: "特典", value: card.benefits },
                   ]}
                 />
-                <StatusBadge status={card.disclosureStatus} />
+                <StatusBadge
+                  status={card.disclosureStatus}
+                  confirmedOn={detail.confirmedOn}
+                />
               </article>
             ))}
           </div>
@@ -1017,6 +1284,11 @@ export default function CardDetailView({
                 <h3>{benefit.name}</h3>
                 <strong>{benefit.conditionType}</strong>
                 <DefinitionGrid
+                  evidence={claimEvidence(
+                    benefit.disclosureStatus,
+                    benefit.effectivePeriod,
+                    "benefits",
+                  )}
                   items={[
                     { label: "提供者", value: benefit.provider },
                     { label: "利用者", value: benefit.user },
@@ -1029,7 +1301,10 @@ export default function CardDetailView({
                     { label: "期間", value: benefit.effectivePeriod },
                   ]}
                 />
-                <StatusBadge status={benefit.disclosureStatus} />
+                <StatusBadge
+                  status={benefit.disclosureStatus}
+                  confirmedOn={detail.confirmedOn}
+                />
               </article>
             ))}
           </div>
@@ -1040,11 +1315,24 @@ export default function CardDetailView({
                 <div className={styles.insuranceHeader}>
                   <span>INSURANCE / COMPENSATION</span>
                   <h3>{insurance.name}</h3>
+                  <p>
+                    分類：{insurance.classification ?? "分類確認中"}{" "}
+                    {insurance.classificationStatus && (
+                      <StatusBadge
+                        {...claimEvidence(
+                          insurance.classificationStatus,
+                          insurance.effectivePeriod,
+                          "benefits",
+                        )}
+                      />
+                    )}
+                  </p>
                   <p>{insurance.attachment}</p>
                   <small>
                     引受主体：{insurance.underwriter}／請求窓口：
                     {insurance.claimsHandler}
                   </small>
+                  <small>制度・商品の適用期間：{insurance.effectivePeriod}</small>
                 </div>
                 <div className={styles.coverageList}>
                   {insurance.coverages.map((coverage) => (
@@ -1054,6 +1342,11 @@ export default function CardDetailView({
                         <strong>{coverage.limit}</strong>
                       </summary>
                       <DefinitionGrid
+                        evidence={claimEvidence(
+                          coverage.disclosureStatus,
+                          coverage.coveragePeriod,
+                          "benefits",
+                        )}
                         items={[
                           { label: "対象者", value: coverage.insured },
                           { label: "受益者", value: coverage.beneficiary },
@@ -1066,7 +1359,10 @@ export default function CardDetailView({
                           { label: "補償期間", value: coverage.coveragePeriod },
                         ]}
                       />
-                      <StatusBadge status={coverage.disclosureStatus} />
+                      <StatusBadge
+                        status={coverage.disclosureStatus}
+                        confirmedOn={detail.confirmedOn}
+                      />
                     </details>
                   ))}
                 </div>
@@ -1101,7 +1397,14 @@ export default function CardDetailView({
                 <div>
                   <em>{route.status}</em>
                   <small>{route.issueTime}</small>
-                  <StatusBadge status={route.disclosureStatus} />
+                  <StatusBadge
+                    {...claimEvidence(
+                      route.disclosureStatus,
+                      detail.evidence.find((item) => item.id === "product")
+                        ?.effectivePeriod ?? "確認できず",
+                      "product",
+                    )}
+                  />
                 </div>
               </article>
             ))}
@@ -1235,17 +1538,26 @@ export default function CardDetailView({
               IDや内部管理IDは公開画面へ表示していません。
             </p>
           </div>
+          <div className={styles.statusLegend} aria-label="確認状態アイコンの凡例">
+            {(Object.keys(disclosureLabel) as Array<keyof typeof disclosureLabel>).map(
+              (status) => (
+                <span key={status}>
+                  <StatusBadge status={status} />
+                  {disclosureLabel[status]}
+                </span>
+              ),
+            )}
+          </div>
           <div className={styles.evidenceList}>
             {detail.evidence.map((evidence) => (
               <article key={evidence.id}>
                 <div>
                   <h3>{evidence.label}</h3>
-                  <StatusBadge status={evidence.status} />
                 </div>
                 <p>{evidence.sourceTitle}</p>
                 <DefinitionGrid
                   items={[
-                    { label: "確認日", value: evidence.confirmedOn },
+                    { label: "公式情報を確認した日", value: evidence.confirmedOn },
                     { label: "適用期間", value: evidence.effectivePeriod },
                     { label: "補足", value: evidence.note },
                   ]}
@@ -1262,10 +1574,17 @@ export default function CardDetailView({
           </div>
           <div>
             {relatedCards.map((card) => (
-              <Link href={card.href} key={card.id}>
+              <Link
+                href={withPrototypeScenario(`/cards/${card.id}`, {
+                  ...activeScenario,
+                  eligibleCampaignIds: undefined,
+                  campaignQualifyingSpendYen: undefined,
+                })}
+                key={card.id}
+              >
                 <span>RELATED CARD</span>
                 <strong>{card.name}</strong>
-                <small>同じ試算条件で詳細を見る →</small>
+                <small>現在の利用額・使い道で詳細を見る →</small>
               </Link>
             ))}
           </div>
