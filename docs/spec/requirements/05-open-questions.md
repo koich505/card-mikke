@@ -18,6 +18,7 @@ Last updated: 2026-08-13
 | RQ-040 | Structured Data、Sitemap、更新通知を初期Releaseへ含めるか | SEO詳細が未決 | Discoverability、保守 | Product owner | Architecture Planning前 | No | SEO PlanでApplicable判定 |
 | RQ-041 | 有料外部通知を採用するか | Cost評価前 | 障害認知時間、Cost | Product owner | Architecture Planning前 | No | 5,000円目標内で判断 |
 | RQ-042 | 保存した検索・比較の概要について、文字数上限、重複名の扱い、および編集可否をどうするか | 利用者入力と明示保存の採用は決定済みだが、入力規則と保存後の管理範囲は未決 | Validation、一覧の識別性、UI状態、保存データ量 | Product owner | 改訂UI Mock Approval前 | No | 概要必須・空白のみ拒否を前提に、Desktop／Mobileの保存Flowで上限と重複時の理解を検証 |
+| RQ-043 | 記事検索の初期・増加時性能試験量（公開記事数、1記事あたりのタグ数、関連対象カード数）をどうするか | FR-041に記事検索を追加したが、NFR-PERF-002/003の再現可能な試験量が未決 | 2秒目標、性能検証、Cost | Product owner | Architecture Planning前 | Yes | 想定公開規模と増加率を決め、NFR-PERF-002/003とAC-021へ反映 |
 
 ## Related Domain Open Questions
 

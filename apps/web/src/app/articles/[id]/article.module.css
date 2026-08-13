@@ -81,6 +81,17 @@
   font-weight: 700;
   line-height: 1.9;
 }
+.reviewNotice {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #b86a2e;
+  border-radius: 8px;
+  color: #654021;
+  background: #fff2e2;
+  font-size: 0.83rem;
+  font-weight: 800;
+  line-height: 1.7;
+}
 .visual {
   position: relative;
   min-height: 315px;

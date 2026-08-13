@@ -11,9 +11,15 @@ type PrototypeArticleBase = {
   slug: string;
   title: string;
   description: string;
+  /** UI-only表示用の合成アイキャッチ画像。 */
+  coverImage: string;
   audience: string;
+  /** UI-only表示用。公開済み版の公開日であり、確認日・更新日とは別の時点。 */
+  publishedOn: string;
   updatedOn: string;
   confirmedOn: string;
+  tags: string[];
+  publicationState: "published" | "change-under-review";
   visualTheme: "shopping" | "single-card" | "positioning";
   sections: PrototypeArticleSection[];
   relatedCards: Array<{

@@ -8,9 +8,13 @@ export const featureArticles: PrototypeFeatureArticle[] = [
     title: "コンビニ・スーパー中心なら、どこを比べる？",
     description:
       "日々の買い物で使うカードを選ぶときに、年会費・基本還元・利用先との相性を混ぜずに比べるための合成ガイドです。",
+    coverImage: "/images/articles/daily-shopping-cover.png",
     audience: "毎日の買い物が多い人向け",
+    publishedOn: "2026-08-05",
     updatedOn: "2026-08-09",
     confirmedOn: "2026-08-09",
+    tags: ["日常の買い物", "スーパー", "年会費"],
+    publicationState: "published",
     visualTheme: "shopping",
     selectionCriteria: [
       "通常年のおトク目安を同じ利用条件で見る",
@@ -61,9 +65,13 @@ export const featureArticles: PrototypeFeatureArticle[] = [
     title: "まいにちプラスカードの特徴を合成データでチェック",
     description:
       "まいにちプラスカードの特徴、適用条件、確認時点、算定に含めない項目を一つずつ確認する単一カード特集です。",
+    coverImage: "/images/articles/everyday-plus-feature-cover.png",
     audience: "特定カードを詳しく見たい人向け",
+    publishedOn: "2026-08-06",
     updatedOn: "2026-08-07",
     confirmedOn: "2026-08-08",
+    tags: ["日常の買い物", "還元", "年会費"],
+    publicationState: "change-under-review",
     visualTheme: "single-card",
     targetCardId: "everyday-plus",
     features: [
@@ -114,9 +122,13 @@ export const featureArticles: PrototypeFeatureArticle[] = [
     title: "年会費と通常年のおトク目安で見るカード比較マップ",
     description:
       "3枚の合成カードを、年会費の負担と通常年のおトク目安という二つの軸で整理した比較記事です。",
+    coverImage: "/images/articles/card-balance-map-cover.png",
     audience: "カードごとの違いを視覚的に把握したい人向け",
+    publishedOn: "2026-08-10",
     updatedOn: "2026-08-10",
     confirmedOn: "2026-08-10",
+    tags: ["比較", "年会費", "還元"],
+    publicationState: "published",
     visualTheme: "positioning",
     axes: {
       horizontal: {

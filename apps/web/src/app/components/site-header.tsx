@@ -23,7 +23,7 @@ export default function SiteHeader({ currentPage }: SiteHeaderProps) {
           <Link href="/#how-it-works">使い方</Link>
           <Link href="/#featured">注目カード</Link>
           <Link
-            href="/#articles"
+            href="/articles"
             aria-current={currentPage === "article" ? "page" : undefined}
           >
             特集記事
