@@ -7,7 +7,7 @@ test.describe("特集記事一覧UIモック", () => {
   }) => {
     await page.goto("/articles");
     await expect(page.getByRole("heading", { name: "特集記事を探す" })).toBeVisible();
-    await expect(page.locator("img[src*='/images/articles/']")).toHaveCount(3);
+    await expect(page.getByRole("article").locator("img")).toHaveCount(3);
 
     await page.getByRole("searchbox", { name: "キーワードで探す" }).fill("年会費");
     await expect(page.getByRole("heading", { name: "3件の記事" })).toBeVisible();
@@ -45,12 +45,18 @@ test.describe("特集記事一覧UIモック", () => {
 
   test("更新確認中の旧記事を識別して詳細へ進める", async ({ page }) => {
     await page.goto("/articles");
+    const ordinaryCard = page.getByRole("article", {
+      name: /コンビニ・スーパー中心なら、どこを比べる？/,
+    });
+    await expect(ordinaryCard).not.toContainText(/公開日|更新日|最終確認日/);
     const card = page.getByRole("article", {
       name: /まいにちプラスカードの特徴を合成データでチェック/,
     });
     await expect(card.getByText("更新確認中")).toBeVisible();
     await expect(
-      card.getByText("公開済みの旧記事です。申込前には公式情報を確認してください。"),
+      card.getByText(
+        "公開済みの旧記事です。最終確認日 2026-08-08。申込前には公式情報を確認してください。",
+      ),
     ).toBeVisible();
     await card.getByRole("link", { name: /まいにちプラスカードの特徴/ }).click();
     await expect(

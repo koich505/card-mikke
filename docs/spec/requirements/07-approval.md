@@ -1,6 +1,6 @@
 # Requirements Approval
 
-Status: Approved
+Status: Re-approval pending
 Approved at: 2026-08-13
 Approver: Product owner
 Approval statement: 「OKです。この内容で承認します」
@@ -9,11 +9,11 @@ Approved change: 公開済み特集記事のフリーワード検索、タグ・
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
-- Current decision: Passed
-- Previous decision: Passed（2026-08-11 baseline。今回の変更によりstale）
+- Current decision: Re-approval pending（Requirements Review 012はPass、Product ownerの再承認待ち）
+- Previous decision: Passed（2026-08-13 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass
-- Current Requirements Review: `docs/reviews/requirements/requirements-review-011-article-list.md` — Pass with tracked Open Question
+- Latest Requirements Review: `docs/reviews/requirements/requirements-review-012-article-list-date-visibility.md` — Pass with tracked Open Question; Product owner re-approval pending
 - Security-relevant change review: `docs/reviews/requirements/requirements-review-005.md`–`requirements-review-007.md` — NFR-SEC-008およびAC-016 / AC-032を含めPass
 - Baseline Security Review: `docs/reviews/requirements/requirements-security-review-002.md` — Pass
 - Current review Critical findings: 0
@@ -62,9 +62,9 @@ Approved change: 公開済み特集記事のフリーワード検索、タグ・
 | `05-open-questions.md` | `1abec757272bb8e8bb6bb1b6ac97b0fc600be8e87d15f5e07806c5f2a31f56e2` |
 | `06-traceability.md` | `425570ee5ed1c6f781037233de3bc4c39197f838b718064e3550d7e02d77a926` |
 
-## Current Product-owner-approved Baseline
+## Previous Product-owner-approved Baseline (stale)
 
-以下は2026-08-13にProduct ownerが「OKです。その内容で実装」と明示し、Requirements Review 011でCritical／Major 0件を確認した、特集記事一覧要件追加後のBaselineである。
+以下は2026-08-13にProduct ownerが「OKです。その内容で実装」と明示し、Requirements Review 011でCritical／Major 0件を確認した、特集記事一覧要件追加後のBaselineである。通常記事の日付表示方針を改定したためstaleである。
 
 | Document | SHA-256 |
 |---|---|
@@ -76,10 +76,24 @@ Approved change: 公開済み特集記事のフリーワード検索、タグ・
 | `05-open-questions.md` | `76542795df20ee615462abf6e6fe681708eae05cb440b6bfb9835c014c7a5280` |
 | `06-traceability.md` | `e099bbb1342a130369799d37b8303989a0a7205df60c6037803390d745f8ddd1` |
 
+## Pending Product-owner Re-approval Baseline
+
+以下はRequirements Review 012でCritical／Major 0件を確認した候補Baselineである。通常記事の一覧では日付を表示せず、更新確認中の記事だけ最終確認日と公式Source確認の案内を示す。Product ownerの明示的な再承認後にCurrent Baselineへ更新する。
+
+| Document | SHA-256 |
+|---|---|
+| `00-scope.md` | `e50500cd7169cbafb9292ad39779d5faa3a96adaea0de1e12654411654660cc1` |
+| `01-users-and-goals.md` | `0536fb9e76cf042ca98932c9599a4dd7ca001fe4916ae6bd07e79dbb27d22ec5` |
+| `02-functional-requirements.md` | `57e179b50666fc61ee9f3e2c46e7274f465026f26c5ee3ac05105dd848c90c77` |
+| `03-non-functional-requirements.md` | `51bccc78cc4736bc3d577a973b961d0b181291b5b827d4baf51f9bd121bb241a` |
+| `04-acceptance-criteria.md` | `2cfb8418ec0b6c40db1f2e4d20b3ed1b97080a33dcc702b8d8f03f1da8e3c3c6` |
+| `05-open-questions.md` | `76542795df20ee615462abf6e6fe681708eae05cb440b6bfb9835c014c7a5280` |
+| `06-traceability.md` | `576c09908efe82dc406e07d92975304ef52bbc15ed5c9a0f3458be518f1611bc` |
+
 ## Carry-over Conditions
 
 - `05-open-questions.md`に記録した非Blocking事項は、各Owner、期限、解決Gateに従って扱う。
 - RQ-013はUI Mock開始前に確認する。
 - Requirements変更時は影響範囲を再レビューし、承認Baselineを更新する。
 - 本承認はUI Mock Approval、Final Scope Approval、Planning Approvalまたは実装開始承認を兼ねない。
-- 2026-08-13の特集記事一覧要件追加はProduct owner承認済みであり、Requirements Review 011でCritical／Major 0件を確認した上記hashをGate 1の現行Baselineとして扱う。
+- 2026-08-13の通常記事の日付表示方針改定はRequirements Review 012でCritical／Major 0件を確認済みであり、Product ownerの再承認後に上記hashをGate 1の現行Baselineとして扱う。

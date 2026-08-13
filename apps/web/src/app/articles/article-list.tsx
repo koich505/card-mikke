@@ -234,7 +234,8 @@ export default function ArticleList({ articles }: ArticleListProps) {
                   </ul>
                   {article.publicationState === "change-under-review" ? (
                     <p className={styles.reviewNote}>
-                      公開済みの旧記事です。申込前には公式情報を確認してください。
+                      公開済みの旧記事です。最終確認日 {article.confirmedOn}
+                      。申込前には公式情報を確認してください。
                     </p>
                   ) : null}
                 </Link>
