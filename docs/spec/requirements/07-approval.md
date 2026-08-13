@@ -1,19 +1,19 @@
 # Requirements Approval
 
-Status: Re-approval pending
+Status: Approved
 Approved at: 2026-08-13
 Approver: Product owner
-Approval statement: 「OKです。この内容で承認します」
-Approved change: 公開済み特集記事のフリーワード検索、タグ・記事種別による絞り込み、新着順・更新順、更新確認中表示の要件追加
+Approval statement: 「要件定義を承認します。」
+Approved change: 通常記事の一覧では日付を表示せず、更新確認中の記事だけ最終確認日と公式Source確認の案内を一覧と記事詳細に表示する方針への改定
 
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
-- Current decision: Re-approval pending（Requirements Review 012はPass、Product ownerの再承認待ち）
+- Current decision: Passed
 - Previous decision: Passed（2026-08-13 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass
-- Latest Requirements Review: `docs/reviews/requirements/requirements-review-012-article-list-date-visibility.md` — Pass with tracked Open Question; Product owner re-approval pending
+- Current Requirements Review: `docs/reviews/requirements/requirements-review-012-article-list-date-visibility.md` — Pass with tracked Open Question
 - Security-relevant change review: `docs/reviews/requirements/requirements-review-005.md`–`requirements-review-007.md` — NFR-SEC-008およびAC-016 / AC-032を含めPass
 - Baseline Security Review: `docs/reviews/requirements/requirements-security-review-002.md` — Pass
 - Current review Critical findings: 0
@@ -76,9 +76,9 @@ Approved change: 公開済み特集記事のフリーワード検索、タグ・
 | `05-open-questions.md` | `76542795df20ee615462abf6e6fe681708eae05cb440b6bfb9835c014c7a5280` |
 | `06-traceability.md` | `e099bbb1342a130369799d37b8303989a0a7205df60c6037803390d745f8ddd1` |
 
-## Pending Product-owner Re-approval Baseline
+## Current Product-owner-approved Baseline
 
-以下はRequirements Review 012でCritical／Major 0件を確認した候補Baselineである。通常記事の一覧では日付を表示せず、更新確認中の記事だけ最終確認日と公式Source確認の案内を示す。Product ownerの明示的な再承認後にCurrent Baselineへ更新する。
+以下は2026-08-13にProduct ownerが「要件定義を承認します。」と明示し、Requirements Review 012でCritical／Major 0件を確認したBaselineである。通常記事の一覧では日付を表示せず、更新確認中の記事だけ最終確認日と公式Source確認の案内を示す。
 
 | Document | SHA-256 |
 |---|---|
@@ -96,4 +96,4 @@ Approved change: 公開済み特集記事のフリーワード検索、タグ・
 - RQ-013はUI Mock開始前に確認する。
 - Requirements変更時は影響範囲を再レビューし、承認Baselineを更新する。
 - 本承認はUI Mock Approval、Final Scope Approval、Planning Approvalまたは実装開始承認を兼ねない。
-- 2026-08-13の通常記事の日付表示方針改定はRequirements Review 012でCritical／Major 0件を確認済みであり、Product ownerの再承認後に上記hashをGate 1の現行Baselineとして扱う。
+- 2026-08-13の通常記事の日付表示方針改定はProduct owner承認済みであり、Requirements Review 012でCritical／Major 0件を確認した上記hashをGate 1の現行Baselineとして扱う。
