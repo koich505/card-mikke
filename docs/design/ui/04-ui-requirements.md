@@ -1,8 +1,8 @@
 # UI Requirements
 
-Status: Card detail v0.2 implemented; human UI approval pending
+Status: Card detail v0.2 and Operations v0.3 implemented; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-11
+Last updated: 2026-08-12
 
 ## Purpose and boundary
 
@@ -247,6 +247,60 @@ Last updated: 2026-08-11
 - 月間入力は年額へ換算し、使い道合計が総利用額を超える場合は適用を停止して修正理由を表示する。
 - 詳細内のカスタム条件はBrowser Memory内だけで扱い、プロフィール更新、保存、外部送信を行わない。
 
+## Operations
+
+### UIR-OPS-001: 管理者認証とSession
+
+- 一般利用者と分離した管理者Account、Password一次認証、6桁MFAを表現する。
+- MFA回復では、別経路の本人確認、認証要素変更、監査記録、管理者通知が必要であることを示す。
+- 管理者Sessionの最長12時間、無操作30分、Password変更後の失効を確認できる。
+- Session一覧から個別・一括失効でき、高Risk操作前にPasswordとMFAを再確認する。
+- 最長12時間、無操作30分、再認証15分超過を待機なしScenarioで確認でき、期限切れからLogin・MFAを省略して復帰できない。
+- UI Mockは合成入力だけを使用し、本人確認、Credential保存、外部通信を行わない。
+- Traceability: NFR-SEC-001, NFR-SEC-003, AC-040
+
+### UIR-OPS-002: 運営Dashboard
+
+- 未承認Draft、変更確認中、抽出失敗、訂正、Review待ち、期限警告、日次確認状態を件数だけでなく期限・優先度・失敗理由とともに表示する。
+- Source差分だけをv0.3で操作可能とし、後続業務を空Routeへ遷移させない。
+- Default、Loading、Empty、Error/Retry、Session expiredを確認できる。
+- AI生成費と非AI運用費を分離して表示する。
+- Traceability: FR-021, FR-026, FR-033, FR-039, NFR-EVID-001, NFR-OBS-001, NFR-COST-001, NFR-COST-002
+
+### UIR-OPS-003: Sourceとclaim差分
+
+- 変更対象のカード商品、差分件数・概要、差分を検知した公式SourceのHTML取得情報を1つの情報カードにまとめて表示する。
+- 公式Sourceの長いHTML差分は初期状態で閉じ、ユーザー操作で展開する。展開時は変更前・変更後を折り返して表示し、削除側と追加側を視覚的に区別する。
+- Source本文、識別子、取得・公開時点を未信頼Textとして表示し、命令、Script、危険URLを実行・遷移可能にしない。
+- 取得時点は運営側のObservation記録として表示し、Sourceが明示した日時claimに付与するDisclosure Statusとは分離する。
+- claimごとに`追加・変更・削除候補・変更なし・抽出不能`を分離する。
+- 変更では現在値と変更後の提案値、追加では新しい提案値、削除候補では削除する現在値を表示する。判断根拠のメタデータは常時表示しない。
+- 各提案カード内で提案値を直接編集でき、編集後の値を採用または却下できる。
+- Campaignの付与額、対象条件、上限、付与時期、Beneficiary等、開示状態が異なる複合claimは独立して判断可能な粒度へ分ける。Product/Feature lifecycleとCampaign・Rule・Coverage等の期間を単一の適用期間へまとめない。
+- `unknown`、`undisclosed`、`partially_disclosed`、`disclosed`を一般画面状態と区別する。
+- 影響範囲不明またはRevision競合では承認画面へ進めない。
+- Traceability: FR-021, FR-022, FR-024, FR-033, FR-034, NFR-SEC-008, AC-017, AC-025, AC-026
+
+### UIR-OPS-004: 編集・承認・監査
+
+- 追加・変更・削除候補は提案単位のButtonで「採用（情報を更新する）」または「却下（情報はそのまま）」を確定する。処理成功後は未処理一覧から除外し、処理済み一覧で確認できる。失敗時は一覧に残す。
+- 採用・却下Buttonの押下後は、対象項目・現在値・更新後の値・処理内容を示す最終確認Dialogを表示する。PasswordやMFAの再認証は要求しない。
+- 抽出不能またはclaim単位の影響範囲不明が1件でも残る更新案は判断確定をBlockし、Draft保存後に再収集・再確認へ戻す。
+- 全管理項目が変更なしの場合だけ一括確認を許可する。
+- 提案値の編集だけでは情報を変更せず、「採用」または「却下」の操作でその提案だけを確定する。
+- 操作主体、編集時刻、判断確定時刻、提案ごとの現在値・編集後の提案値・採用／却下を合成監査Timelineで別々に表示する。
+- 判断確定後は完了状態としてキューから除外し、同じRevisionを未承認表示または再確定できない。
+- UI Mockの承認は外部送信、公開、計算更新、永続化を行わない。
+- Traceability: FR-022, FR-032, NFR-SEC-003, NFR-SEC-007, NFR-OPS-001, AC-017, AC-018, AC-040
+
+### UIR-OPS-005: Operations responsive and index boundary
+
+- Desktopは固定Sidebar、Mobileは開閉式の非モーダルSide Navigationを使用する。Menu Button、閉じるButton、Escape、領域外Clickで閉じられ、同一画面では起動元へFocusを戻す。
+- Mobileではclaimを縦Cardとし、重要状態、Source、判断、承認Actionを横Scroll内へ隠さない。
+- 全管理Routeへ一意なTitleと`noindex, nofollow`を設定する。
+- KeyboardだけでLogin、MFA、Navigation、Draft保存、再認証、承認、Session失効を完了できる。
+- Traceability: NFR-A11Y-001, NFR-SEO-001, NFR-COMPAT-001, AC-039
+
 ## Correction report
 
 ### UIR-REPORT-001: Input and receipt
@@ -284,6 +338,6 @@ Last updated: 2026-08-11
 
 - 記事一覧の分類・Filterと、用途別記事／単一カード特集の視覚的区別
 - Account・Profile・履歴Flowの詳細
-- 運営画面のIAと主要Flow
+- 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 - RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
 - RQ-017の変更確認中表示は、Heroの全体Iconに加え、影響する個別Rule/effectのIconへ限定して示し、影響外のClaimへ伝播させない。

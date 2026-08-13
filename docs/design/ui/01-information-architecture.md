@@ -3,6 +3,7 @@
 Status: Approved direction; details under UI dialogue  
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 Decision date: 2026-08-10
+Last updated: 2026-08-12
 
 ## IA principles
 
@@ -12,6 +13,8 @@ Decision date: 2026-08-10
 - 算定不完全、変更確認中、Disclosure Status、一般画面状態を別の意味として表現する。
 - 記事からも対象カード、検索結果、比較へ合流できる。
 - 保存、履歴、継続利用が必要になった時点でAccountの価値を説明し、検索開始前に登録を要求しない。
+- 運営管理は公開・Account領域からNavigationと認証を分離し、管理者専用AccountとMFAを入口にする。
+- 未承認Draft、編集Draft、承認済み情報を同じ状態として扱わない。
 
 ## Top-level structure
 
@@ -26,6 +29,35 @@ Decision date: 2026-08-10
 | お気に入り | 検討中の候補へ戻り、一時保存とAccount保存を区別する | FR-030, AC-013 |
 | 掲載範囲・サイト方針 | Coverage、算定方法、広告・Affiliate、情報更新方針を確認する | FR-019, FR-027, AC-015, AC-019, AC-038 |
 | Account | Profile、履歴、保存情報を継続利用する | FR-001–FR-003, FR-011, FR-025 |
+| 運営管理 | Source差分、Evidence、未承認Draftを確認し、明示承認後だけ公開反映可能な状態へ進める | FR-021, FR-022, FR-032–FR-034, NFR-SEC-001, NFR-SEC-003, AC-017, AC-018, AC-025, AC-026, AC-040 |
+
+## Operations navigation and hierarchy
+
+### Desktop
+
+- 左Sidebarに`運営Dashboard`、`カード情報差分`、`Session管理`を置く。
+- 記事Draft、Review Moderation、誤情報指摘、業務情報は後続Mockとして識別し、空Routeへ遷移させない。
+- Headerに管理者Account、Session状態確認、Logoutを置く。
+
+### Mobile
+
+- HeaderのMenu Buttonから左側の開閉式Side Navigationを開く。本文操作を完全には遮断しない。
+- claim差分は表の横Scrollへ依存せず、項目ごとの縦Cardで表示する。
+- 重要状態、Source、Draft保存、承認Actionを横Scrollまたは閉じた領域へ隠さない。
+
+```text
+管理者Login
+└── MFA
+    ├── MFA回復手続き案内
+    └── 運営Dashboard
+        ├── カード情報差分の確認・編集
+        │   ├── claim判断 → Draft保存
+        │   └── 影響確認 → 再認証 → 明示承認
+        └── Session管理
+            └── 再認証 → 個別または一括失効
+```
+
+運営画面はすべて`noindex, nofollow`とし、UI Mockの認証状態、Draft、監査TimelineはBrowser Memoryだけで保持する。再読込時は未Loginへ戻る。
 
 ## Global navigation
 
