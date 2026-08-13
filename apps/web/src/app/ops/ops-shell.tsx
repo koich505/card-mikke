@@ -8,7 +8,7 @@ import styles from "./ops.module.css";
 
 const navigation = [
   { href: "/ops", label: "運営Dashboard", active: true },
-  { href: "/ops/changes/change-20260812-001", label: "カード情報差分", active: true },
+  { href: "/ops/changes", label: "カード情報差分", active: true },
   { href: "", label: "記事Draft", active: false },
   { href: "", label: "Review Moderation", active: false },
   { href: "", label: "誤情報指摘", active: false },
@@ -104,7 +104,12 @@ export function OpsShell({ children }: { children: ReactNode }) {
           <Link
             href={item.href}
             key={item.label}
-            aria-current={pathname === item.href ? "page" : undefined}
+            aria-current={
+              pathname === item.href ||
+              (item.href === "/ops/changes" && pathname.startsWith("/ops/changes/"))
+                ? "page"
+                : undefined
+            }
             onClick={() => setMenuOpen(false)}
           >
             {item.label}

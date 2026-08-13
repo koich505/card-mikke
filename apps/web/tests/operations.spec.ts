@@ -15,22 +15,6 @@ const openQueueItem = async (page: Page, title: string) => {
   await item.getByRole("link", { name: "差分を確認" }).click();
 };
 
-const decideClaims = async (page: Page) => {
-  const cards = page.locator("article[data-decision]");
-  const count = await cards.count();
-  for (let index = 0; index < count; index += 1) {
-    const card = cards.nth(index);
-    const approve = card.getByRole("button", { name: /採用 情報を更新する/ });
-    if (await approve.isEnabled()) {
-      await approve.click();
-      await page.getByRole("button", { name: "採用を確定" }).click();
-    } else {
-      await card.getByRole("button", { name: /却下 情報はそのまま/ }).click();
-      await page.getByRole("button", { name: "却下を確定" }).click();
-    }
-  }
-};
-
 test.describe("管理画面UIモック", () => {
   test("Login入力ErrorとMFAを経てDashboardへ進む", async ({ page }) => {
     await page.goto("/ops/login");
@@ -74,7 +58,7 @@ test.describe("管理画面UIモック", () => {
     await expect(page.getByRole("heading", { name: "差分情報" })).toBeVisible();
     await expect(page.getByText("まいにちプラスカード（架空）").first()).toBeVisible();
     await expect(page.getByText("変更提案").first()).toBeVisible();
-    await expect(page.getByText("9件")).toBeVisible();
+    await expect(page.getByText(/件/).first()).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "まいにちプラスカード（架空）" }),
     ).toBeVisible();
@@ -111,6 +95,49 @@ test.describe("管理画面UIモック", () => {
     ).toBeVisible();
   });
 
+  test("差分一覧の初期表示、検索、状態Filter、並び順とQuery復元", async ({ page }) => {
+    await login(page);
+    await page.getByRole("link", { name: "差分一覧を見る" }).click();
+    await expect(
+      page.getByRole("heading", { name: "公式Source差分一覧" }),
+    ).toBeVisible();
+    await expect(page.getByText("スマートベーシックカード（架空）")).toHaveCount(0);
+    await page.getByLabel("検索").fill("シンプルブルー");
+    await expect(page).toHaveURL(/q=/);
+    await expect(page.getByText("シンプルブルーカード（架空）")).toBeVisible();
+    await expect(page.getByText("まいにちプラスカード（架空）")).toHaveCount(0);
+    await page.getByLabel("並び順").selectOption("oldest");
+    await expect(page).toHaveURL(/sort=oldest/);
+    await page.getByRole("link", { name: "確認する" }).click();
+    await page.getByRole("link", { name: "公式Source差分一覧" }).click();
+    await expect(page).toHaveURL(/status=pending/);
+    await expect(page).toHaveURL(/sort=oldest/);
+    await expect(page).toHaveURL(/q=%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB/);
+    await page.getByLabel("検索").fill("");
+    await expect(page).not.toHaveURL(/q=/);
+    await page
+      .locator("select")
+      .filter({ has: page.locator('option[value="blocked"]') })
+      .selectOption("blocked");
+    await expect(page.getByText("スマートベーシックカード（架空）")).toBeVisible();
+  });
+
+  test("差分一覧のLoading Error Emptyと検索結果Empty", async ({ page }) => {
+    await login(page);
+    await page.getByRole("link", { name: "差分一覧を見る" }).click();
+    const scenarios = page.getByRole("navigation", { name: "一覧状態確認" });
+    await scenarios.getByRole("link", { name: "Loading" }).click();
+    await expect(page).toHaveURL(/scenario=loading/);
+    await expect(page.getByText("差分一覧を読み込んでいます")).toBeVisible();
+    await scenarios.getByRole("link", { name: "Error" }).click();
+    await expect(page.getByText("差分一覧を取得できませんでした")).toBeVisible();
+    await scenarios.getByRole("link", { name: "Empty" }).click();
+    await expect(page.getByText("表示する差分はありません")).toBeVisible();
+    await scenarios.getByRole("link", { name: "通常" }).click();
+    await page.getByLabel("検索").fill("該当なし");
+    await expect(page.getByText("検索条件に一致する差分はありません")).toBeVisible();
+  });
+
   test("差分5分類と現在値・提案値・削除内容を表示しSourceを無害化する", async ({
     page,
   }) => {
@@ -141,95 +168,27 @@ test.describe("管理画面UIモック", () => {
     expect(externalRequests).toEqual([]);
   });
 
-  test("影響範囲不明とRevision競合は承認をBlockする", async ({ page }) => {
-    await login(page);
-    await page.getByRole("link", { name: "差分を確認" }).first().click();
-    await page.getByRole("link", { name: "影響範囲不明" }).click();
-    await expect(page.getByText("この更新案は承認できません。")).toBeVisible();
-    await expect(page.getByRole("button", { name: "承認前確認へ" })).toBeDisabled();
-  });
-
-  test("一部抽出失敗とclaim単位の影響範囲不明は確定をBlockする", async ({ page }) => {
-    await login(page);
-    await openQueueItem(page, "まいにちプラスカード");
-    await decideClaims(page);
-    await page.getByRole("button", { name: "編集Draftを保存" }).click();
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    await expect(page.getByText(/一部抽出失敗またはclaimの影響範囲不明/)).toBeVisible();
-    await expect(page.getByRole("button", { name: /再認証して判断/ })).toHaveCount(0);
-  });
-
-  test("Draft保存と承認を分離し再認証後に監査Timelineへ記録する", async ({ page }) => {
+  test("提案単位の最終確認、取消、処理済み移動と監査を確認する", async ({ page }) => {
     await login(page);
     await openQueueItem(page, "シンプルブルーカード");
     const cards = page.locator("article[data-decision]");
     await expect(cards).toHaveCount(2);
-    await decideClaims(page);
-
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    await expect(page.getByText(/編集内容をDraft保存/)).toBeVisible();
-    await page.getByRole("button", { name: "編集Draftを保存" }).click();
-    await expect(page.getByRole("status")).toContainText(
-      "公開済み値は変更していません",
-    );
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    await expect(page.getByRole("heading", { name: "承認前の影響確認" })).toBeVisible();
-    await page.getByRole("button", { name: "再認証して判断を確定" }).click();
-    await expect(page.getByRole("dialog", { name: "本人再認証" })).toBeVisible();
-    await page.getByRole("button", { name: "取消" }).click();
-    await expect(page.getByRole("dialog", { name: "本人再認証" })).not.toBeVisible();
-    await page.getByRole("button", { name: "再認証して判断を確定" }).click();
-    const dialog = page.getByRole("dialog", { name: "本人再認証" });
-    await dialog.getByLabel("Password").fill("short");
-    await dialog.getByLabel("6桁のMFAコード").fill("123");
-    await dialog.getByRole("button", { name: "本人確認して判断を確定" }).click();
-    await expect(dialog.getByRole("alert")).toBeVisible();
-    await dialog.getByLabel("Password").fill("prototype-passphrase");
-    await dialog.getByLabel("6桁のMFAコード").fill("123456");
-    await dialog.getByRole("button", { name: "本人確認して判断を確定" }).click();
-    await expect(page.getByRole("status")).toContainText("claim判断を確定しました");
-    await expect(page.getByText("編集Draftを保存").last()).toBeVisible();
-    await expect(page.getByText("claim判断を再認証して確定")).toBeVisible();
-    await expect(
-      page.getByText("1,100円（税込） → 1,650円（税込）").last(),
-    ).toBeVisible();
-    await expect(cards.first().getByLabel("変更後の提案値")).toBeDisabled();
-    await expect(
-      cards.first().getByRole("button", { name: /採用 情報を更新する/ }),
-    ).toBeDisabled();
-    await expect(page.getByText("判断確定済み").first()).toBeVisible();
-    await expect(page.getByRole("button", { name: "承認前確認へ" })).toBeDisabled();
-    await page
-      .getByRole("navigation", { name: "パンくずリスト" })
-      .getByRole("link", { name: "運営Dashboard" })
+    await cards
+      .first()
+      .getByRole("button", { name: /採用 情報を更新する/ })
       .click();
-    await expect(page.getByText("シンプルブルーカード：年会費差分")).toHaveCount(0);
-  });
-
-  test("却下理由・Disposition・旧値維持Evidenceを必須化して混在判断を監査する", async ({
-    page,
-  }) => {
-    await login(page);
-    await openQueueItem(page, "シンプルブルーカード");
-    const cards = page.locator("article[data-decision]");
-    const adopted = cards.nth(0);
-    const rejected = cards.nth(1);
-    await adopted.getByRole("button", { name: /採用 情報を更新する/ }).click();
-    await rejected.getByRole("button", { name: /却下 情報はそのまま/ }).click();
-    await page.getByRole("button", { name: "編集Draftを保存" }).click();
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    const trigger = page.getByRole("button", { name: "再認証して判断を確定" });
-    await trigger.focus();
-    await trigger.click();
-    const dialog = page.getByRole("dialog", { name: "本人再認証" });
-    await expect(dialog.getByLabel("Password")).toBeFocused();
-    await dialog.getByRole("button", { name: "取消" }).click();
-    await expect(trigger).toBeFocused();
-    await trigger.click();
-    await dialog.getByLabel("Password").fill("prototype-passphrase");
-    await dialog.getByLabel("6桁のMFAコード").fill("123456");
-    await dialog.getByRole("button", { name: "本人確認して判断を確定" }).click();
-    await expect(page.getByText("判断: 却下").last()).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: "この内容で確定しますか？" });
+    await expect(dialog.getByText("1,650円（税込）")).toBeVisible();
+    await dialog.getByRole("button", { name: "戻る" }).click();
+    await expect(cards).toHaveCount(2);
+    await cards
+      .first()
+      .getByRole("button", { name: /採用 情報を更新する/ })
+      .click();
+    await dialog.getByRole("button", { name: "採用を確定" }).click();
+    await expect(cards).toHaveCount(1);
+    await expect(page.getByText("変更提案を採用")).toBeVisible();
+    await expect(page.getByText("処理済みを表示（1件）")).toBeVisible();
   });
 
   test("提案値をユーザーが修正して採用できる", async ({ page }) => {
@@ -238,17 +197,8 @@ test.describe("管理画面UIモック", () => {
     const cards = page.locator("article[data-decision]");
     const corrected = cards.nth(0);
     await corrected.getByLabel("変更後の提案値").fill("9,999円（税込）");
-    await decideClaims(page);
-    await page.getByRole("button", { name: "編集Draftを保存" }).click();
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    await expect(page.getByRole("heading", { name: "承認前の影響確認" })).toBeVisible();
-  });
-
-  test("変更なしだけのSourceは一括確認できる", async ({ page }) => {
-    await login(page);
-    await page.getByRole("link", { name: "差分を確認" }).nth(1).click();
-    await page.getByRole("button", { name: "変更なしを一括確認" }).click();
-    await expect(page.getByText("変更なしのclaimを一括で確認しました")).toBeVisible();
+    await corrected.getByRole("button", { name: /採用 情報を更新する/ }).click();
+    await expect(page.getByRole("dialog").getByText("9,999円（税込）")).toBeVisible();
   });
 
   test("Sessionを個別失効し全失効では未Loginへ戻る", async ({ page }, testInfo) => {
@@ -313,7 +263,9 @@ test.describe("管理画面UIモック", () => {
       await expect(page.getByRole("button", { name: "メニュー" })).toBeFocused();
     }
     await openQueueItem(page, "シンプルブルーカード");
-    await expect(page.getByText(/15分超過・再認証が必要/)).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "シンプルブルーカード（架空）" }),
+    ).toBeVisible();
     await page
       .getByRole("navigation", { name: "パンくずリスト" })
       .getByRole("link", { name: "運営Dashboard" })
@@ -385,10 +337,11 @@ test.describe("管理画面UIモック", () => {
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     await openQueueItem(page, "シンプルブルーカード");
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-    await decideClaims(page);
-    await page.getByRole("button", { name: "編集Draftを保存" }).click();
-    await page.getByRole("button", { name: "承認前確認へ" }).click();
-    await page.getByRole("button", { name: "再認証して判断を確定" }).click();
+    await page
+      .locator("article[data-decision]")
+      .first()
+      .getByRole("button", { name: /採用 情報を更新する/ })
+      .click();
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 });

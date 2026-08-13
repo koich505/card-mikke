@@ -10,7 +10,7 @@ Approval date:
 
 - Requirements: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 - UI Mock: `docs/design/ui/mocks/ui-v0.3-operations.md`
-- UI code version / Commit: Operations UI code/test scope hash `9a1846ae56f654d0a7e9ed046f5efd5e61a7d431205f3b57332808d2bc3592e7`（未Commit差分を含む。Mock文書記載のCommandで再現）
+- UI code version / Commit: Operations UI code/test scope hash `b7d4425625a9fda5a03b853ee3f5efca6ed65a54ad97e87725cf914cf9d7fe1c`（未Commit差分を含む。Mock文書記載のCommandで再現）
 - Screens: SCR-OPS-001〜003、SCR-OPS-009〜012、OVL-OPS-001〜002
 - Flow: UF-OPS-001
 

@@ -43,6 +43,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | ID | Screen | Purpose | Mock priority | Primary traceability |
 |---|---|---|---|---|
 | SCR-OPS-001 | 運営Dashboard | 未承認Draft、確認中、失敗、訂正等の状態を把握する | Primary mock v0.3 | FR-009, FR-022, FR-026, FR-033–FR-039 |
+| SCR-OPS-013 | 公式Source差分一覧 | Source変更Revisionと対象カードごとに未処理・処理中・完了・確認不能を検索、絞り込みする | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
 | SCR-OPS-002 | カード情報差分の確認・編集 | 前回値、候補、Evidenceを確認し、同一画面で編集・Draft保存・判断確定する | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
 | SCR-OPS-003 | カード情報編集・承認 | SCR-OPS-002へ統合 | Integrated into SCR-OPS-002 | FR-022, FR-032 |
 | SCR-OPS-004 | 券面画像確認・承認 | Source、条件、代替Text、履歴、状態を確認する | Inventory only | FR-035, AC-027 |
@@ -83,7 +84,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | Incomplete calculation | SCR-PUB-003〜SCR-PUB-005 |
 | Change under review | SCR-PUB-001、SCR-PUB-003、SCR-PUB-005、記事 |
 | Disclosure Status 4 states | SCR-PUB-005、OVL-005 |
-| Operations Loading / Empty / Error | SCR-OPS-001 |
+| Operations Loading / Empty / Error | SCR-OPS-001、SCR-OPS-013 |
 | Operations Partial / impact unknown | SCR-OPS-002 |
 | Session expired | SCR-OPS-001〜003、SCR-OPS-012 |
 | Claim diff 5 states | SCR-OPS-002 |

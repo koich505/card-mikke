@@ -17,7 +17,13 @@ const decisionLabel: Record<PrototypeClaimDecision, string> = {
   reject: "却下",
 };
 
-export function OpsChangeReview({ changeId }: { changeId: string }) {
+export function OpsChangeReview({
+  changeId,
+  returnQuery = "",
+}: {
+  changeId: string;
+  returnQuery?: string;
+}) {
   const { changes, auditEvents, resolveClaim } = useOps();
   const change = changes[changeId];
   const [claims, setClaims] = useState<PrototypeOpsClaimDiff[]>(() =>
@@ -84,6 +90,10 @@ export function OpsChangeReview({ changeId }: { changeId: string }) {
       <main className={styles.opsMain} id="main-content">
         <nav className={styles.breadcrumbs} aria-label="パンくずリスト">
           <Link href="/ops">運営Dashboard</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={`/ops/changes${returnQuery ? `?${returnQuery}` : ""}`}>
+            公式Source差分一覧
+          </Link>
           <span aria-hidden="true">/</span>
           <span aria-current="page">カード情報差分の確認・編集</span>
         </nav>

@@ -31,6 +31,8 @@ Last updated: 2026-08-12
 | Account | Profile、履歴、保存情報を継続利用する | FR-001–FR-003, FR-011, FR-025 |
 | 運営管理 | Source差分、Evidence、未承認Draftを確認し、明示承認後だけ公開反映可能な状態へ進める | FR-021, FR-022, FR-032–FR-034, NFR-SEC-001, NFR-SEC-003, AC-017, AC-018, AC-025, AC-026, AC-040 |
 
+運営管理のSource差分は、Dashboardの要約から`/ops/changes`の一覧へ進み、`Source変更Revision × 対象カード`単位の`/ops/changes/[id]`で提案を処理する。
+
 ## Operations navigation and hierarchy
 
 ### Desktop

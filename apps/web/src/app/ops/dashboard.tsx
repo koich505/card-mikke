@@ -26,6 +26,16 @@ export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
   const approvedSourceChanges = Object.values(changes).filter(
     (change) => change.status === "approved",
   ).length;
+  const blockedSourceChanges = Object.values(changes).filter(
+    (change) =>
+      change.scopeUnknown || change.revisionConflict || change.status === "blocked",
+  ).length;
+  const prioritySourceChanges = prototypeOpsQueue.filter(
+    (item) =>
+      item.actionable &&
+      item.priority === "high" &&
+      changes[item.id]?.status !== "approved",
+  ).length;
   return (
     <OpsShell>
       <main className={styles.opsMain} id="main-content">
@@ -80,19 +90,19 @@ export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
           <>
             <section className={styles.metricGrid} aria-label="作業状況の要約">
               <article>
-                <span>未承認Draft</span>
+                <span>未処理のSource差分</span>
                 <strong>{pendingSourceChanges}</strong>
                 <small>Source差分 / Block中を含む</small>
               </article>
               <article>
-                <span>訂正・Review待ち</span>
-                <strong>4</strong>
-                <small>3営業日以内に確認</small>
+                <span>確認不能</span>
+                <strong>{blockedSourceChanges}</strong>
+                <small>再収集・範囲確認が必要</small>
               </article>
               <article data-tone="danger">
-                <span>日次確認の失敗</span>
-                <strong>3日</strong>
-                <small>運営者確認が必要</small>
+                <span>優先案件</span>
+                <strong>{prioritySourceChanges}</strong>
+                <small>期限警告を含む</small>
               </article>
               <article>
                 <span>判断確定済み</span>
@@ -107,10 +117,12 @@ export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
                   <p className={styles.eyebrow}>WORK QUEUE</p>
                   <h2 id="queue-heading">確認が必要な作業</h2>
                 </div>
-                <p>期限と影響を確認し、優先度順に着手します。</p>
+                <Link className={styles.secondaryButton} href="/ops/changes">
+                  差分一覧を見る
+                </Link>
               </div>
               <div className={styles.queueList}>
-                {queue.map((item) => (
+                {queue.slice(0, 3).map((item) => (
                   <article key={item.id} data-priority={item.priority}>
                     <div>
                       <span className={styles.statusChip} data-tone={item.priority}>

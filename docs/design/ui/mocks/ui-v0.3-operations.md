@@ -6,7 +6,7 @@ Created: 2026-08-12
 
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 
-UI code/test scope SHA-256: `9a1846ae56f654d0a7e9ed046f5efd5e61a7d431205f3b57332808d2bc3592e7`
+UI code/test scope SHA-256: `b7d4425625a9fda5a03b853ee3f5efca6ed65a54ad97e87725cf914cf9d7fe1c`
 
 Reproduction command: `find apps/web/src/app/ops apps/web/src/fixtures/ops.ts apps/web/src/types/ops-prototype.ts apps/web/tests/operations.spec.ts apps/web/playwright.config.ts -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256`
 
@@ -20,6 +20,7 @@ Reproduction command: `find apps/web/src/app/ops apps/web/src/fixtures/ops.ts ap
 - `/ops/mfa`: 6桁MFAと失敗状態。
 - `/ops/mfa/recovery`: MFA喪失時の本人確認・要素変更・通知境界。
 - `/ops`: Dashboard Default。`scenario=loading|empty|error`で一般画面状態を確認できる。
+- `/ops/changes`: 公式Source差分一覧。初期表示は未処理・処理中で、検索、状態Filter、Sort、Loading、Empty、Errorを確認できる。
 - `/ops/changes/change-20260812-001`: Source・差分確認から提案編集、提案単位の採用／却下までを同一画面で行う。追加、変更、削除候補、変更なし、抽出不能を表示する。
 - `/ops/changes/change-20260812-002`: 管理項目がすべて変更なしの一括確認。
 - `/ops/changes/change-20260812-003`: 影響範囲不明とRevision競合によるBlock。
@@ -50,7 +51,7 @@ Reproduction command: `find apps/web/src/app/ops apps/web/src/fixtures/ops.ts ap
 ## Verification result
 
 - `npm run quality`: Pass（Prettier、ESLint、TypeScript、Next.js production build）。
-- `npm run test:ui`: Mobile Navigationを非モーダルSide Navigationへ変更し、差分確認・編集画面を統合後、50件 Pass。変更提案表示の簡略化後は、実行環境のChrome起動制約により未再実行。
+- `npm run test:ui`: 公式Source差分一覧と提案単位の最終確認Flowを含む46件を実行。44件 Pass後、残る一覧Query復元2件を修正し、対象2件をDesktop／MobileでPass。
 - axe: Operations主要画面を含むUI Test内でPass。
 - Source Text: 命令風文字列、HTML、Script、危険URLをTextとして表示し、外部Anchorおよび外部Requestがないことを確認した。
 - Responsive: 1440×1000と390×844で目視確認し、Mobile横Overflowなし、Desktop/Mobile Navigation切替を確認した。
