@@ -1,7 +1,7 @@
 # Functional Requirements
 
 Status: Approved
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 ## Account and Profile
 
@@ -9,9 +9,9 @@ Last updated: 2026-08-11
 
 - Priority: Required
 - Need: 利用条件を継続的に保持し、検索・比較時の再入力を減らす。
-- Expected behavior: 利用者は条件保存または履歴利用のためにAccountを作成し、後から同じProfileを利用できる。
+- Expected behavior: 利用者はProfileまたは検索・比較結果の保存と再利用のためにAccountを作成し、後から同じProfileと保存項目を利用できる。
 - Constraint: Account登録は任意とし、主要な検索・比較機能の利用条件にしない。
-- Constraint: 登録の主な価値は、Profileによる属性・利用条件の入力省略と履歴利用であることを明確にする。
+- Constraint: 登録の主な価値は、Profileによる属性・利用条件の入力省略と、明示的に保存した検索・比較の再利用であることを明確にする。
 - Expected behavior: 登録利用者は、メールアドレスとパスワード、またはGoogle Accountを使用して登録・Loginできる。
 - Expected behavior: メールアドレスとパスワードで登録する場合はメール確認を必須とし、Passwordを忘れた場合は確認済みの登録メールを通じて再設定できる。
 - Constraint: Google認証では、Google側で本人確認されたAccountだけを利用する。
@@ -40,8 +40,8 @@ Last updated: 2026-08-11
 
 - Priority: Required
 - Need: 登録利用者が自身の保存情報を管理し、不要になった情報を残さないようにする。
-- Expected behavior: 登録利用者は、自身のProfile、検索・比較履歴およびAccountを自ら削除できる。
-- Expected behavior: 削除操作の完了直後から、対象Accountと利用者データをLogin、表示、検索・比較への自動反映および履歴利用に使用できない状態にする。
+- Expected behavior: 登録利用者は、自身のProfile、保存した検索・比較およびAccountを自ら削除できる。
+- Expected behavior: 削除操作の完了直後から、対象Accountと利用者データをLogin、表示、検索・比較への自動反映および保存した検索・比較の利用に使用できない状態にする。
 - Expected behavior: Account削除時は、保持が必要な例外を利用者へ明示し、それ以外のAccountに関連する利用者データを削除対象とする。
 - Constraint: 通常の利用領域から24時間以内、Backupから30日以内に削除する。
 - Constraint: 法令、Securityまたは不正防止上の保持例外がある場合は、対象、理由および保持期間を利用者へ明示する。
@@ -58,16 +58,21 @@ Last updated: 2026-08-11
 - Priority: Required
 - Need: 登録を利用開始の障壁にせず、短時間で候補へ到達できるようにする。
 - Expected behavior: 未登録利用者は利用条件を手入力し、カードの検索と比較を利用できる。
-- Constraint: 条件保存または履歴利用を開始するときは登録を求める。
+- Constraint: 検索・比較結果の保存または保存済み検索・比較の利用を開始するときは登録を求める。
 
-### FR-011: 登録利用者の履歴利用
+### FR-011: 検索・比較の明示保存と再利用
 
 - Priority: Required
 - Need: 過去の探索を再確認し、条件を変えた比較を行いやすくする。
-- Expected behavior: 登録利用者は、検索・比較に使用した入力条件と、その時点で表示された計算結果を履歴として後から利用できる。
-- Expected behavior: 履歴を再度開いた場合は、当時の条件・当時の計算結果と、最新の商品情報で再計算した結果を区別して確認できる。
+- Expected behavior: 登録利用者は、検索結果または比較結果から保存操作を明示的に選択できる。
+- Expected behavior: 保存時は、利用者が保存内容を識別するための概要を必須入力し、保存対象となる入力条件、表示された計算結果、計算時点、根拠情報の確認時点、および比較時は比較対象を確認できる。
+- Expected behavior: 保存が完了した場合だけ、入力された概要と保存対象を後から利用できる状態にし、完了したことを利用者へ示す。
+- Expected behavior: 保存した検索・比較を再度開いた場合は、利用者が入力した概要、当時の条件・当時の計算結果と、最新の商品情報で再計算した結果を区別して確認できる。
+- Constraint: 検索または比較を実行しただけでは自動保存せず、保存操作を完了していない検索・比較はAccountの保存済み検索・比較へ追加しない。
+- Constraint: 概要が未入力または空白文字だけの場合は保存せず、修正を求める。
+- Constraint: 利用者が入力した概要は文字列として安全に扱い、Markupまたは実行可能な内容として解釈しない。
 - Constraint: 当時の結果を最新結果で上書きせず、各結果の計算時点と根拠情報の確認時点を追跡可能にする。
-- Constraint: 履歴はAccountが有効な間、利用者が削除するまで保持する。
+- Constraint: 保存した検索・比較はAccountが有効な間、利用者が削除するまで保持する。
 
 ### FR-004: 利用条件による候補探索
 

@@ -1,21 +1,22 @@
 # Requirements Approval
 
-Status: Approved
-Approved at: 2026-08-11
+Status: Product owner approved / Independent re-review pending
+Approved at: 2026-08-13
 Approver: Product owner
-Approval statement: 「オッケーです。要件定義の改定を承認します。」
+Approval statement: 「OKです。この内容で承認します」
+Approved change: 検索・比較を自動履歴化せず、結果から明示保存し、利用者が概要を入力する要件改定
 
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
-- Current decision: Passed
-- Previous decision: Passed
+- Current decision: Independent Requirements re-review pending
+- Previous decision: Passed（2026-08-11 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass
 - Security-relevant change review: `docs/reviews/requirements/requirements-review-005.md`–`requirements-review-007.md` — NFR-SEC-008およびAC-016 / AC-032を含めPass
 - Baseline Security Review: `docs/reviews/requirements/requirements-security-review-002.md` — Pass
-- Current review Critical findings: 0
-- Current review Major findings: 0
+- Current review Critical findings: 未確認
+- Current review Major findings: 未確認
 - Current review Blocking open questions: 0
 
 ## Previous Approved Baseline (stale)
@@ -32,9 +33,9 @@ Approval statement: 「オッケーです。要件定義の改定を承認しま
 | `05-open-questions.md` | `6be1834fd4096531d2aa0f4457ab7a79ccdeb891d98429fc2f65b52f39a161dc` |
 | `06-traceability.md` | `2e30ae1c5bcbc26e54f384d273fb51ad0ef11b98100367c6f3c7862fb7b1d91e` |
 
-## Current Approved Baseline
+## Previous Approved Baseline (2026-08-11, stale)
 
-以下は2026-08-11にProduct ownerが承認した、Domain 04〜15反映後のRequirements Baselineである。
+以下は2026-08-11にProduct ownerが承認したRequirements Baselineである。2026-08-13の明示保存要件改定によりstaleである。
 
 | Document | SHA-256 |
 |---|---|
@@ -46,10 +47,24 @@ Approval statement: 「オッケーです。要件定義の改定を承認しま
 | `05-open-questions.md` | `507e2233f8e2d09ab5f07ae0f6a3c74d5c3bfd50d6f51b81bb14be9479c7e5a3` |
 | `06-traceability.md` | `741b41fbc8abbc1305dbe9043cdd83dfb738da2934ce618da2ffbfd4665bdd13` |
 
+## Current Product-owner-approved Baseline
+
+以下は2026-08-13にProduct ownerが承認した、検索・比較の明示保存要件改定後のBaselineである。独立Requirements再レビュー完了まではGate 1通過Baselineとして扱わない。
+
+| Document | SHA-256 |
+|---|---|
+| `00-scope.md` | `99fca13755d4d6fee14aa5c087ab86c94f8f643251ef5b6f9dc2b98a644100c6` |
+| `01-users-and-goals.md` | `61a15ca126522d1c7a72480f3c279f96827cd4d37ae7c63327eafc23334f9434` |
+| `02-functional-requirements.md` | `6db50a902d5f8e7c35bcd4abb2c5710d72bba34a50763c5b410dec3d48eaf377` |
+| `03-non-functional-requirements.md` | `04426ad079c21e569a683f7018e3ec8471ac93efde8e594b08bc26fc7531af60` |
+| `04-acceptance-criteria.md` | `d2f4538f3a50c97b4ff0950561e1e1c25ce1d415a9c36d47bc32f45b38ae7f48` |
+| `05-open-questions.md` | `1abec757272bb8e8bb6bb1b6ac97b0fc600be8e87d15f5e07806c5f2a31f56e2` |
+| `06-traceability.md` | `efd015ef4d94b53774b295e8b4bf1edf7cb48625b7f3e3823a3236f76c61ae27` |
+
 ## Carry-over Conditions
 
 - `05-open-questions.md`に記録した非Blocking事項は、各Owner、期限、解決Gateに従って扱う。
 - RQ-013はUI Mock開始前に確認する。
 - Requirements変更時は影響範囲を再レビューし、承認Baselineを更新する。
 - 本承認はUI Mock Approval、Final Scope Approval、Planning Approvalまたは実装開始承認を兼ねない。
-- Domain 04〜15反映後の現行RequirementsはProduct ownerによる再承認を完了し、上記hashをGate 1の現行Baselineとして扱う。
+- 2026-08-13の明示保存要件改定はProduct owner承認済みである。独立Requirements再レビューでCritical／Major 0件を確認後、Gate 1の現行Baselineへ更新する。

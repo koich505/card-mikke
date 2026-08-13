@@ -1,7 +1,7 @@
 # Requirements Open Questions
 
 Status: Approved
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 | ID | Question | Why unresolved | Impact | Decision owner | Needed by | Blocking Requirements | Recommended action |
 |---|---|---|---|---|---|---|---|
@@ -17,6 +17,7 @@ Last updated: 2026-08-11
 | RQ-039 | Affiliate・解析の計測範囲、Cookie同意、適用条件は何か | 利用Service・法的条件が未決 | Privacy、計測、収益 | Product owner / Legal reviewer | Public Release前 | No | 採用Service確定後に法的確認 |
 | RQ-040 | Structured Data、Sitemap、更新通知を初期Releaseへ含めるか | SEO詳細が未決 | Discoverability、保守 | Product owner | Architecture Planning前 | No | SEO PlanでApplicable判定 |
 | RQ-041 | 有料外部通知を採用するか | Cost評価前 | 障害認知時間、Cost | Product owner | Architecture Planning前 | No | 5,000円目標内で判断 |
+| RQ-042 | 保存した検索・比較の概要について、文字数上限、重複名の扱い、および編集可否をどうするか | 利用者入力と明示保存の採用は決定済みだが、入力規則と保存後の管理範囲は未決 | Validation、一覧の識別性、UI状態、保存データ量 | Product owner | 改訂UI Mock Approval前 | No | 概要必須・空白のみ拒否を前提に、Desktop／Mobileの保存Flowで上限と重複時の理解を検証 |
 
 ## Related Domain Open Questions
 

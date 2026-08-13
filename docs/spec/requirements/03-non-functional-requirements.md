@@ -1,14 +1,14 @@
 # Non-functional Requirements
 
 Status: Approved
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 ## Security and Privacy
 
 ### NFR-PRIV-001: データ最小化と目的明示
 
 - Classification: Required
-- Requirement: Profile、履歴、Affiliate計測およびアクセス解析で取得・保存する情報を、明示した利用目的に必要な範囲へ限定する。
+- Requirement: Profile、保存した検索・比較、その利用者入力概要、Affiliate計測およびアクセス解析で取得・保存する情報を、明示した利用目的に必要な範囲へ限定する。
 - Verification: 取得項目ごとに利用目的、必須・任意、保持期間、共有先を確認できることをRequirements Reviewで検査する。
 
 ### NFR-PRIV-002: Cookie等の計測技術に関する選択
@@ -20,7 +20,7 @@ Last updated: 2026-08-11
 ### NFR-PRIV-003: 利用者による削除
 
 - Classification: Required
-- Requirement: 登録利用者がProfile、検索・比較履歴およびAccountの削除を自身で要求・実行でき、削除操作直後から対象データを利用不能にする。
+- Requirement: 登録利用者がProfile、保存した検索・比較およびAccountの削除を自身で要求・実行でき、削除操作直後から利用者入力概要を含む対象データを利用不能にする。
 - Requirement: 通常の利用領域から24時間以内、Backupから30日以内に削除する。
 - Requirement: 保持例外がある場合は、対象、理由、保持期間を利用者へ明示する。
 - Verification: 即時の利用停止、各期限内の削除、保持例外の表示、および削除失敗時の検知・再試行または通知を検証する。
@@ -28,11 +28,11 @@ Last updated: 2026-08-11
 - Requirement: Account削除時は公開Reviewと却下Draftを同期限で削除し、通報者との直接紐付けを削除する。不正防止に必要な最小限の仮名化情報だけを90日、個人との直接紐付けを外したModeration・通報処理metadataを3年間保持する。
 - Constraint: 初期Releaseでは単一管理者Roleが不正防止情報を扱う。仮名化情報を不正防止以外に使用しない。
 
-### NFR-PRIV-004: Profile・履歴の保持とExport対象外
+### NFR-PRIV-004: Profile・保存した検索・比較の保持とExport対象外
 
 - Classification: Required
-- Requirement: Profileと検索・比較履歴はAccountが有効な間、利用者が削除するまで保持する。
-- Requirement: Profile・履歴のダウンロードまたはExport機能は初期Releaseの対象外とする。
+- Requirement: Profileと明示的に保存した検索・比較はAccountが有効な間、利用者が削除するまで保持する。検索または比較を実行しただけの未保存データは、この保持対象に含めない。
+- Requirement: Profile・保存した検索・比較のダウンロードまたはExport機能は初期Releaseの対象外とする。
 - Verification: Account継続中の保持、個別削除、Account削除、およびExport機能が提供されていないことを確認する。
 
 ### NFR-SEC-001: Accountおよび運営機能の保護
@@ -241,7 +241,7 @@ Last updated: 2026-08-11
 ### NFR-AVAIL-002: 最小BackupとRecovery
 
 - Classification: Required
-- Requirement: Profile、履歴、お気に入り、カード・Campaign等の業務情報、記事、Evidence metadata、および更新・承認履歴をBackup対象とする。
+- Requirement: Profile、保存した検索・比較、お気に入り、カード・Campaign等の業務情報、記事、Evidence metadata、および更新・承認履歴をBackup対象とする。
 - Requirement: 1日1回相当のBackupを取得し、障害発生前24時間以内の状態へ復旧できることを目標とする（RPO 24時間）。
 - Requirement: 重大障害を検知した時点から24時間以内に主要機能を利用可能な状態へ戻すことを目標とする（RTO 24時間）。
 - Requirement: 少なくとも年1回、Backupから実際に復旧できることと、主要データの整合性を確認する。
