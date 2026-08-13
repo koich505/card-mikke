@@ -1,6 +1,6 @@
 # Requirements Approval
 
-Status: Product owner approved / Independent re-review pending
+Status: Approved
 Approved at: 2026-08-13
 Approver: Product owner
 Approval statement: 「OKです。この内容で承認します」
@@ -9,14 +9,15 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
-- Current decision: Independent Requirements re-review pending
+- Current decision: Passed
 - Previous decision: Passed（2026-08-11 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass
+- Current Requirements Review: `docs/reviews/requirements/requirements-review-010.md` — Pass after fix and re-review
 - Security-relevant change review: `docs/reviews/requirements/requirements-review-005.md`–`requirements-review-007.md` — NFR-SEC-008およびAC-016 / AC-032を含めPass
 - Baseline Security Review: `docs/reviews/requirements/requirements-security-review-002.md` — Pass
-- Current review Critical findings: 未確認
-- Current review Major findings: 未確認
+- Current review Critical findings: 0
+- Current review Major findings: 0
 - Current review Blocking open questions: 0
 
 ## Previous Approved Baseline (stale)
@@ -49,17 +50,17 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 
 ## Current Product-owner-approved Baseline
 
-以下は2026-08-13にProduct ownerが承認した、検索・比較の明示保存要件改定後のBaselineである。独立Requirements再レビュー完了まではGate 1通過Baselineとして扱わない。
+以下は2026-08-13にProduct ownerが承認し、Requirements Review 010を通過した、検索・比較の明示保存要件改定後のBaselineである。
 
 | Document | SHA-256 |
 |---|---|
 | `00-scope.md` | `99fca13755d4d6fee14aa5c087ab86c94f8f643251ef5b6f9dc2b98a644100c6` |
 | `01-users-and-goals.md` | `61a15ca126522d1c7a72480f3c279f96827cd4d37ae7c63327eafc23334f9434` |
-| `02-functional-requirements.md` | `6db50a902d5f8e7c35bcd4abb2c5710d72bba34a50763c5b410dec3d48eaf377` |
-| `03-non-functional-requirements.md` | `04426ad079c21e569a683f7018e3ec8471ac93efde8e594b08bc26fc7531af60` |
-| `04-acceptance-criteria.md` | `d2f4538f3a50c97b4ff0950561e1e1c25ce1d415a9c36d47bc32f45b38ae7f48` |
+| `02-functional-requirements.md` | `0aa9f4a8e83c952822f5a366ad2405f857bd4131a8a8de9e13bfe3ad374af182` |
+| `03-non-functional-requirements.md` | `3972458dde86a07e90fb438980778c813275730b9b6f27f13f0638e369a9f72f` |
+| `04-acceptance-criteria.md` | `49b7faaf12702ae69bfcd9dfd7d51ab28f075006e7c3c443c9f98c76cca1d5bf` |
 | `05-open-questions.md` | `1abec757272bb8e8bb6bb1b6ac97b0fc600be8e87d15f5e07806c5f2a31f56e2` |
-| `06-traceability.md` | `efd015ef4d94b53774b295e8b4bf1edf7cb48625b7f3e3823a3236f76c61ae27` |
+| `06-traceability.md` | `425570ee5ed1c6f781037233de3bc4c39197f838b718064e3550d7e02d77a926` |
 
 ## Carry-over Conditions
 
@@ -67,4 +68,4 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 - RQ-013はUI Mock開始前に確認する。
 - Requirements変更時は影響範囲を再レビューし、承認Baselineを更新する。
 - 本承認はUI Mock Approval、Final Scope Approval、Planning Approvalまたは実装開始承認を兼ねない。
-- 2026-08-13の明示保存要件改定はProduct owner承認済みである。独立Requirements再レビューでCritical／Major 0件を確認後、Gate 1の現行Baselineへ更新する。
+- 2026-08-13の明示保存要件改定はProduct owner承認済みであり、Requirements Review 010でCritical／Major 0件を確認した上記hashをGate 1の現行Baselineとして扱う。

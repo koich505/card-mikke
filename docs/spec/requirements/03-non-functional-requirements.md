@@ -38,7 +38,7 @@ Last updated: 2026-08-13
 ### NFR-SEC-001: Accountおよび運営機能の保護
 
 - Classification: Required
-- Requirement: 登録利用者のProfile・履歴は本人だけが利用でき、カード情報や記事の確認・承認・公開は権限を持つ運営者だけが実行できるようにする。
+- Requirement: 登録利用者のProfile・保存した検索・比較・利用者入力概要は本人だけが利用でき、カード情報や記事の確認・承認・公開は権限を持つ運営者だけが実行できるようにする。
 - Verification: 未認証、別利用者、一般利用者および権限のない運営者によるアクセス・変更が拒否されることを検証する。
 - Constraint: 初期Releaseでは一般利用者の多要素認証を必須にしない。
 - Requirement: 管理者Accountでは多要素認証を必須とし、Passwordまたは外部Identity Providerによる一次認証とは異なる要素で本人を確認する。
@@ -69,13 +69,14 @@ Last updated: 2026-08-13
 - Requirement: 認証・管理操作について、CSRF、Session固定化、Credential stuffingおよび盗まれたSessionの再利用を検証対象とする。
 - Verification: 一般利用者、期限切れSession、30分間無操作のSession、権限のない運営者からの編集・承認が拒否され、管理者Loginと高Risk操作で多要素認証が要求されることを検証する。
 
-### NFR-SEC-004: 公開FormとUGC入力
+### NFR-SEC-004: 利用者入力Content
 
 - Classification: Required
-- Requirement: Login不要の誤情報指摘Formおよび利用者Reviewを、Spam、不正な自動投稿、過大な入力、Script・HTML等の不正Contentから保護する。
-- Requirement: 投稿内容に含まれるHTMLやScriptを実行せず、安全なTextとして扱う。
+- Requirement: Login不要の誤情報指摘Form、利用者Review、および保存した検索・比較の概要を、Spam、不正な自動投稿、過大な入力、Script・HTML等の不正Contentから保護する。
+- Requirement: 利用者入力に用途ごとの文字数上限を設け、上限を超える入力を保存・送信しない。保存した検索・比較の概要に適用する具体的な上限はRQ-042で決定する。
+- Requirement: 利用者入力に含まれるHTMLやScriptを実行せず、安全なTextとして扱う。
 - Requirement: Secret、Credential、不要な個人情報を投稿内容またはLogへ含めないよう案内し、運営者が不適切情報を非公開・削除できるようにする。
-- Verification: 未信頼入力、連続投稿、過大入力、Script文字列、不正な権限操作が安全に拒否または無害化されることを検証する。
+- Verification: 誤情報指摘、Review、保存概要について、未信頼入力、連続操作、過大入力、Script文字列、不正な権限操作が安全に拒否または無害化されることを検証する。
 
 ### NFR-SEC-005: Secret管理
 
@@ -95,7 +96,7 @@ Last updated: 2026-08-13
 
 - Classification: Required
 - Requirement: Login失敗・制限、運営者Login、権限変更、カード・記事・Affiliate Linkの編集・承認、利用者データ削除、Review Moderation等のSecurity上重要な操作を監査可能に記録する。
-- Requirement: LogへPassword、認証Token、Secret、Review通報者の公開不要情報、Profileの年間利用額・利用先内訳等の内容を記録しない。
+- Requirement: LogへPassword、認証Token、Secret、Review通報者の公開不要情報、Profileの年間利用額・利用先内訳、保存した検索・比較の利用者入力概要等の内容を記録しない。
 - Requirement: Security Log、運用Log、MetricおよびAlert履歴を90日間保持し、期限後に削除する。別の監査保持要件を持つ承認metadataはその保持要件を優先する。
 - Requirement: 管理者は通常の管理機能から監査記録を編集・削除できない。
 - Requirement: 重要操作は、実行主体、時刻、対象、変更前後、成否、関連する承認を追跡できるように記録する。
@@ -159,7 +160,7 @@ Last updated: 2026-08-13
 
 - Classification: Required
 - Requirement: 公開されたカード詳細と記事を検索EngineのIndex対象とする。
-- Requirement: Profile、履歴、管理機能および利用者が入力した条件に基づく個人別検索結果をIndex対象外とする。
+- Requirement: Profile、保存した検索・比較、管理機能および利用者が入力した条件に基づく個人別検索結果をIndex対象外とする。
 - Verification: 各Page種別のIndex可否と、認証が必要な情報が検索Engineへ公開されないことを検証する。
 
 ### NFR-SEO-002: 公開情報の検索向け表現
@@ -189,8 +190,8 @@ Last updated: 2026-08-13
 ### NFR-PERF-003: データ増加時の動作
 
 - Classification: Required
-- Requirement: 初期測定量をカード2,000件、Rule 20,000件、利用先5,000件、公開Review 100,000件、保存済み検索・比較履歴100,000件とする。これらは性能検証用のデータ量であり、業務上の保存上限を意味しない。
-- Requirement: カード、Rule、利用先、Review、履歴が初期測定量および各項目を同時に2倍とした増加時測定量まで増加しても、結果を欠落・重複させず、NFR-PERF-001 / 002の条件で測定可能にする。
+- Requirement: 初期測定量をカード2,000件、Rule 20,000件、利用先5,000件、公開Review 100,000件、保存した検索・比較100,000件とする。これらは性能検証用のデータ量であり、業務上の保存上限を意味しない。
+- Requirement: カード、Rule、利用先、Review、保存した検索・比較が初期測定量および各項目を同時に2倍とした増加時測定量まで増加しても、結果を欠落・重複させず、NFR-PERF-001 / 002の条件で測定可能にする。
 - Requirement: 性能目標を満たせない場合も、結果を推測・省略せず、処理中または制約を明示する。
 - Verification: 上記の初期測定量と各項目を同時に2倍としたデータ量で、結果の欠落・重複と応答時間を確認する。
 
@@ -298,7 +299,7 @@ Last updated: 2026-08-13
 - Classification: Required
 - Requirement: 開発・検証・公開環境のConfigurationとSecretを分離し、環境差を追跡可能にする。
 - Requirement: 検証環境で本番の利用者Credentialや不要な個人データを使用しない。
-- Requirement: Releaseや業務情報変更後も、既存Account、Profile、履歴、Evidence、承認履歴および公開URLの必要な継続性を損なわない。互換性を失う変更は影響、移行、復旧方法を事前に承認する。
+- Requirement: Releaseや業務情報変更後も、既存Account、Profile、保存した検索・比較、Evidence、承認履歴および公開URLの必要な継続性を損なわない。互換性を失う変更は影響、移行、復旧方法を事前に承認する。
 - Verification: 環境別設定、個人データ不使用、代表的な既存データと公開URLの継続性をRelease前に確認する。
 
 ### NFR-OPS-001: 公開情報・業務情報のRollback

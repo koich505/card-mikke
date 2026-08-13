@@ -27,7 +27,7 @@ Last updated: 2026-08-13
 - Constraint: 保存する属性は利用目的に必要な範囲へ限定し、保存項目と利用目的を利用者が確認できる。
 - Constraint: 年収、職業・雇用形態は、明確な利用目的が別途決定されるまで初期ReleaseのProfileへ保存しない。
 - Constraint: ProfileはAccountが有効な間、利用者が削除するまで保持する。
-- Constraint: Profileおよび履歴のダウンロード・Export機能は初期Releaseの対象外とする。
+- Constraint: Profileおよび保存した検索・比較のダウンロード・Export機能は初期Releaseの対象外とする。
 
 ### FR-003: Profile条件の自動反映と手入力
 
@@ -67,6 +67,9 @@ Last updated: 2026-08-13
 - Expected behavior: 登録利用者は、検索結果または比較結果から保存操作を明示的に選択できる。
 - Expected behavior: 保存時は、利用者が保存内容を識別するための概要を必須入力し、保存対象となる入力条件、表示された計算結果、計算時点、根拠情報の確認時点、および比較時は比較対象を確認できる。
 - Expected behavior: 保存が完了した場合だけ、入力された概要と保存対象を後から利用できる状態にし、完了したことを利用者へ示す。
+- Expected behavior: 保存処理中であることを示し、同じ保存操作の重複実行を防ぐ。
+- Expected behavior: 保存に失敗した場合は概要入力と保存対象を保持し、失敗理由を示して再試行できる。失敗した操作を保存済みとして扱わず、保存済み検索・比較へ追加しない。
+- Expected behavior: 保存成功時は一回の保存操作につき一つの保存項目だけを追加する。
 - Expected behavior: 保存した検索・比較を再度開いた場合は、利用者が入力した概要、当時の条件・当時の計算結果と、最新の商品情報で再計算した結果を区別して確認できる。
 - Constraint: 検索または比較を実行しただけでは自動保存せず、保存操作を完了していない検索・比較はAccountの保存済み検索・比較へ追加しない。
 - Constraint: 概要が未入力または空白文字だけの場合は保存せず、修正を求める。
@@ -456,7 +459,7 @@ Last updated: 2026-08-13
 - Priority: Required
 - Need: 外部ServiceまたはAI処理の障害を、誤情報公開や主要機能全停止へ拡大させない。
 - Expected behavior: 処理開始後、結果が未確定の間はLoadingまたは処理中であることを示し、完了・失敗・部分成功のいずれかへ遷移する。
-- Expected behavior: 検索結果または履歴が0件の場合はEmptyとして扱い、ErrorまたはDomain Factの`unknown`と混同しない。
+- Expected behavior: 検索結果または保存した検索・比較が0件の場合はEmptyとして扱い、ErrorまたはDomain Factの`unknown`と混同しない。
 - Expected behavior: Google認証が利用不能でも、未登録の検索・比較と、利用可能な場合のメール・Password Loginを継続し、Google認証障害を利用者へ示す。
 - Expected behavior: AI抽出、Source取得、記事生成またはReview検査が失敗した場合は、失敗対象を未承認・未公開のまま保持し、失敗理由と再試行状態を記録する。既存の承認済み情報・公開記事は、それ自体を自動削除しない。
 - Expected behavior: 一部カードの算定に失敗した場合は、成功した候補の結果をPartialとして提示し、失敗した候補と理由を区別する。失敗値を推測で補完しない。
