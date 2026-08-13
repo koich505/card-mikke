@@ -129,6 +129,17 @@ Decision date: 2026-08-10
 
 すべての入口は、必要に応じて同じ検索条件・比較Contextへ合流できるようにする。ただしUI Mockの暫定View Modelを本番Data Contractとして確定しない。
 
+## Account IA（Account v0.4）
+
+- Global Headerの`Account`から`/account/profile`へ到達する。UI MockはLogin済みの合成利用者を前提とし、認証Flowを実装しない。
+- Account Navigationは全Viewportで上部横並びTabとし、選択中の内容だけを下のTab Panelへ表示する。
+- Profileは1Page内を`利用額・よく使う場所`、`あなたについて`、`ポイントの希望`の3章に分ける。
+- 各章を独立して保存し、他章の未保存変更へ影響させない。
+- `検索・比較履歴`は当時の入力条件、当時の合成計算記録、計算時点、根拠確認時点を表示し、現在情報による再検索・比較再表示と区別する。
+- `データ管理`は検索・比較履歴の一括削除とAccount削除だけを配置し、Account削除の影響範囲・期限・保持例外を確認できるようにする。
+- Tab間で未保存Profile入力、展開中の履歴、失敗状態を保持し、履歴単体削除と一括削除は同じBrowser Memory上の合成履歴へ反映する。
+- 未保存変更がある内部遷移では破棄確認を行い、取消時は起点LinkへFocusを戻す。
+
 ## SEO and indexing boundary
 
 - 公開カード詳細と公開記事をIndex対象として設計する。

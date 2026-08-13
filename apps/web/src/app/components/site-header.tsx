@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
-  currentPage: "home" | "search" | "card" | "article";
+  currentPage: "home" | "search" | "card" | "article" | "account";
 };
 
 export default function SiteHeader({ currentPage }: SiteHeaderProps) {
@@ -34,6 +34,13 @@ export default function SiteHeader({ currentPage }: SiteHeaderProps) {
             aria-current={currentPage === "search" ? "page" : undefined}
           >
             カードを探す <span>→</span>
+          </Link>
+          <Link
+            href="/account/profile"
+            className={styles.navAccount}
+            aria-current={currentPage === "account" ? "page" : undefined}
+          >
+            Account
           </Link>
         </nav>
       </div>

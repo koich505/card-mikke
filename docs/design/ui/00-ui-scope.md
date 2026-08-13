@@ -1,8 +1,8 @@
 # UI Scope
 
-Status: Draft for UI dialogue  
+Status: Account history / data management v0.4 implemented; human UI approval pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-10
+Last updated: 2026-08-12
 
 ## Purpose
 
@@ -19,6 +19,8 @@ Last updated: 2026-08-10
 
 - 注目のカード、特集記事、新着情報から候補を発見できるホーム
 - Profile値の自動反映と、保存されない一時変更の識別
+- 当時の合成記録と現在情報による再検索を区別した検索・比較履歴
+- Profile、履歴、Accountの削除範囲、期限、保持例外を確認するデータ管理
 - 年間利用額、利用先カテゴリ、企業・Service別金額の入力
 - 年間正味還元額、初年度・通常年、内訳、仮定の表示
 - 完全、算定不完全、変更確認中の区別
@@ -44,13 +46,13 @@ Last updated: 2026-08-10
 ### Product name and visual direction
 
 - サイト名称およびUI Mock上の名称は`カードみっけ`とする。
-- 情報量を保ちながら、比較結果を落ち着いて検討できる静かな編集物の印象を目指す。従来の`整理されたごちゃごちゃ感`は採用しない。
-- 背景はWarm ivoryから淡いStoneを基調とし、細い枠線、柔らかな影、十分な余白で情報のまとまりを示す。
-- Clear Goldは先頭候補、主要・補助Action、進捗、金額、通常の状態表示に使用し、Vitamin Coralは選択状態と案内に使用する。変更確認中はMuted Orange、ErrorはDark Redとして意味を分離する。
+- 情報量を保ちながら、落ち着いて入力・比較できる静かな編集物の印象を目指す。現行`/search`の実装をUI v0.3の視覚基準とする。
+- 背景は淡いGrayからBlue Gray、情報面はWhite、主要Actionと選択状態は濃淡Blueを基調とし、細い枠線、柔らかな影、十分な余白でまとまりを示す。
+- Blueは主要Action、選択状態、進捗、金額、通常の状態表示に使用する。ErrorはDark Red、変更確認中はMuted Orangeとして意味を分離する。
 - Ranking Cardは1位をGold、2位をSilver、3位をBronzeで表現し、順位Badge、帯見出し、枠線、金額Panelの淡い背景へ一貫して適用する。
-- 背景面は低彩度のまま保ち、GoldとVitamin Coralを帯、順位、選択状態、金額、CTAなど限定した面で高彩度・高Contrastに使用する。Blue系とGreen系はUI Accent、状態色、抽象券面で使用しない。
-- 単色の広い面を避け、Actionには明確なGradient、背景と情報Cardには白から淡色へ移る低ContrastのGradientを使用する。
-- 主要・補助CTAは文字Contrastを確保した淡いGold Gradientとし、進捗、順位、比較等の補助表示もGold系で統一する。
+- 背景面は低彩度のまま保ち、Blueを選択状態、金額、CTAなど限定した面で高Contrastに使用する。
+- Actionには濃淡BlueのGradient、背景と情報Cardには白から淡色へ移る低ContrastのGradientを使用する。
+- 主要CTAは文字Contrastを確保したBlue Gradientとし、補助ActionはWhite面とBlueまたはGrayの境界線を使用する。
 - Footerは濃色面を使用せず、明るいIvoryから明確なGoldへ移るGradientと細いGold境界線で、余白のある軽い終端をつくる。
 - 特集記事Cardは白い面を基準とし、記事種別のAccentは上辺とLabelに限定する。
 - 先頭候補をほかの候補より少し大きく見せる一方、推薦精度、相性、現在利用中カードとの差額など、Requirementsにない意味は付加しない。

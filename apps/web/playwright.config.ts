@@ -1,12 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const testPort = process.env.CARD_MIKKE_TEST_PORT ?? "3000";
+const testBaseUrl = `http://127.0.0.1:${testPort}`;
+
 export default defineConfig({
   testDir: "./tests",
   outputDir: "/private/tmp/card-mikke-playwright-results",
   fullyParallel: true,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: testBaseUrl,
     trace: "retain-on-failure",
   },
   projects: [
@@ -20,8 +23,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev -- --hostname 127.0.0.1 --port 3000",
-    url: "http://127.0.0.1:3000/cards/everyday-plus",
+    command: `npm run dev -- --hostname 127.0.0.1 --port ${testPort}`,
+    url: `${testBaseUrl}/cards/everyday-plus`,
     reuseExistingServer: true,
     timeout: 120_000,
   },

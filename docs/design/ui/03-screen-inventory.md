@@ -1,8 +1,8 @@
 # Screen Inventory
 
-Status: Card detail v0.2 implemented; human UI approval pending
+Status: Card detail v0.2 and Profile v0.3 implemented; human approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-11
+Last updated: 2026-08-12
 
 ## Inventory policy
 
@@ -32,9 +32,9 @@ Last updated: 2026-08-11
 | ID | Screen | Purpose | Mock priority | Primary traceability |
 |---|---|---|---|---|
 | SCR-ACC-001 | Login・登録 | 保存・履歴の価値を理解して任意にAccountを利用する | Inventory only | FR-001, AC-003 |
-| SCR-ACC-002 | Profile | 年間利用額、利用先、必要最小限の属性を保存・更新する | Inventory only | FR-002, FR-003, AC-002 |
-| SCR-ACC-003 | 検索・比較履歴 | 当時の結果と最新再計算を区別して確認する | Inventory only | FR-011, AC-022 |
-| SCR-ACC-004 | Account・データ管理 | Profile、履歴、Account削除と保持例外を確認する | Inventory only | FR-025, AC-004 |
+| SCR-ACC-002 | Profile | 年間利用額、利用先、必要最小限の属性を章ごとに保存・更新する | Primary mock implemented in v0.3 | FR-002, FR-003, AC-002 |
+| SCR-ACC-003 | 検索・比較履歴 | 当時の結果と最新再計算を区別して確認する | Primary mock implemented in v0.4 | FR-011, AC-022 |
+| SCR-ACC-004 | Account・データ管理 | Profile、履歴、Account削除と保持例外を確認する | Primary mock implemented in v0.4 | FR-025, NFR-PRIV-003, NFR-PRIV-004, AC-004 |
 
 ## Operations screens
 
@@ -77,11 +77,14 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | Incomplete calculation | SCR-PUB-003〜SCR-PUB-005 |
 | Change under review | SCR-PUB-001、SCR-PUB-003、SCR-PUB-005、記事 |
 | Disclosure Status 4 states | SCR-PUB-005、OVL-005 |
+| Section saving / saved | SCR-ACC-002 |
+| Recoverable save error / retry | SCR-ACC-002 |
+| Unsaved changes / leave confirmation | SCR-ACC-002 |
 
 ## Current open screen decisions
 
 - 記事一覧で用途別記事と単一カード特集をどう分類するか
-- Account画面と運営画面の詳細IA・優先Flow
+- Accountの履歴・データ管理画面と運営画面の詳細IA・優先Flow
 
 ## Approved comparison screen decisions
 

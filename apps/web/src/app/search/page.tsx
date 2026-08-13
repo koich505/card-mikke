@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { parsePrototypeScenario } from "@/features/card-detail/prototype-scenario";
+import { parsePrototypeSearchLaunch } from "@/features/search/prototype-launch";
 import SearchPrototype from "./search-prototype";
 
 export const metadata: Metadata = {
@@ -9,6 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default async function SearchPage({ searchParams }: PageProps<"/search">) {
-  const scenario = parsePrototypeScenario(await searchParams);
-  return <SearchPrototype initialScenario={scenario} />;
+  const rawSearchParams = await searchParams;
+  const scenario = parsePrototypeScenario(rawSearchParams);
+  const launch = parsePrototypeSearchLaunch(rawSearchParams);
+  return (
+    <SearchPrototype
+      initialScenario={scenario}
+      initialView={launch.initialView}
+      initialCompareIds={launch.compareCardIds}
+      initialFromHistory={launch.fromHistory}
+    />
+  );
 }

@@ -1,8 +1,8 @@
 # UI Requirements
 
-Status: Card detail v0.2 implemented; human UI approval pending
+Status: Card detail v0.2 and Profile v0.3 implemented; human approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-11
+Last updated: 2026-08-12
 
 ## Purpose and boundary
 
@@ -13,15 +13,15 @@ Last updated: 2026-08-11
 ### UIR-BRAND-001: 名称と視覚的性格
 
 - サイト名称およびUI Mock上の名称は`カードみっけ`とする。
-- 固い金融メディアではなく、親しみやすく、情報探索のテンションが上がる活気を表現する。
-- 情報密度を高め、太い見出し、強いサイズ差、明快な枠線、Sticker、吹き出し、帯見出し等で`整理されたごちゃごちゃ感`を作る。
+- 固い金融メディアではなく親しみやすさを保ちつつ、入力・比較を落ち着いて進められる視覚密度とする。
+- 現行`/search`の青系Token、Whiteの情報面、明瞭な枠線、選択Card、余白、TypographyをUI v0.3の視覚基準とする。
 - 特定店舗、Brand、Logo、Font、売場意匠を複製しない。
 - 派手さを根拠のないRanking、確定額、公式推奨の表現へ使用しない。
 
 ### UIR-BRAND-002: Visual system
 
-- Baseは明るいCreamまたは淡いYellowとする。
-- Primaryに濃いNavy、AccentにRed、Blue Green、Orangeを使用する。
+- BaseはWhite、淡いGray、Blue Grayとする。
+- Primaryに濃淡Blue、ErrorにDark Red、変更確認中にMuted Orangeを使用する。
 - 金額と主要Actionは大きく示すが、単位、対象年、算定状態を近接して表示する。
 - Cardは明快な枠線を基本とし、角丸、Shadow、傾き等は一貫したToken範囲で変化を付ける。
 - 外部Fontを取得せず、日本語System Fontを使用する。
@@ -259,6 +259,65 @@ Last updated: 2026-08-11
 - 修正または回答を保証せず、内部の確認着手目標は画面表示しない。
 - Traceability: FR-026, NFR-SEC-004, AC-023
 
+## Account and Profile
+
+### UIR-PROFILE-001: Page structure and purpose
+
+- Login済みの合成利用者を前提に、Profileを1Page内の`利用額・よく使う場所`、`あなたについて`、`ポイントの希望`へ分ける。
+- Account Navigationは全Viewportで上部横並びTabとし、選択中のTabに対応するPanelだけを下へ表示する。Tab間で未保存入力と各Panelの操作状態を保持する。
+- 保存項目の利用目的、UI-onlyであること、再読込時に合成初期値へ戻ることを常時確認できる。
+- Traceability: FR-001, FR-002, AC-002
+
+### UIR-PROFILE-002: Usage condition validation
+
+- 年間利用額は未設定または1〜100,000,000円の整数とし、Requirementsの11カテゴリについて0以上の利用先別年額を入力できる。
+- 利用先別合計が年間利用額を超える場合、または内訳があるのに年間利用額が未設定の場合は、理由と修正対象を示して保存しない。
+- 各カテゴリで2件の架空Serviceを複数選択でき、実在Service、PII、Credentialを使用しない。
+- Traceability: FR-002, FR-003, AC-002, AC-005
+
+### UIR-PROFILE-003: Minimal attributes and preferences
+
+- 年齢帯と入会予定時期は単一選択、Serviceとポイント・交換先は複数選択とする。
+- `特に希望なし`は他のポイント希望を解除する排他的選択とする。
+- 年齢帯に`回答しない`を用意し、年収、職業、雇用形態を保存項目へ追加しない。
+- Traceability: FR-002
+
+### UIR-PROFILE-004: Section save and recovery
+
+- 3章を独立保存し、`保存済み`、`変更あり`、`保存中`、`保存失敗`をTextと形状で示す。
+- 保存失敗時は入力を保持して再試行でき、UI Mock専用の`次の保存を失敗させる`操作で状態を再現できる。
+- 未保存変更がある内部遷移では破棄確認Dialogを表示し、取消時は起点LinkへFocusを戻す。
+- 保存はBrowser Memory内だけで完結し、外部送信・永続化しない。
+- Traceability: FR-002, FR-003, NFR-PRIV-001, NFR-SEC-004, AC-002
+
+### UIR-HISTORY-001: Historical record and latest recalculation
+
+- 履歴を新しい順に表示し、検索日時、入力条件、当時の合成計算結果、計算時点、根拠確認時点、結果件数、比較対象を確認できる。
+- `検索のみ`と`比較あり`をText、形状、Iconで区別し、条件詳細はKeyboard操作可能な開閉Panelとする。
+- 現在情報による再検索・比較再表示ではSearch画面に履歴起点の通知を表示し、当時の合成記録を上書きまたは最新結果として表示しない。
+- Traceability: FR-011, AC-022
+
+### UIR-HISTORY-002: History deletion and recovery
+
+- 履歴単体削除は確認Dialogを経て対象だけを削除し、取消時は起点へFocusを戻す。
+- 削除中、成功、失敗、再試行、全件削除後のEmpty状態をTextと形状で示す。
+- 検索・比較履歴はAccountが有効な間、利用者が削除するまで保持する要件を表示する。
+- Traceability: FR-011, FR-025, NFR-PRIV-004, AC-004
+
+### UIR-DATA-001: Data inventory and deletion scope
+
+- データ管理には検索・比較履歴の一括削除とAccount削除だけを表示し、履歴件数と削除対象を確認できる。
+- 履歴一括削除はProfileとAccountへ影響させず、履歴PanelのEmpty状態へ即時反映する。
+- 削除操作の完了直後から利用不能、通常領域24時間以内、Backup 30日以内という期限を示す。
+- Traceability: FR-025, NFR-PRIV-003, NFR-PRIV-004, AC-004
+
+### UIR-DATA-002: Account deletion and retention exceptions
+
+- Account削除は影響範囲確認、確認文字列`削除する`、最終確認Dialogの三段階とする。
+- 仮名化不正防止情報90日、個人との直接紐付けを外したModeration・通報処理Metadata 3年という保持対象・理由・期間を示す。
+- 削除中、失敗、再試行、完了を支援技術へ通知し、完了後はReview用の合成初期状態復帰だけを提供する。
+- Traceability: FR-025, NFR-PRIV-003, AC-004
+
 ## Responsive and accessibility
 
 ### UIR-A11Y-001: Required behavior
@@ -283,7 +342,6 @@ Last updated: 2026-08-11
 ## Open UI requirements
 
 - 記事一覧の分類・Filterと、用途別記事／単一カード特集の視覚的区別
-- Account・Profile・履歴Flowの詳細
 - 運営画面のIAと主要Flow
 - RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
 - RQ-017の変更確認中表示は、Heroの全体Iconに加え、影響する個別Rule/effectのIconへ限定して示し、影響外のClaimへ伝播させない。

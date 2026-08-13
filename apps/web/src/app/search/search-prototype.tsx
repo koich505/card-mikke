@@ -8,12 +8,16 @@ import {
   featuredServiceLabel,
   withPrototypeScenario,
 } from "@/features/card-detail/prototype-scenario";
+import {
+  prototypeCategories,
+  prototypeCategoryIdByLabel,
+  prototypeCategoryMarkByLabel,
+  type PrototypeCategoryLabel,
+} from "@/features/search/prototype-condition-options";
 import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
 import { featuredCards } from "@/fixtures/home";
-import type {
-  PrototypeCategoryId,
-  PrototypeSearchScenario,
-} from "@/types/card-detail-prototype";
+import type { PrototypeSearchScenario } from "@/types/card-detail-prototype";
+import type { PrototypeCardId } from "@/types/ui-prototype";
 import styles from "./search.module.css";
 
 const spendOptions = [
@@ -70,59 +74,28 @@ const profiles = [
   },
 ] as const;
 
-const categories = [
-  "コンビニ",
-  "スーパー",
-  "ドラッグストア",
-  "飲食店",
-  "ガソリン",
-  "公共料金",
-  "携帯電話",
-  "交通",
-  "旅行・宿泊",
-  "ネット通販",
-  "その他",
-] as const;
+const categories = prototypeCategories.map((category) => category.label);
 
-type Category = (typeof categories)[number];
+type Category = PrototypeCategoryLabel;
 type ProfileId = (typeof profiles)[number]["id"];
 type SpendPeriod = "monthly" | "annual";
 type View = "search" | "results" | "compare";
 
 const yen = new Intl.NumberFormat("ja-JP");
 
-const categoryMarks: Record<Category, string> = {
-  コンビニ: "24",
-  スーパー: "食",
-  ドラッグストア: "+",
-  飲食店: "皿",
-  ガソリン: "G",
-  公共料金: "光",
-  携帯電話: "TEL",
-  交通: "IC",
-  "旅行・宿泊": "旅",
-  ネット通販: "WEB",
-  その他: "他",
-};
-
-const categoryIdByLabel: Record<Category, PrototypeCategoryId> = {
-  コンビニ: "convenience",
-  スーパー: "supermarket",
-  ドラッグストア: "drugstore",
-  飲食店: "restaurant",
-  ガソリン: "gas",
-  公共料金: "utilities",
-  携帯電話: "mobile",
-  交通: "transit",
-  "旅行・宿泊": "travel",
-  ネット通販: "online",
-  その他: "other",
-};
+const categoryMarks = prototypeCategoryMarkByLabel;
+const categoryIdByLabel = prototypeCategoryIdByLabel;
 
 export default function SearchPrototype({
   initialScenario,
+  initialView,
+  initialCompareIds,
+  initialFromHistory,
 }: {
   initialScenario: PrototypeSearchScenario | null;
+  initialView: "results" | "compare";
+  initialCompareIds: PrototypeCardId[];
+  initialFromHistory: boolean;
 }) {
   const initialCategories: Category[] = initialScenario
     ? categories.filter(
@@ -138,7 +111,7 @@ export default function SearchPrototype({
         ]),
       )
     : { コンビニ: 120_000, スーパー: 360_000 };
-  const [view, setView] = useState<View>(initialScenario ? "results" : "search");
+  const [view, setView] = useState<View>(initialScenario ? initialView : "search");
   const [annualSpend, setAnnualSpend] = useState<number | null>(
     initialScenario?.annualSpend ?? null,
   );
@@ -166,7 +139,7 @@ export default function SearchPrototype({
       : {},
   );
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
-  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareIds, setCompareIds] = useState<PrototypeCardId[]>(initialCompareIds);
 
   const detailedAnnualSpend = annualSpend ?? 0;
   const periodMultiplier = spendPeriod === "monthly" ? 12 : 1;
@@ -258,7 +231,7 @@ export default function SearchPrototype({
     }
   }
 
-  function toggleCompare(id: string) {
+  function toggleCompare(id: PrototypeCardId) {
     setCompareIds((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
@@ -289,6 +262,17 @@ export default function SearchPrototype({
       <SiteHeader currentPage="search" />
 
       <main id="search-main">
+        {initialFromHistory && view !== "search" && (
+          <div className={styles.historyLaunchNotice} role="status">
+            <span aria-hidden="true">履</span>
+            <div>
+              <strong>履歴の条件を現在のカード情報で再計算しています</strong>
+              <p>
+                ここに表示する金額は当時の合成記録ではなく、現在のUIモック情報による結果です。
+              </p>
+            </div>
+          </div>
+        )}
         {view === "search" && (
           <>
             <section className={styles.hero} aria-labelledby="hero-title">
