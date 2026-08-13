@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SiteHeader from "@/app/components/site-header";
 import {
   calculatePrototypeCard,
@@ -80,8 +80,10 @@ type Category = PrototypeCategoryLabel;
 type ProfileId = (typeof profiles)[number]["id"];
 type SpendPeriod = "monthly" | "annual";
 type View = "search" | "results" | "compare";
+type SaveState = "idle" | "saving" | "saved" | "failed";
 
 const yen = new Intl.NumberFormat("ja-JP");
+const summaryMaxLength = 50;
 
 const categoryMarks = prototypeCategoryMarkByLabel;
 const categoryIdByLabel = prototypeCategoryIdByLabel;
@@ -140,6 +142,18 @@ export default function SearchPrototype({
   );
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
   const [compareIds, setCompareIds] = useState<PrototypeCardId[]>(initialCompareIds);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [saveSummary, setSaveSummary] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [savedSummary, setSavedSummary] = useState("");
+  const [failNextSave, setFailNextSave] = useState(false);
+  const saveTriggerRef = useRef<HTMLButtonElement>(null);
+  const saveInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (saveDialogOpen) saveInputRef.current?.focus();
+  }, [saveDialogOpen]);
 
   const detailedAnnualSpend = annualSpend ?? 0;
   const periodMultiplier = spendPeriod === "monthly" ? 12 : 1;
@@ -251,6 +265,51 @@ export default function SearchPrototype({
   function returnToSearch() {
     setView("search");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function openSaveDialog() {
+    setSaveError("");
+    setSaveState("idle");
+    setSaveDialogOpen(true);
+  }
+
+  function closeSaveDialog() {
+    if (saveState === "saving") return;
+    setSaveDialogOpen(false);
+    window.setTimeout(() => saveTriggerRef.current?.focus(), 0);
+  }
+
+  function saveSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalizedSummary = saveSummary.trim();
+    if (!normalizedSummary) {
+      setSaveError("概要を入力してください。空白だけでは保存できません。");
+      saveInputRef.current?.focus();
+      return;
+    }
+    if (saveSummary.length > summaryMaxLength) {
+      setSaveError(`概要は${summaryMaxLength}文字以内で入力してください。`);
+      saveInputRef.current?.focus();
+      return;
+    }
+
+    setSaveError("");
+    setSaveState("saving");
+    window.setTimeout(() => {
+      if (failNextSave) {
+        setFailNextSave(false);
+        setSaveState("failed");
+        setSaveError(
+          "UIモックの保存に失敗しました。入力内容を保持しているため、もう一度保存できます。",
+        );
+        saveInputRef.current?.focus();
+        return;
+      }
+      setSavedSummary(normalizedSummary);
+      setSaveState("saved");
+      setSaveDialogOpen(false);
+      window.setTimeout(() => saveTriggerRef.current?.focus(), 0);
+    }, 450);
   }
 
   return (
@@ -671,6 +730,19 @@ export default function SearchPrototype({
               </div>
             </div>
 
+            {saveState === "saved" && savedSummary && (
+              <div className={styles.saveSuccess} role="status">
+                <span aria-hidden="true">✓</span>
+                <div>
+                  <strong>「{savedSummary}」を保存しました</strong>
+                  <p>
+                    UIモックのBrowser
+                    Memory内だけに保存しています。再読み込みすると初期状態へ戻ります。
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className={styles.resultsToolbar}>
               <p>
                 <strong>{rankedCards.length}</strong>件の候補
@@ -683,6 +755,14 @@ export default function SearchPrototype({
                 />
                 年会費無料だけ表示
               </label>
+              <button
+                ref={saveTriggerRef}
+                type="button"
+                className={styles.saveSearchButton}
+                onClick={openSaveDialog}
+              >
+                {saveState === "saved" ? "別の概要で保存" : "検索条件を保存"}
+              </button>
               <button type="button" onClick={returnToSearch}>
                 ← 条件を変更する
               </button>
@@ -868,6 +948,113 @@ export default function SearchPrototype({
           >
             比較する →
           </button>
+        </div>
+      )}
+
+      {saveDialogOpen && (
+        <div className={styles.dialogBackdrop}>
+          <section
+            className={styles.saveDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="save-dialog-title"
+            aria-describedby="save-dialog-description"
+            onKeyDown={(event) => {
+              if (event.key === "Escape") closeSaveDialog();
+            }}
+          >
+            <div className={styles.dialogHeading}>
+              <span aria-hidden="true">保</span>
+              <div>
+                <p>SAVE SEARCH</p>
+                <h2 id="save-dialog-title">検索条件を保存</h2>
+              </div>
+            </div>
+            <p id="save-dialog-description" className={styles.dialogDescription}>
+              後から見つけやすい概要を入力してください。検索条件と現在の合成結果をまとめて保存します。
+            </p>
+            <form onSubmit={saveSearch} noValidate>
+              <label htmlFor="search-summary">
+                概要 <span>必須</span>
+              </label>
+              <input
+                ref={saveInputRef}
+                id="search-summary"
+                type="text"
+                value={saveSummary}
+                aria-invalid={saveError ? "true" : undefined}
+                aria-describedby={saveError ? "save-summary-error" : "summary-count"}
+                placeholder="例：日常の買い物用に比較"
+                disabled={saveState === "saving"}
+                onChange={(event) => {
+                  setSaveSummary(event.target.value);
+                  if (saveError) setSaveError("");
+                  if (saveState === "failed") setSaveState("idle");
+                }}
+              />
+              <div className={styles.summaryMeta}>
+                <small>同じ概要でも保存できます（UIモック暫定）。</small>
+                <span
+                  id="summary-count"
+                  className={
+                    saveSummary.length > summaryMaxLength ? styles.countError : ""
+                  }
+                >
+                  {saveSummary.length}／{summaryMaxLength}文字
+                </span>
+              </div>
+              {saveError && (
+                <p id="save-summary-error" className={styles.saveError} role="alert">
+                  {saveError}
+                </p>
+              )}
+              <div className={styles.savePreview} aria-label="保存する内容">
+                <div>
+                  <span>年間利用額</span>
+                  <strong>{yen.format(annualSpend ?? detailedAnnualSpend)}円</strong>
+                </div>
+                <div>
+                  <span>検索条件</span>
+                  <strong>
+                    {profile === "custom"
+                      ? `${selectedCategories.length}カテゴリを詳細入力`
+                      : (selectedProfile?.badge ?? "かんたん検索")}
+                  </strong>
+                </div>
+                <div>
+                  <span>現在の結果</span>
+                  <strong>{rankedCards.length}件</strong>
+                </div>
+              </div>
+              <label className={styles.mockFailureToggle}>
+                <input
+                  type="checkbox"
+                  checked={failNextSave}
+                  disabled={saveState === "saving"}
+                  onChange={(event) => setFailNextSave(event.target.checked)}
+                />
+                <span>
+                  次の保存を失敗させる <small>UIモック確認用</small>
+                </span>
+              </label>
+              <div className={styles.dialogActions}>
+                <button
+                  type="button"
+                  disabled={saveState === "saving"}
+                  onClick={closeSaveDialog}
+                >
+                  キャンセル
+                </button>
+                <button type="submit" disabled={saveState === "saving"}>
+                  {saveState === "saving"
+                    ? "保存中…"
+                    : saveState === "failed"
+                      ? "もう一度保存"
+                      : "この内容で保存"}
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
       )}
     </div>

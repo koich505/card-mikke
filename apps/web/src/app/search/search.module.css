@@ -1389,6 +1389,256 @@
   cursor: pointer;
 }
 
+.resultsToolbar .saveSearchButton {
+  border-color: var(--navy);
+  color: white;
+  background: var(--navy);
+}
+
+.saveSuccess {
+  margin-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid #89b9a0;
+  border-radius: 16px;
+  color: #153e2b;
+  background: #effaf3;
+}
+
+.saveSuccess > span {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: white;
+  background: #257347;
+  font-weight: 1000;
+}
+
+.saveSuccess strong {
+  overflow-wrap: anywhere;
+}
+
+.saveSuccess p {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.dialogBackdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 1rem;
+  background: rgb(8 27 54 / 72%);
+}
+
+.saveDialog {
+  width: min(580px, 100%);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  padding: clamp(1.2rem, 4vw, 2rem);
+  border: 3px solid var(--navy);
+  border-radius: 24px;
+  color: var(--navy);
+  background: white;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 32%);
+}
+
+.dialogHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.dialogHeading > span {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: white;
+  background: var(--navy);
+  font-weight: 1000;
+}
+
+.dialogHeading p {
+  color: #9b1f36;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+}
+
+.dialogHeading h2 {
+  font-size: 1.65rem;
+}
+
+.dialogDescription {
+  margin-top: 1rem;
+  color: #596579;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.saveDialog form {
+  margin-top: 1.2rem;
+}
+
+.saveDialog form > label:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.saveDialog form > label:first-child span {
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  color: white;
+  background: #9b1f36;
+  font-size: 0.58rem;
+}
+
+.saveDialog input[type="text"] {
+  width: 100%;
+  margin-top: 0.45rem;
+  padding: 0.85rem 0.9rem;
+  border: 2px solid #aeb8c7;
+  border-radius: 12px;
+  color: var(--navy);
+  background: white;
+  font: inherit;
+  font-weight: 800;
+}
+
+.saveDialog input[type="text"]:focus {
+  border-color: var(--navy);
+  outline: 3px solid #ffe878;
+  outline-offset: 2px;
+}
+
+.saveDialog input[aria-invalid="true"] {
+  border-color: #b63148;
+}
+
+.summaryMeta {
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #687386;
+  font-size: 0.68rem;
+}
+
+.summaryMeta .countError {
+  color: #a41f36;
+  font-weight: 1000;
+}
+
+.saveError {
+  margin-top: 0.65rem;
+  padding: 0.7rem 0.8rem;
+  border-left: 4px solid #b63148;
+  border-radius: 8px;
+  color: #7d1728;
+  background: #fff0f2;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.savePreview {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid #d9dee7;
+  border-radius: 14px;
+  background: #f5f7fa;
+}
+
+.savePreview div {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+}
+
+.savePreview div + div {
+  border-left: 1px solid #d9dee7;
+}
+
+.savePreview span {
+  color: #566174;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.savePreview strong {
+  overflow-wrap: anywhere;
+  font-size: 0.76rem;
+}
+
+.mockFailureToggle {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px dashed #aeb8c7;
+  border-radius: 12px;
+  background: #fffdf5;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.mockFailureToggle input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--navy);
+}
+
+.mockFailureToggle small {
+  margin-left: 0.3rem;
+  color: #7b6730;
+}
+
+.dialogActions {
+  margin-top: 1.2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.dialogActions button {
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  color: var(--navy);
+  background: white;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.dialogActions button:last-child {
+  color: white;
+  background: var(--navy);
+}
+
+.dialogActions button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
 .resultCard {
   margin-bottom: 1rem;
   display: grid;
@@ -2089,6 +2339,38 @@
 
   .resultsToolbar button {
     margin-left: auto;
+  }
+
+  .resultsToolbar .saveSearchButton {
+    margin-left: 0;
+  }
+
+  .saveDialog {
+    padding: 1.1rem;
+    border-radius: 18px;
+  }
+
+  .summaryMeta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .savePreview {
+    grid-template-columns: 1fr;
+  }
+
+  .savePreview div + div {
+    border-top: 1px solid #d9dee7;
+    border-left: 0;
+  }
+
+  .dialogActions {
+    flex-direction: column-reverse;
+  }
+
+  .dialogActions button {
+    width: 100%;
   }
 
   .resultCard {
