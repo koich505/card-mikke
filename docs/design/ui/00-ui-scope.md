@@ -1,8 +1,8 @@
 # UI Scope
 
 Status: Account history / data management v0.4 implemented; human UI approval pending
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-12
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
+Last updated: 2026-08-13
 
 ## Purpose
 
@@ -28,6 +28,7 @@ Last updated: 2026-08-12
 - カード詳細、Evidence、確認日、適用期間、Disclosure Status
 - お気に入りの一時保存・Account保存の区別
 - 用途別記事と単一カード特集記事
+- 特集記事一覧、フリーワード検索、複数タグ（すべて含む）・記事種別による絞り込み、新着／更新順、0件と更新確認中
 - 広告・Affiliate関係と申込前の公式確認
 - Login不要の誤情報指摘Form
 - Loading、Empty、Error、Partial等の一般画面状態

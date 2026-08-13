@@ -1,8 +1,8 @@
 # Screen Inventory
 
-Status: Card detail v0.2 and Profile v0.3 implemented; human approvals tracked separately
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-12
+Status: Article list v0.6 implemented in UI-only mode; human UI approval pending
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
+Last updated: 2026-08-13
 
 ## Inventory policy
 
@@ -19,7 +19,7 @@ Last updated: 2026-08-12
 | SCR-PUB-003 | 検索結果 | 順位、算定状態、Filterを確認し比較候補を選び、概要を付けて明示保存する | Primary mock extended in v0.5 | FR-005, FR-006, FR-011, FR-013, FR-014, FR-023, NFR-SEC-004, AC-007, AC-009–AC-011, AC-022 |
 | SCR-PUB-004 | カード比較 | 最大5枚を同一条件で比較する | Primary mock | FR-016, FR-029, AC-012 |
 | SCR-PUB-005 | カード詳細 | 券面、費用、還元、Campaign、年間利用特典、追加Card、Benefit、Insurance、Review、Evidence、確認日、申込前確認を理解する | Primary mock implemented in v0.2 | FR-017–FR-020, FR-035, AC-014, AC-015 |
-| SCR-PUB-006 | 記事一覧 | 用途別記事と単一カード特集を探す | Supporting mock | FR-007, FR-031 |
+| SCR-PUB-006 | 記事一覧 | 公開済み記事をフリーワード、複数タグ（すべて含む）、記事種別、新着／更新順で探し、更新確認中の旧記事を識別する | Primary mock implemented in v0.6 | FR-007, FR-031, FR-041, AC-043 |
 | SCR-PUB-007 | 用途別記事 | 対象読者、選定理由、候補、根拠を理解する | Supporting mock | FR-007–FR-009, FR-019, AC-015, AC-016 |
 | SCR-PUB-008 | 単一カード特集 | 特徴、変更点、条件、確認時点、Sourceを理解する | Supporting mock | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |
 | SCR-PUB-009 | お気に入り | 一時お気に入りとAccount保存を区別して候補へ戻る | Supporting mock | FR-030, AC-013 |
@@ -70,7 +70,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 |---|---|
 | Default | 全Primary mock画面 |
 | Loading | SCR-PUB-003、SCR-PUB-004、SCR-PUB-005 |
-| Empty | SCR-PUB-003、SCR-PUB-009、記事一覧 |
+| Empty | SCR-PUB-003、SCR-PUB-006、SCR-PUB-009 |
 | Validation Error | SCR-PUB-002、SCR-PUB-011 |
 | Recoverable Error / Retry | SCR-PUB-003、SCR-PUB-005 |
 | Partial result | SCR-PUB-003、SCR-PUB-004 |
@@ -84,7 +84,6 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 
 ## Current open screen decisions
 
-- 記事一覧で用途別記事と単一カード特集をどう分類するか
 - Accountの履歴・データ管理画面と運営画面の詳細IA・優先Flow
 
 ## Approved comparison screen decisions

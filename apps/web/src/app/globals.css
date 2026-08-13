@@ -109,6 +109,23 @@ a {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.65rem 1rem;
+  border: 3px solid var(--color-navy);
+  border-radius: var(--radius-sm);
+  color: white;
+  background: var(--color-navy);
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 ::selection {
   color: var(--color-ink);
   background: var(--color-yellow);

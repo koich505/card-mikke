@@ -4,7 +4,7 @@ Status: Approved
 Approved at: 2026-08-13
 Approver: Product owner
 Approval statement: 「OKです。この内容で承認します」
-Approved change: 検索・比較を自動履歴化せず、結果から明示保存し、利用者が概要を入力する要件改定
+Approved change: 公開済み特集記事のフリーワード検索、タグ・記事種別による絞り込み、新着順・更新順、更新確認中表示の要件追加
 
 ## Gate Decision
 
@@ -13,12 +13,12 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 - Previous decision: Passed（2026-08-11 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass
-- Current Requirements Review: `docs/reviews/requirements/requirements-review-010.md` — Pass after fix and re-review
+- Current Requirements Review: `docs/reviews/requirements/requirements-review-011-article-list.md` — Pass with tracked Open Question
 - Security-relevant change review: `docs/reviews/requirements/requirements-review-005.md`–`requirements-review-007.md` — NFR-SEC-008およびAC-016 / AC-032を含めPass
 - Baseline Security Review: `docs/reviews/requirements/requirements-security-review-002.md` — Pass
 - Current review Critical findings: 0
 - Current review Major findings: 0
-- Current review Blocking open questions: 0
+- Current review Blocking open questions: 0（RQ-043はArchitecture Planning前のBlocking事項）
 
 ## Previous Approved Baseline (stale)
 
@@ -48,9 +48,9 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 | `05-open-questions.md` | `507e2233f8e2d09ab5f07ae0f6a3c74d5c3bfd50d6f51b81bb14be9479c7e5a3` |
 | `06-traceability.md` | `741b41fbc8abbc1305dbe9043cdd83dfb738da2934ce618da2ffbfd4665bdd13` |
 
-## Current Product-owner-approved Baseline
+## Previous Product-owner-approved Baseline (stale)
 
-以下は2026-08-13にProduct ownerが承認し、Requirements Review 010を通過した、検索・比較の明示保存要件改定後のBaselineである。
+以下は2026-08-13にProduct ownerが承認し、Requirements Review 010を通過した、検索・比較の明示保存要件改定後のBaselineである。今回の特集記事一覧要件追加によりstaleである。
 
 | Document | SHA-256 |
 |---|---|
@@ -62,10 +62,24 @@ Approved change: 検索・比較を自動履歴化せず、結果から明示保
 | `05-open-questions.md` | `1abec757272bb8e8bb6bb1b6ac97b0fc600be8e87d15f5e07806c5f2a31f56e2` |
 | `06-traceability.md` | `425570ee5ed1c6f781037233de3bc4c39197f838b718064e3550d7e02d77a926` |
 
+## Current Product-owner-approved Baseline
+
+以下は2026-08-13にProduct ownerが「OKです。その内容で実装」と明示し、Requirements Review 011でCritical／Major 0件を確認した、特集記事一覧要件追加後のBaselineである。
+
+| Document | SHA-256 |
+|---|---|
+| `00-scope.md` | `e50500cd7169cbafb9292ad39779d5faa3a96adaea0de1e12654411654660cc1` |
+| `01-users-and-goals.md` | `0536fb9e76cf042ca98932c9599a4dd7ca001fe4916ae6bd07e79dbb27d22ec5` |
+| `02-functional-requirements.md` | `163ecc8b972ed38d4652785837ead94f6f6d4631aae00023a19caef3472f8a33` |
+| `03-non-functional-requirements.md` | `51bccc78cc4736bc3d577a973b961d0b181291b5b827d4baf51f9bd121bb241a` |
+| `04-acceptance-criteria.md` | `a01ab201a9155cc3d6880fd17ecd850e314cc5bddbff43fd264fa00f7fb0a83a` |
+| `05-open-questions.md` | `76542795df20ee615462abf6e6fe681708eae05cb440b6bfb9835c014c7a5280` |
+| `06-traceability.md` | `e099bbb1342a130369799d37b8303989a0a7205df60c6037803390d745f8ddd1` |
+
 ## Carry-over Conditions
 
 - `05-open-questions.md`に記録した非Blocking事項は、各Owner、期限、解決Gateに従って扱う。
 - RQ-013はUI Mock開始前に確認する。
 - Requirements変更時は影響範囲を再レビューし、承認Baselineを更新する。
 - 本承認はUI Mock Approval、Final Scope Approval、Planning Approvalまたは実装開始承認を兼ねない。
-- 2026-08-13の明示保存要件改定はProduct owner承認済みであり、Requirements Review 010でCritical／Major 0件を確認した上記hashをGate 1の現行Baselineとして扱う。
+- 2026-08-13の特集記事一覧要件追加はProduct owner承認済みであり、Requirements Review 011でCritical／Major 0件を確認した上記hashをGate 1の現行Baselineとして扱う。

@@ -189,7 +189,7 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
               <Link href="/">トップ</Link>
             </li>
             <li>
-              <Link href="/#articles">特集記事</Link>
+              <Link href="/articles">特集記事</Link>
             </li>
             <li aria-current="page">{article.title}</li>
           </ol>
@@ -205,6 +205,13 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
               <p className={styles.audience}>{article.audience}</p>
               <h1>{article.title}</h1>
               <p className={styles.description}>{article.description}</p>
+              {article.publicationState === "change-under-review" ? (
+                <p className={styles.reviewNotice} role="note">
+                  更新確認中：これは公開済みの旧記事です。最終確認日{" "}
+                  {article.confirmedOn}
+                  。申込前には公式情報を確認してください。
+                </p>
+              ) : null}
             </div>
             <div
               className={styles.visual}

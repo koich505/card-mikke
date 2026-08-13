@@ -213,6 +213,7 @@ export default function Home() {
               <h2 id="articles-title">おすすめ特集記事</h2>
               <span>カード選びのポイントを、やさしく整理しました。</span>
             </div>
+            <Link href="/articles">すべての記事を見る →</Link>
           </div>
           <div className={styles.articleGrid}>
             {recommendedArticles.map((article, index) => (

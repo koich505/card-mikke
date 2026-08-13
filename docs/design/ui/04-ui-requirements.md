@@ -1,8 +1,8 @@
 # UI Requirements
 
 Status: Card detail v0.2 and Profile v0.3 implemented; human approvals tracked separately
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
-Last updated: 2026-08-12
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
+Last updated: 2026-08-13
 
 ## Purpose and boundary
 
@@ -170,6 +170,26 @@ Last updated: 2026-08-12
 - 初年度と通常年、算定完全・不完全・変更確認中を混同しない。
 - 算定内訳とEvidenceはPage内で開閉し、重要な状態、確認日、注意事項を閉じた領域へ隠さない。
 - Traceability: FR-016, FR-029, AC-012
+
+## Article list
+
+### UIR-ARTICLE-LIST-001: Article discovery and conditions
+
+- `特集記事`Navigationとホームの`すべての記事を見る`から記事一覧へ到達できる。
+- フリーワードはタイトル、要約、タグ、対象カード名を対象とし、記事本文全体を検索対象であるかのように表示しない。
+- 記事種別は用途・読者像別、二軸比較、単一カード特集を選択できる。
+- タグは複数選択でき、選択したすべてを含む記事に絞り込むことを説明する。
+- 新着順は公開日、更新順は公開版の更新日を基準に表示し、最終確認日と混同しない。
+- 件数、適用中条件、全解除を確認できる。0件時に条件を自動で緩和せず、条件変更または全解除を選べる。
+- Traceability: FR-041, AC-043
+
+### UIR-ARTICLE-LIST-002: Card, update status and accessibility
+
+- 記事Cardは記事種別、対象読者、要約、タグ、公開日、更新日、最終確認日と記事詳細へのLinkを示す。
+- 更新確認中は、公開済み旧記事であることと、申込前の公式情報確認を明示する。新着・確定更新と同じ表現にしない。
+- 記事一覧の検索語、Filter変更、結果件数、0件は支援技術へ通知する。タグ、記事種別、並び順、全解除はKeyboardだけで操作できる。
+- DesktopではCard Grid、Mobileでは1列で表示し、Filter操作や重要な状態を横ScrollやHoverへ依存させない。
+- Traceability: FR-031, FR-041, NFR-A11Y-001, AC-043
 
 ## Card detail and trust
 
@@ -352,8 +372,6 @@ Last updated: 2026-08-12
 - Traceability: NFR-COMPAT-001, AC-039
 
 ## Open UI requirements
-
-- 記事一覧の分類・Filterと、用途別記事／単一カード特集の視覚的区別
 - 運営画面のIAと主要Flow
 - RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
 - RQ-017の変更確認中表示は、Heroの全体Iconに加え、影響する個別Rule/effectのIconへ限定して示し、影響外のClaimへ伝播させない。
