@@ -279,11 +279,11 @@ Last updated: 2026-08-13
 
 - Classification: Required
 - Requirement: 利用者Review、平均星評価および件数を、公式商品情報、年間正味還元額、検索順位および運営記事の選定判断と区別する。
-- Requirement: ReviewのModeration方針、禁止内容、承認・却下、編集・削除の扱いを利用者が確認できるようにする。
-- Verification: Review集計値が年間正味還元額・検索順位・記事順位へ入力されず、公開Reviewが承認済みであることを確認する。
+- Requirement: ReviewのModeration方針、禁止内容、自動判定の公開／非公開、編集・削除の扱いを利用者が確認できるようにする。
+- Verification: Review集計値が年間正味還元額・検索順位・記事順位へ入力されず、公開Reviewが自動判定で公開可となったものであることを確認する。
 - Requirement: 公開後通報の理由と処理結果を記録し、通報者の情報を投稿者または一般利用者へ開示しない。
 - Requirement: 通報件数だけで自動非公開にせず、受付後3営業日以内の確認着手を努力目標とする。
-- Requirement: 再申請されない却下Review Draftは30日後に削除する。
+- Requirement: 修正・再投稿されない確認が必要な非公開Review Draftは30日後に削除する。
 
 ## Maintainability
 

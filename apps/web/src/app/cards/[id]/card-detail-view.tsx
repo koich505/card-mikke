@@ -18,6 +18,14 @@ import type {
 import AffiliateButton from "./affiliate-button";
 import styles from "./card-detail.module.css";
 
+const reviewMessageLimit = 1000;
+const reportReasons = ["不適切", "虚偽", "個人情報", "Spam", "その他"] as const;
+
+type DraftReview = {
+  rating: number;
+  body: string;
+};
+
 type Props = {
   detail: PrototypeCardDetailViewModel;
   scenario: PrototypeSearchScenario;
@@ -203,7 +211,19 @@ export default function CardDetailView({
   const [draftServices, setDraftServices] = useState<
     NonNullable<PrototypeSearchScenario["serviceByCategory"]>
   >(scenario.serviceByCategory ?? {});
+  const [isReviewPrototypeLoggedIn, setIsReviewPrototypeLoggedIn] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewBody, setReviewBody] = useState("");
+  const [ownReview, setOwnReview] = useState<DraftReview | null>(null);
+  const [isEditingReview, setIsEditingReview] = useState(false);
+  const [reviewError, setReviewError] = useState("");
   const [reviewMessage, setReviewMessage] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reportingReviewId, setReportingReviewId] = useState<string | null>(null);
+  const [reportReason, setReportReason] =
+    useState<(typeof reportReasons)[number]>("不適切");
+  const [reportDescription, setReportDescription] = useState("");
+  const [reportMessage, setReportMessage] = useState("");
   const [calculationMessage, setCalculationMessage] = useState("");
   const totalSpendRef = useRef<HTMLInputElement>(null);
   const galleryId = useId();
@@ -306,6 +326,56 @@ export default function CardDetailView({
     setDraftServices(scenario.serviceByCategory ?? {});
     setDraftPeriod("annual");
     setIsScenarioEditorOpen(false);
+  }
+
+  function submitReview(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const body = reviewBody.trim();
+    if (!reviewRating) {
+      setReviewError("評価を1〜5から選択してください。");
+      return;
+    }
+    if (!body) {
+      setReviewError("レビュー本文を入力してください。");
+      return;
+    }
+    if (body.length > reviewMessageLimit) {
+      setReviewError(`レビュー本文は${reviewMessageLimit}文字以内で入力してください。`);
+      return;
+    }
+    setOwnReview({ rating: reviewRating, body });
+    setIsEditingReview(false);
+    setReviewError("");
+    setReviewMessage("レビューを投稿しました。");
+  }
+
+  function beginReviewEdit() {
+    if (!ownReview) return;
+    setReviewRating(ownReview.rating);
+    setReviewBody(ownReview.body);
+    setIsEditingReview(true);
+    setReviewError("");
+    setReviewMessage("");
+  }
+
+  function deleteOwnReview() {
+    setOwnReview(null);
+    setReviewRating(0);
+    setReviewBody("");
+    setIsEditingReview(false);
+    setDeleteDialogOpen(false);
+    setReviewMessage(
+      "レビューを非公開にしました。UIモックのため、削除はこの画面内だけに反映されます。",
+    );
+  }
+
+  function submitReport(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setReportingReviewId(null);
+    setReportDescription("");
+    setReportMessage(
+      `通報を受け付けました（理由：${reportReason}）。内容は公開されず、運営が確認します。`,
+    );
   }
 
   return (
@@ -1498,24 +1568,217 @@ export default function CardDetailView({
                 </div>
                 <h3>{review.title}</h3>
                 <p>{review.body}</p>
-                <small>{review.profile}・ログインユーザーの投稿・公開承認済み</small>
+                <small>{review.profile}・ログインユーザーの投稿</small>
+                <button
+                  type="button"
+                  className={styles.reviewReportButton}
+                  onClick={() => {
+                    setReportingReviewId(review.id);
+                    setReportMessage("");
+                  }}
+                >
+                  このレビューを通報
+                </button>
               </article>
             ))}
+          </div>
+          <div className={styles.reviewComposer} aria-labelledby="review-post-title">
+            <div className={styles.reviewComposerHeader}>
+              <div>
+                <span>POST A REVIEW</span>
+                <h3 id="review-post-title">レビューを投稿</h3>
+              </div>
+              <small>UIモック専用・送信や保存は行いません</small>
+            </div>
+
+            <fieldset className={styles.reviewPrototypeSwitch}>
+              <legend>確認用の状態切替</legend>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isReviewPrototypeLoggedIn}
+                  onChange={(event) =>
+                    setIsReviewPrototypeLoggedIn(event.target.checked)
+                  }
+                />
+                ログイン済みとして確認する
+              </label>
+            </fieldset>
+
+            {!isReviewPrototypeLoggedIn ? (
+              <div className={styles.reviewLoginNotice}>
+                <strong>レビュー投稿にはログインが必要です</strong>
+                <p>
+                  ログイン機能は未実装のため、上の確認用切替で投稿フォームを確認できます。
+                </p>
+                <button type="button">ログインしてレビューを投稿</button>
+              </div>
+            ) : (
+              <>
+                {ownReview && !isEditingReview ? (
+                  <div className={styles.ownReview}>
+                    <div>
+                      <strong>あなたのレビュー</strong>
+                      <span>投稿済み</span>
+                    </div>
+                    <Stars rating={ownReview.rating} />
+                    <p>{ownReview.body}</p>
+                    <div className={styles.ownReviewActions}>
+                      <button type="button" onClick={beginReviewEdit}>
+                        編集して再投稿
+                      </button>
+                      <button type="button" onClick={() => setDeleteDialogOpen(true)}>
+                        削除する
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form
+                    className={styles.reviewForm}
+                    onSubmit={submitReview}
+                    noValidate
+                  >
+                    <fieldset>
+                      <legend>評価（必須）</legend>
+                      <div className={styles.reviewRatingInput}>
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <label key={rating}>
+                            <input
+                              type="radio"
+                              name="review-rating"
+                              value={rating}
+                              checked={reviewRating === rating}
+                              onChange={() => setReviewRating(rating)}
+                            />
+                            <span aria-hidden="true">★</span>
+                            <span>{rating}点</span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                    <label htmlFor="review-body">レビュー本文（必須）</label>
+                    <textarea
+                      id="review-body"
+                      value={reviewBody}
+                      maxLength={reviewMessageLimit + 1}
+                      onChange={(event) => setReviewBody(event.target.value)}
+                      aria-describedby="review-body-count review-form-help"
+                    />
+                    <div className={styles.reviewFormMeta}>
+                      <small id="review-form-help">
+                        レビューは掲載方針に沿って投稿してください。個人情報は入力しないでください。
+                      </small>
+                      <small id="review-body-count" aria-live="polite">
+                        {reviewBody.length} / {reviewMessageLimit}文字
+                      </small>
+                    </div>
+                    {reviewError && (
+                      <p className={styles.formError} role="alert">
+                        {reviewError}
+                      </p>
+                    )}
+                    <div className={styles.reviewFormActions}>
+                      {isEditingReview && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsEditingReview(false);
+                            setReviewError("");
+                          }}
+                        >
+                          編集をやめる
+                        </button>
+                      )}
+                      <button type="submit">
+                        {isEditingReview ? "更新する" : "投稿する"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+                {reviewMessage && (
+                  <p className={styles.reviewStatus} role="status">
+                    {reviewMessage}
+                  </p>
+                )}
+              </>
+            )}
           </div>
           <div className={styles.reviewPolicy}>
             <strong>レビュー掲載方針</strong>
             <p>{detail.reviews.moderationPolicy}</p>
             <small>収集期間：{detail.reviews.collectionPeriod}</small>
-            <button
-              type="button"
-              onClick={() =>
-                setReviewMessage("投稿・通報はUIモックです。送信・保存は行いません。")
-              }
-            >
-              ログインして投稿・通報を確認
-            </button>
-            {reviewMessage && <p role="status">{reviewMessage}</p>}
           </div>
+
+          {reportingReviewId && (
+            <div className={styles.reviewDialogBackdrop} role="presentation">
+              <form
+                className={styles.reviewDialog}
+                onSubmit={submitReport}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="report-dialog-title"
+              >
+                <h3 id="report-dialog-title">レビューを通報</h3>
+                <p>通報内容と通報者情報は公開されません。</p>
+                <label>
+                  理由
+                  <select
+                    value={reportReason}
+                    onChange={(event) =>
+                      setReportReason(
+                        event.target.value as (typeof reportReasons)[number],
+                      )
+                    }
+                  >
+                    {reportReasons.map((reason) => (
+                      <option value={reason} key={reason}>
+                        {reason}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label htmlFor="report-description">説明（任意）</label>
+                <textarea
+                  id="report-description"
+                  value={reportDescription}
+                  maxLength={reviewMessageLimit}
+                  onChange={(event) => setReportDescription(event.target.value)}
+                />
+                <div className={styles.reviewDialogActions}>
+                  <button type="button" onClick={() => setReportingReviewId(null)}>
+                    キャンセル
+                  </button>
+                  <button type="submit">通報を送信</button>
+                </div>
+              </form>
+            </div>
+          )}
+          {reportMessage && (
+            <p className={styles.reviewStatus} role="status">
+              {reportMessage}
+            </p>
+          )}
+          {deleteDialogOpen && (
+            <div className={styles.reviewDialogBackdrop} role="presentation">
+              <div
+                className={styles.reviewDialog}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="delete-dialog-title"
+              >
+                <h3 id="delete-dialog-title">レビューを削除しますか？</h3>
+                <p>削除すると、レビューは直ちに非公開になります。</p>
+                <div className={styles.reviewDialogActions}>
+                  <button type="button" onClick={() => setDeleteDialogOpen(false)}>
+                    キャンセル
+                  </button>
+                  <button type="button" onClick={deleteOwnReview}>
+                    削除して非公開にする
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
         <section

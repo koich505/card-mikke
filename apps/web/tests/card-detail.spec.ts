@@ -90,6 +90,62 @@ test.describe("カード詳細UIモック", () => {
     );
   });
 
+  test("レビュー投稿はLogin状態、入力Validation、編集・削除を確認できる", async ({
+    page,
+  }) => {
+    await page.goto("/cards/everyday-plus");
+    await page.getByRole("tab", { name: "レビュー" }).click();
+    await expect(page.getByText("レビュー投稿にはログインが必要です")).toBeVisible();
+
+    await page.getByLabel("ログイン済みとして確認する").check();
+    await page.getByRole("button", { name: "投稿する" }).click();
+    await expect(
+      page.getByText("評価を1〜5から選択してください。", { exact: true }),
+    ).toBeVisible();
+
+    await page.getByRole("radio", { name: "5点", exact: true }).check();
+    await page.getByLabel("レビュー本文（必須）").fill("a".repeat(1001));
+    await page.getByRole("button", { name: "投稿する" }).click();
+    await expect(
+      page.getByText("レビュー本文は1000文字以内で入力してください。", { exact: true }),
+    ).toBeVisible();
+
+    await page
+      .getByLabel("レビュー本文（必須）")
+      .fill("還元条件を確認してから使うと分かりやすいです。");
+    await page.getByRole("button", { name: "投稿する" }).click();
+    await expect(page.getByText("あなたのレビュー")).toBeVisible();
+    await expect(
+      page.getByText("レビューを投稿しました。", { exact: true }),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "編集して再投稿" }).click();
+    await page.getByRole("button", { name: "更新する" }).click();
+    await expect(page.getByText("投稿済み")).toBeVisible();
+
+    await page.getByRole("button", { name: "削除する" }).click();
+    await expect(
+      page.getByRole("dialog", { name: "レビューを削除しますか？" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "削除して非公開にする" }).click();
+    await expect(page.getByText(/レビューを非公開にしました/)).toBeVisible();
+  });
+
+  test("公開レビューを通報して受付完了を確認できる", async ({ page }) => {
+    await page.goto("/cards/everyday-plus");
+    await page.getByRole("tab", { name: "レビュー" }).click();
+    await page.getByRole("button", { name: "このレビューを通報" }).first().click();
+    const dialog = page.getByRole("dialog", { name: "レビューを通報" });
+    await dialog.getByLabel("理由").selectOption("個人情報");
+    await dialog
+      .getByLabel("説明（任意）")
+      .fill("公開情報に見えない個人情報が含まれます。");
+    await dialog.getByRole("button", { name: "通報を送信" }).click();
+    await expect(
+      page.getByText(/通報を受け付けました（理由：個人情報）/),
+    ).toBeVisible();
+  });
+
   test("Not FoundとMobile overflowを確認する", async ({ page }) => {
     await page.goto("/cards/not-a-card");
     await expect(

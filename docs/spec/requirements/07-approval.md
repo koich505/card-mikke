@@ -1,15 +1,17 @@
 # Requirements Approval
 
-Status: Approved
+Status: Approval update required
 Approved at: 2026-08-13
 Approver: Product owner
 Approval statement: 「OKです。この内容で承認します」
 Approved change: 検索・比較を自動履歴化せず、結果から明示保存し、利用者が概要を入力する要件改定
 
+Pending approval update: 2026-08-13のReview公開ポリシー改定（自動Content判定で公開可なら自動公開、確認が必要なら非公開で修正・再投稿）により、下記の承認Baselineはstaleである。Requirements ReviewおよびProduct ownerの再承認まで、新しいBaselineは記録しない。
+
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
-- Current decision: Passed
+- Current decision: Re-review and Product-owner approval required
 - Previous decision: Passed（2026-08-11 baseline。今回の変更によりstale）
 - Independent Requirements Review: `docs/reviews/requirements/requirements-review-008.md` — Pass after fix and re-review
 - Current Domain-alignment Review: `docs/reviews/requirements/requirements-review-009.md` — Pass

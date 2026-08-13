@@ -496,8 +496,7 @@ const everyday: PrototypeCardDetailViewModel = {
     total: 25,
     distributions: [48, 32, 16, 4, 0],
     collectionPeriod: "2026-05-01〜2026-08-10（合成）",
-    moderationPolicy:
-      "AI検査後に運営者が確認・承認した合成レビューだけを表示しています。",
+    moderationPolicy: "掲載方針に沿って確認した合成レビューだけを表示しています。",
     reviews: [
       {
         id: "everyday-review-1",
@@ -910,7 +909,7 @@ const travel: PrototypeCardDetailViewModel = {
     total: 10,
     distributions: [30, 45, 20, 5, 0],
     collectionPeriod: "2026-06-01〜2026-08-10（合成）",
-    moderationPolicy: "ログインユーザーの投稿を運営者が確認した合成例です。",
+    moderationPolicy: "ログインユーザーの投稿を確認した合成例です。",
     reviews: [
       {
         id: "travel-review-1",
@@ -1187,7 +1186,7 @@ const smart: PrototypeCardDetailViewModel = {
     total: 0,
     distributions: [0, 0, 0, 0, 0],
     collectionPeriod: "2026-08-01〜2026-08-09（合成）",
-    moderationPolicy: "公開承認済みレビューが1件以上になるまで平均点を表示しません。",
+    moderationPolicy: "掲載できるレビューが1件以上になるまで平均点を表示しません。",
     reviews: [],
   },
   evidence: [

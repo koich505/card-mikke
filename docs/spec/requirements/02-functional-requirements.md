@@ -46,7 +46,7 @@ Last updated: 2026-08-13
 - Constraint: 通常の利用領域から24時間以内、Backupから30日以内に削除する。
 - Constraint: 法令、Securityまたは不正防止上の保持例外がある場合は、対象、理由および保持期間を利用者へ明示する。
 - Expected behavior: 削除処理の失敗を検知し、期限内の完了に向けて再試行または運営者へ通知する。
-- Expected behavior: Account削除時は、本人の公開Reviewと却下Review Draftを即時非公開にし、通常領域から24時間以内、Backupから30日以内に削除し、平均評価と件数を再計算する。
+- Expected behavior: Account削除時は、本人の公開Reviewと確認が必要な非公開Review Draftを即時非公開にし、通常領域から24時間以内、Backupから30日以内に削除し、平均評価と件数を再計算する。
 - Expected behavior: 本人が行ったReview通報は、Accountとの直接紐付けを削除する。不正防止に必要な最小限の仮名化識別情報、通報回数、制限理由、日時は目的を限定して90日間保持し、その後削除する。
 - Expected behavior: Moderation、承認、通報処理の監査metadataは個人との直接紐付けを削除し、Account削除後3年間保持して期限後に削除する。
 - Constraint: 仮名化した不正防止情報を一般分析、広告、Profile復元または公開表示に使用しない。
@@ -415,18 +415,18 @@ Last updated: 2026-08-13
 - Need: 実際の利用者の評価や体験を、カード選びの補助情報として提供する。
 - Expected behavior: Login中の利用者は、対象カードに対して1〜5の星評価とMessageを含むReviewを投稿できる。
 - Constraint: 同一利用者が同一カードへ保持できるReviewは1件とし、再度投稿する場合は既存Reviewの編集として扱う。
-- Expected behavior: 投稿者は自身のReviewを編集・削除できる。削除操作後は即時非公開とし、通常領域から24時間以内、Backupから30日以内に削除する。
+- Expected behavior: 投稿者は自身のReviewを編集・削除できる。投稿・編集時には自動Content判定を再実行するが、判定の有無、方式、結果または理由カテゴリを投稿者へ表示しない。削除操作後は即時非公開とし、通常領域から24時間以内、Backupから30日以内に削除する。
 - Constraint: 未登録または未Loginの利用者はReviewを投稿できない。
+- Constraint: Review本文は1,000文字以内とし、空白だけの投稿や上限超過の投稿を受け付けない。
 - Constraint: Reviewは公式商品情報、年間正味還元額または運営者の記事とは区別して扱い、利用者投稿であることを明示する。
 
 ### FR-037: Reviewの検査・承認・集計
 
 - Priority: Required
-- Need: 不適切なUGCや不正評価を公開せず、利用者評価を公式情報と混同しない形で提供する。
-- Expected behavior: 投稿・編集されたReviewは未公開状態とし、AI支援により不適切表現、個人情報、Spamその他の確認候補を検出する。
-- Expected behavior: 運営者はReview本文、AI検査結果、投稿・編集時点を確認し、必要に応じて却下理由を記録したうえで承認または却下できる。
-- Expected behavior: 却下されたReviewは投稿者が修正して再申請できる。再申請されない却下Draftは却下から30日後に削除する。
-- Constraint: AI検査結果だけでReviewを自動公開しない。運営者が明示承認したReviewだけを公開する。
+- Need: 不適切なUGCや不正評価を自動判定し、利用者評価を公式情報と混同しない形で提供する。
+- Expected behavior: 投稿・編集されたReviewは、AI支援により不適切表現、個人情報、Spamその他の確認候補を判定する。公開可と判定されたReviewは自動公開し、確認が必要と判定されたReviewは非公開にする。
+- Expected behavior: 確認が必要と判定されたReviewは非公開にし、投稿者は通常の編集操作で本文を更新できる。
+- Constraint: 確認が必要と判定されたReviewを自動公開しない。判定方式、モデル、閾値および運営画面はArchitectureとfeature planningで決定する。
 - Expected behavior: 公開Reviewが1件以上ある場合は平均星評価と公開件数を表示し、0件の場合は平均値を表示しない。
 - Constraint: Reviewの星評価、件数または本文を、年間正味還元額による検索順位または運営記事のおすすめ選定・順位へ影響させない。
 
@@ -435,6 +435,7 @@ Last updated: 2026-08-13
 - Priority: Required
 - Need: 公開後に判明した不適切・虚偽・個人情報・Spam等のReviewを運営者が再確認できるようにする。
 - Expected behavior: Login利用者は、公開Reviewについて不適切、虚偽、個人情報、Spamその他の理由を選択し、必要に応じて説明を添えて通報できる。
+- Expected behavior: 通報者には受付完了と運営確認予定だけを表示し、通報内容、通報者情報および判断結果は一般利用者へ公開しない。
 - Expected behavior: 運営者は通報、対象Review、理由、通報時点を確認し、Reviewの掲載継続、一時非公開または削除を判断できる。
 - Expected behavior: 通報受付後3営業日以内に運営者が確認へ着手することを努力目標とする。
 - Constraint: 通報があったことだけを理由にReview内容を虚偽と確定しない。

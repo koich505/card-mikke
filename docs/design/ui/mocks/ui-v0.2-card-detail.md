@@ -1,12 +1,12 @@
 # UI Mock v0.2 — Card detail
 
-Status: In progress; human UI Mock Approval pending
+Status: In progress; review投稿・通報フロー追加後のhuman UI Mock Approval pending
 
 Created: 2026-08-11
 
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
 
-UI code baseline: Card detail scope manifest hash `4c56fa5d4affe35ac9b99003d61e132cfbb392122ef43d90100ec8d840c94725`（Card detail、共有Scenario、条件引継ぎ対象Search／Header、Fixture／型、Test／設定だけを対象）
+UI code baseline: Card detail scope manifest hash `c230984525f878079363a8fea001770306d199e2f149663ed2fa897f4427ae00`（Card detail、共有Scenario、条件引継ぎ対象Search／Header、Fixture／型、Test／設定だけを対象）
 
 ## Purpose
 
@@ -34,7 +34,7 @@ Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜011、U
 6. 年会費・手数料・家族Card・ETC Card。
 7. 非金銭Benefit、Lounge、Insurance Product／Coverage。
 8. 申込条件、受付Route、決済、Security。
-9. Reviewと掲載方針。
+9. 公開Review、ログイン状態別の投稿Form、自分のReview編集・削除、通報Form、掲載方針。
 10. 情報の根拠、確認日、適用期間、確認状態、関連Card。
 
 重要な年会費、還元、申込状態、確認日、注意事項はHeroへ常時表示する。詳細情報は1つのTab Panelだけを表示し、選択したTabに応じて内容を切り替える。各Panel内の補足条件だけを`details`で開閉する。審査難易度・通過予測は表示しない。
@@ -54,7 +54,10 @@ Traceability: SCR-PUB-002、SCR-PUB-003、SCR-PUB-005、UIR-DETAIL-001〜011、U
 - 券面は前後Button、Thumbnail、Keyboardで選択し、自動再生しない。
 - HeroのCampaignは複数件を横スライドで1件ずつ表示し、前後Button、Indicator、左右Swipeで選択する。自動再生しない。
 - CSS合成券面、架空名称、合成Fixtureだけを使用する。
-- 申込CTA、Review投稿・通報は説明Statusを表示するだけで、外部遷移・送信・保存しない。
+- Review投稿・編集・削除・通報はBrowser Memory内の合成状態だけを更新する。認証、Content判定、外部送信、永続化は実装しない。
+- Review投稿は未Login案内、Login済みForm、評価1〜5、必須本文、1,000文字上限、自分の投稿の編集・削除を確認できる。Content判定の有無や結果は利用者に表示しない。
+- 公開Reviewの通報は理由選択と任意説明を受け付け、受付完了と運営確認予定だけを表示する。通報内容・通報者情報・判断結果を公開しない。
+- 申込CTAは説明Statusを表示するだけで、外部遷移・送信・保存しない。
 - 詳細内のカスタム試算もBrowser Memory内だけで完結し、プロフィール更新や永続化を行わない。
 - DB、API、認証、Analytics、外部通信、本番Business Logicは実装していない。
 
@@ -75,6 +78,7 @@ Source manifest hash再現Command: `{ printf '%s\n' apps/web/package.json apps/w
 | Search Query restore / result-to-detail / related Card | Pass |
 | Invalid Query fallback | Pass |
 | Loading / Campaign Empty / Review 0 / Partial / Under review / Not Found | Pass |
+| Review投稿（未Login／Login済み）、入力Validation、編集・削除、通報受付 | Pass |
 | Slideshow Pointer / Keyboard / current position / accessible name | Pass |
 | Desktop 1440×1000 | Pass |
 | Mobile 390×844 | Pass |
@@ -97,6 +101,7 @@ Repository全体のSecret scanは今回の差分に含まれない既存Research
 - Point Program、Campaign、年間利用特典、Benefit、Insuranceの違いを理解できるか。
 - Mobileで券面から主要情報へ進む長さと情報密度が適切か。
 - 未確認、変更確認中、合成Fixtureの表現が十分に目立つか。
+- Review投稿・編集・削除・通報受付の区別が理解でき、UI-onlyのログイン状態切替を本番機能と誤認しないか。
 
 ## Approval boundary
 
