@@ -1,6 +1,6 @@
 # Screen Inventory
 
-Status: Article list v0.6 implemented in UI-only mode; human UI approval pending
+Status: Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
 Last updated: 2026-08-13
 
@@ -38,18 +38,23 @@ Last updated: 2026-08-13
 
 ## Operations screens
 
-Requirementsに運営者向けUIを含むためInventoryから除外しない。ただし、最初の公開主要Flowとは分離し、詳細IAとUser Flowは別のUI対話で決める。
+Requirementsに運営者向けUIを含むためInventoryから除外しない。v0.3では認証とSource差分の主要FlowをPrimary mockとし、その他の運営業務は後続Mockとする。
 
 | ID | Screen | Purpose | Mock priority | Primary traceability |
 |---|---|---|---|---|
-| SCR-OPS-001 | 運営Dashboard | 未承認Draft、確認中、失敗、訂正等の状態を把握する | Inventory only | FR-009, FR-022, FR-026, FR-033–FR-039 |
-| SCR-OPS-002 | カード情報差分確認 | 前回承認値、候補、Evidence、影響を項目単位で確認する | Inventory only | FR-022, FR-033, FR-034 |
-| SCR-OPS-003 | カード情報編集・承認 | 編集と承認を別操作として実行する | Inventory only | FR-022, FR-032 |
+| SCR-OPS-001 | 運営Dashboard | 未承認Draft、確認中、失敗、訂正等の状態を把握する | Primary mock v0.3 | FR-009, FR-022, FR-026, FR-033–FR-039 |
+| SCR-OPS-013 | 公式Source差分一覧 | Source変更Revisionと対象カードごとに未処理・処理中・完了・確認不能を検索、絞り込みする | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
+| SCR-OPS-002 | カード情報差分の確認・編集 | 前回値、候補、Evidenceを確認し、同一画面で編集・Draft保存・判断確定する | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
+| SCR-OPS-003 | カード情報編集・承認 | SCR-OPS-002へ統合 | Integrated into SCR-OPS-002 | FR-022, FR-032 |
 | SCR-OPS-004 | 券面画像確認・承認 | Source、条件、代替Text、履歴、状態を確認する | Inventory only | FR-035, AC-027 |
 | SCR-OPS-005 | 記事Draft編集・承認 | AI Draftを確認・編集し、人間承認後だけ公開する | Inventory only | FR-008, FR-009, FR-031 |
 | SCR-OPS-006 | Review Moderation | Review本文、AI検査、状態を確認し承認・却下する | Inventory only | FR-036, FR-037, AC-028, AC-029 |
 | SCR-OPS-007 | 誤情報指摘管理 | 指摘、公式Source、状態、判断理由を管理する | Inventory only | FR-026, AC-023 |
 | SCR-OPS-008 | 業務情報管理 | カテゴリ、企業Service、換算基準、Campaign等を管理する | Inventory only | FR-032, AC-018 |
+| SCR-OPS-009 | 管理者Login | 専用AccountとPasswordによる一次認証を確認する | Primary mock v0.3 | NFR-SEC-001, NFR-SEC-003, AC-040 |
+| SCR-OPS-010 | 管理者MFA | 一次認証と異なる要素による確認を行う | Primary mock v0.3 | NFR-SEC-001, NFR-SEC-003, AC-040 |
+| SCR-OPS-011 | MFA回復手続き | 本人確認、認証要素変更、監査、通知の境界を理解する | Supporting mock v0.3 | NFR-SEC-001, AC-040 |
+| SCR-OPS-012 | 管理者Session管理 | Sessionを確認し個別・一括失効する | Primary mock v0.3 | NFR-SEC-003, AC-040 |
 
 ## Overlays and persistent UI
 
@@ -63,6 +68,8 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | OVL-006 | Clear Comparison Confirmation | 比較候補の全解除を確認する | Primary mock |
 | OVL-007 | Save / Account Prompt | 一時操作とAccount保存の違いを説明する | Supporting mock |
 | OVL-008 | 検索条件保存Dialog | 概要、保存対象、Validation、保存中・失敗・再試行を確認する | Primary mock implemented in v0.5 |
+| OVL-OPS-001 | Mobile Operations Navigation | 管理画面の開閉式Side Navigationを操作する | Primary mock v0.3 |
+| OVL-OPS-002 | 管理者再認証 | 承認・却下・Session失効前にPasswordとMFAを再確認する | Primary mock v0.3 |
 
 ## Required state coverage
 
@@ -81,10 +88,15 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | Section saving / saved | SCR-ACC-002 |
 | Recoverable save error / retry | SCR-ACC-002 |
 | Unsaved changes / leave confirmation | SCR-ACC-002 |
+| Operations Loading / Empty / Error | SCR-OPS-001、SCR-OPS-013 |
+| Operations Partial / impact unknown | SCR-OPS-002 |
+| Session expired | SCR-OPS-001〜003、SCR-OPS-012 |
+| Claim diff 5 states | SCR-OPS-002 |
 
 ## Current open screen decisions
 
-- Accountの履歴・データ管理画面と運営画面の詳細IA・優先Flow
+- 記事一覧で用途別記事と単一カード特集をどう分類するか
+- 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 
 ## Approved comparison screen decisions
 

@@ -1,6 +1,6 @@
 # UI Scope
 
-Status: Account history / data management v0.4 implemented; human UI approval pending
+Status: Account history / data management v0.4 and Operations v0.3 implemented; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
 Last updated: 2026-08-13
 
@@ -14,6 +14,7 @@ Last updated: 2026-08-13
 - U-002: 利用状況に基づく年間正味還元額と条件を比較する。
 - U-003: 用途別記事から候補と選定理由を理解する。
 - U-004: 単一カード特集記事から特徴、変更点、条件、根拠を理解する。
+- U-OPS-001: 専用・非共有Accountを使う単一管理者Roleの運営者が、Source差分とEvidenceを確認し、未確認情報を確定させずにclaim判断を記録する。
 
 ## UI validation scope
 
@@ -33,6 +34,9 @@ Last updated: 2026-08-13
 - Login不要の誤情報指摘Form
 - Loading、Empty、Error、Partial等の一般画面状態
 - Desktop / Mobile、Keyboard、Focus、Semantic HTML、WCAG 2.2 AA目標
+- 運営者のLogin、MFA、Session確認・失効、および高Risk操作前の再認証
+- 運営Dashboardから、公式Source差分をclaim単位で確認・編集・承認する主要業務Flow
+- AI・Source・利用者入力を未信頼Dataとして扱い、承認前Draftと公開済み情報を分離する表示
 
 ## Out of scope for UI-only mode
 
@@ -41,6 +45,19 @@ Last updated: 2026-08-13
 - 外部送信、メール送信、Analytics、永続化、外部Content埋込
 - Hosting、Infrastructure、本番Data Contract
 - 実在する個人情報、Credential、Secretを含むFixture
+- 本人確認を保証する本番認証、実際の管理権限、監査Log永続化、公開反映
+
+## Operations UI v0.3 decisions
+
+- 管理画面は公開画面と同じDesign Tokenを使用するが、白・Neutral・Navy中心の業務優先表現とする。
+- Desktopは固定Sidebar、Mobileは開閉式の非モーダルSide Navigationとする。
+- v0.3の主要Flowは`Login → MFA → Dashboard → Source差分 → claim判断 → Draft保存 → 影響確認 → 再認証 → 承認`とする。
+- 初期Releaseの単一管理者Roleを前提とするが、一般利用者Accountとは分離し、共有Accountとして表現しない。
+- PasswordとMFAは合成入力だけを受け付け、外部通信・保存・本人確認を行わない。
+- 編集と承認は別操作として扱い、合成監査Timelineへ別時刻で表示する。
+- `追加・変更・削除候補・抽出不能`はclaimごとの判断を要求し、すべて`変更なし`の場合だけ一括確認を許可する。
+- 却下は候補を確定Factへ昇格しない判断であり、前回承認値の扱いを`根拠付き維持・変更確認中・利用除外・再収集`から別途選ぶ。
+- 影響範囲不明、一部抽出失敗、Revision競合では判断確定へ進めず、Draft保存後に再収集・再確認へ戻す。
 
 ## Adopted UI-stage decisions
 
