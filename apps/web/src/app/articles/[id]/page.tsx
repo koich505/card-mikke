@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/app/components/site-header";
 import { featureArticles, findFeatureArticle } from "@/fixtures/articles";
+import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards } from "@/fixtures/home";
 import type { PrototypeFeatureArticle } from "@/types/article-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
@@ -424,6 +425,23 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
               UI-only Mock —
               掲載内容はすべて合成データです。広告・Affiliate報酬の有無や金額は、記事の選定理由・比較順・配置に影響しません。
             </p>
+            <div className={styles.reportPrompt}>
+              <div>
+                <strong>記事の内容に誤りや変更がありますか？</strong>
+                <p>
+                  この記事と「記事情報と注意事項」を対象にしてお知らせいただけます。
+                </p>
+              </div>
+              <Link
+                href={correctionReportHref(
+                  "article",
+                  article.slug,
+                  "記事情報と注意事項",
+                )}
+              >
+                この情報の誤りを指摘する
+              </Link>
+            </div>
           </footer>
         </article>
       </main>
@@ -437,6 +455,7 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
           <Link href="/">トップページ</Link>
           <Link href="/search">カードを探す</Link>
           <Link href="/#articles">特集記事</Link>
+          <Link href={correctionReportHref("article", article.slug)}>誤情報を指摘</Link>
         </nav>
       </footer>
     </div>

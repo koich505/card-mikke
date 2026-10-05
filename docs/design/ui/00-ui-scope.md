@@ -1,8 +1,8 @@
 # UI Scope
 
-Status: Comparison v0.7, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
-Last updated: 2026-10-05
+Status: Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
+Last updated: 2026-10-06
 
 ## Purpose
 
@@ -106,6 +106,8 @@ Last updated: 2026-10-05
 
 - Login不要とし、連絡先メールアドレスは任意とする。
 - 対象カード・記事・掲載項目、指摘内容、利用者が把握している根拠を必須とする。
+- カード詳細は「情報の根拠」末尾、記事は「記事情報と注意事項」直後に文脈付き入口を置き、公開画面Footerにも現在画面を対象とする補助入口を置く。
+- 掲載項目100文字、指摘内容1,000文字、根拠1,000文字、メールアドレス254文字を上限とする。
 - 送信後は画面上に受付完了と合成受付番号を表示する。
 - メール未入力時は個別回答や追加確認ができないことを表示する。
 - メール入力時は確認結果または追加確認の連絡にのみ使用する。

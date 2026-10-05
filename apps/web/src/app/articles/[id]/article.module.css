@@ -667,6 +667,30 @@
   margin: 0.6rem 0;
   padding-left: 1.2rem;
 }
+
+.reportPrompt {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ccd5e1;
+}
+
+.reportPrompt p {
+  margin-top: 0.2rem;
+}
+
+.reportPrompt a {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.8rem;
+  border: 2px solid #09254c;
+  border-radius: 999px;
+  color: white;
+  background: #09254c;
+  font-weight: 900;
+}
 .siteFooter {
   width: min(1160px, calc(100% - 3rem));
   margin: 5rem auto 0;
@@ -773,6 +797,15 @@
   }
 }
 @media (max-width: 600px) {
+  .reportPrompt {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reportPrompt a {
+    text-align: center;
+  }
+
   .breadcrumbs,
   .hero,
   .contentLayout,

@@ -9,6 +9,7 @@ import {
   withPrototypeScenario,
 } from "@/features/card-detail/prototype-scenario";
 import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
+import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards } from "@/fixtures/home";
 import type { PrototypeCardId } from "@/types/ui-prototype";
 import CardDetailView from "./card-detail-view";
@@ -100,6 +101,7 @@ export default async function CardDetailPage({
           <Link href="/">トップページ</Link>
           <Link href={searchHref}>カードを探す</Link>
           <Link href="/#trust">掲載方針</Link>
+          <Link href={correctionReportHref("card", detail.id)}>誤情報を指摘</Link>
         </nav>
       </footer>
     </div>

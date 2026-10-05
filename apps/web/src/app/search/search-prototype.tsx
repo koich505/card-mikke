@@ -16,6 +16,7 @@ import {
 } from "@/features/search/prototype-condition-options";
 import { buildPrototypeComparisonCards } from "@/features/search/comparison-prototype";
 import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
+import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards, prototypeSearchCards } from "@/fixtures/home";
 import type { PrototypeSearchScenario } from "@/types/card-detail-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
@@ -918,7 +919,7 @@ export default function SearchPrototype({
           <Link href="/">トップページ</Link>
           <Link href="/#trust">掲載範囲</Link>
           <Link href="/#trust">広告方針</Link>
-          <button type="button">誤情報を指摘</button>
+          <Link href={correctionReportHref("page", "search")}>誤情報を指摘</Link>
         </nav>
       </footer>
 

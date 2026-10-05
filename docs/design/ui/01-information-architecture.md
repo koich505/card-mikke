@@ -1,9 +1,9 @@
 # Information Architecture
 
-Status: Approved direction; details under UI dialogue  
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-11 Approved）
+Status: Approved direction; correction report v0.6 implemented; details under UI dialogue
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved baseline; RQ-037 disposition pending baseline reapproval）
 Decision date: 2026-08-10
-Last updated: 2026-08-12
+Last updated: 2026-10-06
 
 ## IA principles
 
@@ -28,6 +28,7 @@ Last updated: 2026-08-12
 | 記事 | 用途別または単一カード特集から候補と根拠を知る | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |
 | お気に入り | 検討中の候補へ戻り、一時保存とAccount保存を区別する | FR-030, AC-013 |
 | 掲載範囲・サイト方針 | Coverage、算定方法、広告・Affiliate、情報更新方針を確認する | FR-019, FR-027, AC-015, AC-019, AC-038 |
+| 誤情報指摘 | 閲覧中のカード・記事・公開ページを対象に、Loginなしで誤りや変更を知らせる | FR-026, NFR-SEC-004, AC-023 |
 | Account | Profileと明示的に保存した検索・比較を継続利用する | FR-001–FR-003, FR-011, FR-025 |
 | 運営管理 | Source差分、Evidence、未承認Draftを確認し、明示承認後だけ公開反映可能な状態へ進める | FR-021, FR-022, FR-032–FR-034, NFR-SEC-001, NFR-SEC-003, AC-017, AC-018, AC-025, AC-026, AC-040 |
 
@@ -67,6 +68,7 @@ Last updated: 2026-08-12
 - Primary navigation: `カードを探す`、`比較`、`記事`
 - Utility navigation: `お気に入り`、`掲載範囲・サイト方針`、`Account`
 - Headerからキーワード検索へ到達可能にする。
+- 公開画面Footerから、現在画面を対象とする誤情報指摘Formへ到達可能にする。
 - 比較候補がある場合、比較件数をTextと数字で示す。Colorだけに依存しない。
 
 ### Mobile
@@ -106,9 +108,18 @@ Last updated: 2026-08-12
     └── 単一カード特集
         └── カード詳細
 
+カード詳細「情報の根拠」
+    └── 誤情報指摘Form
+        └── 誤情報指摘受付完了
+
+記事「記事情報と注意事項」
+    └── 誤情報指摘Form
+        └── 誤情報指摘受付完了
+
 共通入口
 ├── お気に入り
 ├── 掲載範囲・サイト方針
+├── 公開画面Footerの誤情報指摘
 └── Account
     ├── Profile
     └── 検索・比較履歴
@@ -163,6 +174,7 @@ Last updated: 2026-08-12
 - Discovery: 用途別記事、単一カード特集記事
 - Return visit: お気に入り、Accountの履歴
 - Direct information: カード詳細
+- Correction: カード詳細のEvidence、記事の注意事項、公開画面Footer
 
 すべての入口は、必要に応じて同じ検索条件・比較Contextへ合流できるようにする。ただしUI Mockの暫定View Modelを本番Data Contractとして確定しない。
 

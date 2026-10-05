@@ -2213,6 +2213,37 @@
   font-weight: 900;
 }
 
+.reportPrompt {
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.15rem;
+  border: 2px solid #efb3bf;
+  border-radius: 16px;
+  background: #fff1f4;
+}
+
+.reportPrompt p {
+  margin-top: 0.3rem;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.reportPrompt a {
+  flex: 0 0 auto;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  color: white;
+  background: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
 .relatedSection {
   margin: 1.5rem 0 3rem;
   padding: 1.4rem;
@@ -2484,6 +2515,15 @@
 }
 
 @media (max-width: 520px) {
+  .reportPrompt {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reportPrompt a {
+    text-align: center;
+  }
+
   .breadcrumbs {
     width: calc(100% - 1rem);
   }

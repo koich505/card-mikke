@@ -1035,13 +1035,14 @@
   font-weight: 800;
 }
 
-.footer button {
+.footer nav a:last-child {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid #8fa2bd;
   border-radius: 999px;
   padding: 0.5rem 0.7rem;
   color: white;
   background: transparent;
-  cursor: pointer;
 }
 
 @media (max-width: 980px) {

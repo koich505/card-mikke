@@ -9,6 +9,7 @@ import {
   prototypeCategories,
   withPrototypeScenario,
 } from "@/features/card-detail/prototype-scenario";
+import { correctionReportHref } from "@/fixtures/correction-report";
 import type {
   PrototypeCardCalculation,
   PrototypeCardDetailViewModel,
@@ -1828,6 +1829,21 @@ export default function CardDetailView({
               </article>
             ))}
           </div>
+          <aside className={styles.reportPrompt} aria-labelledby="report-prompt-title">
+            <div>
+              <strong id="report-prompt-title">
+                掲載情報に誤りや変更がありますか？
+              </strong>
+              <p>
+                このカードと「情報の根拠・確認状態」を対象にして、ログインせずにお知らせいただけます。
+              </p>
+            </div>
+            <Link
+              href={correctionReportHref("card", detail.id, "情報の根拠・確認状態")}
+            >
+              この情報の誤りを指摘する
+            </Link>
+          </aside>
         </section>
 
         <section className={styles.relatedSection} aria-labelledby="related-title">

@@ -1,8 +1,8 @@
 # Screen Inventory
 
-Status: Comparison v0.7, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
-Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
-Last updated: 2026-10-05
+Status: Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
+Last updated: 2026-10-06
 
 ## Inventory policy
 
@@ -24,8 +24,8 @@ Last updated: 2026-10-05
 | SCR-PUB-008 | 単一カード特集 | 特徴、変更点、条件、確認時点、Sourceを理解する | Supporting mock | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |
 | SCR-PUB-009 | お気に入り | 一時お気に入りとAccount保存を区別して候補へ戻る | Supporting mock | FR-030, AC-013 |
 | SCR-PUB-010 | 掲載範囲・サイト方針 | Coverage、算定方法、更新、広告・Affiliate方針を確認する | Supporting mock | FR-019, FR-027, AC-015, AC-019, AC-038 |
-| SCR-PUB-011 | 誤情報指摘Form | Loginなしで対象と根拠を安全に送信するUIを検証する | Supporting mock | FR-026, NFR-SEC-004, AC-023 |
-| SCR-PUB-012 | 誤情報指摘受付完了 | 合成受付番号と連絡条件を確認する | Supporting mock | FR-026, AC-023 |
+| SCR-PUB-011 | 誤情報指摘Form | Loginなしで対象と根拠を安全に送信するUIを検証する | Supporting mock implemented in v0.6 | FR-026, NFR-SEC-004, AC-023 |
+| SCR-PUB-012 | 誤情報指摘受付完了 | 合成受付番号と連絡条件を確認する | Supporting mock implemented in v0.6 | FR-026, AC-023 |
 
 ## Account screens
 
@@ -79,6 +79,9 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | Loading | SCR-PUB-003、SCR-PUB-004、SCR-PUB-005 |
 | Empty | SCR-PUB-003、SCR-PUB-006、SCR-PUB-009 |
 | Validation Error | SCR-PUB-002、SCR-PUB-011 |
+| Invalid target | SCR-PUB-011 |
+| Submission pending | SCR-PUB-011 |
+| Receipt complete | SCR-PUB-012 |
 | Recoverable Error / Retry | SCR-PUB-003、SCR-PUB-005 |
 | Partial result | SCR-PUB-003、SCR-PUB-004 |
 | Complete calculation | SCR-PUB-003〜SCR-PUB-005 |

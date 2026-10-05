@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteHeader from "@/app/components/site-header";
+import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards, newsItems, recommendedArticles } from "@/fixtures/home";
 import styles from "./page.module.css";
 
@@ -281,7 +282,7 @@ export default function Home() {
         <nav aria-label="フッターナビゲーション">
           <a href="#trust">掲載範囲</a>
           <a href="#trust">広告方針</a>
-          <button type="button">誤情報を指摘</button>
+          <Link href={correctionReportHref("page", "home")}>誤情報を指摘</Link>
         </nav>
       </footer>
     </div>

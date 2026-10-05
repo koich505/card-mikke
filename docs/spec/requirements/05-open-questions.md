@@ -1,7 +1,7 @@
 # Requirements Open Questions
 
 Status: Approved
-Last updated: 2026-08-13
+Last updated: 2026-08-14
 
 | ID | Question | Why unresolved | Impact | Decision owner | Needed by | Blocking Requirements | Recommended action |
 |---|---|---|---|---|---|---|---|
@@ -12,13 +12,18 @@ Last updated: 2026-08-13
 | RQ-034 | 追加Filter・Sortを初期Releaseへ含めるか | 必須項目以外は未決 | Scope、UI | Product owner | UI Mock開始前 | No | UI Mockで候補を評価 |
 | RQ-035 | 変更なしSourceの定期再確認周期と確認完了期限は何か | 日次差分検知と着手期限のみ決定済み | 情報鮮度、運用負荷 | Product owner / Operations owner | Architecture Planning前 | No | 規模・費用測定後に承認 |
 | RQ-036 | Source消失時に抜粋・hash等を追加保持するか | metadata保持は決定済みだが追加証跡は未決 | 過去Fact説明責任、権利 | Product owner / Legal reviewer | Architecture Planning前 | No | 現行OQ-15と権利確認後に決定 |
-| RQ-037 | 誤情報指摘Formの連絡先・受付確認・回答期限をどうするか | Login不要の処理Flowのみ決定済み | 対応状況確認、Privacy | Product owner | UI Mock開始前 | No | 任意連絡先と受付確認方法を決定 |
 | RQ-038 | 券面画像の形式・解像度・複数券面Coverageは何か | 表示・Performance検証が必要 | 画像品質、Cost、UI | Product owner | UI Mock開始前 | No | UI Mockと性能測定で決定 |
 | RQ-039 | Affiliate・解析の計測範囲、Cookie同意、適用条件は何か | 利用Service・法的条件が未決 | Privacy、計測、収益 | Product owner / Legal reviewer | Public Release前 | No | 採用Service確定後に法的確認 |
 | RQ-040 | Structured Data、Sitemap、更新通知を初期Releaseへ含めるか | SEO詳細が未決 | Discoverability、保守 | Product owner | Architecture Planning前 | No | SEO PlanでApplicable判定 |
 | RQ-041 | 有料外部通知を採用するか | Cost評価前 | 障害認知時間、Cost | Product owner | Architecture Planning前 | No | 5,000円目標内で判断 |
 | RQ-042 | 保存した検索・比較の概要について、文字数上限、重複名の扱い、および編集可否をどうするか | 利用者入力と明示保存の採用は決定済みだが、入力規則と保存後の管理範囲は未決 | Validation、一覧の識別性、UI状態、保存データ量 | Product owner | 改訂UI Mock Approval前 | No | 概要必須・空白のみ拒否を前提に、Desktop／Mobileの保存Flowで上限と重複時の理解を検証 |
 | RQ-043 | 記事検索の初期・増加時性能試験量（公開記事数、1記事あたりのタグ数、関連対象カード数）をどうするか | FR-041に記事検索を追加したが、NFR-PERF-002/003の再現可能な試験量が未決 | 2秒目標、性能検証、Cost | Product owner | Architecture Planning前 | Yes | 想定公開規模と増加率を決め、NFR-PERF-002/003とAC-021へ反映 |
+
+## Resolved Questions
+
+| ID | Resolved at | Decision | Traceability |
+|---|---|---|---|
+| RQ-037 | 2026-08-14 | Login不要、連絡先メールは任意とする。対象・掲載項目・指摘内容・根拠を必須とし、掲載項目100字、指摘内容1,000字、根拠1,000字、メール254字を上限とする。送信後は受付番号を画面表示し、メール未入力時は個別回答・追加確認ができないことを示す。修正・回答は保証しない | RD-038, FR-026, NFR-SEC-004, AC-023, UIR-REPORT-001 |
 
 ## Related Domain Open Questions
 

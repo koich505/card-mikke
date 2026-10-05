@@ -8,6 +8,12 @@ Approved change: 通常記事の一覧では日付を表示せず、更新確認
 
 Pending approval update: 2026-08-13のReview公開ポリシー改定（自動Content判定で公開可なら自動公開、確認が必要なら非公開で修正・再投稿）により、下記の承認Baselineはstaleである。Requirements ReviewおよびProduct ownerの再承認まで、新しいBaselineは記録しない。
 
+## Pending change — 2026-08-14
+
+- RQ-037をUI対話の採用判断によりResolvedへ移し、RD-038としてLogin不要、メール任意、必須入力、文字数上限、画面上の受付番号と連絡条件を記録した。
+- FR-026、NFR-SEC-004、AC-023の要求強度または本番Architectureは変更していない。
+- `05-open-questions.md`と`06-traceability.md`の変更後Baselineは、独立Requirements Reviewと人間の再承認前である。下記Current Product-owner-approved Baselineは直前の承認済みBaselineとして保持する。
+
 ## Gate Decision
 
 - Gate: Gate 1 — Requirements Ready
