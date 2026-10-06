@@ -1,5 +1,12 @@
 export type PrototypeCalculationState = "complete" | "incomplete" | "under_review";
-export type PrototypeCardId = "everyday-plus" | "travel-step" | "smart-basic";
+export type PrototypeCardId =
+  | "everyday-plus"
+  | "travel-step"
+  | "smart-basic"
+  | "daily-light"
+  | "journey-flex"
+  | "simple-choice"
+  | "long-name-edge";
 export type PrototypeHttpsUrl = `https://${string}`;
 export type PrototypeRating = 1 | 2 | 3 | 4 | 5;
 export type PrototypeDisclosureStatus =

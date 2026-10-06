@@ -14,10 +14,12 @@ import {
   prototypeCategoryMarkByLabel,
   type PrototypeCategoryLabel,
 } from "@/features/search/prototype-condition-options";
+import { buildPrototypeComparisonCards } from "@/features/search/comparison-prototype";
 import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
-import { featuredCards } from "@/fixtures/home";
+import { featuredCards, prototypeSearchCards } from "@/fixtures/home";
 import type { PrototypeSearchScenario } from "@/types/card-detail-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
+import ComparisonView from "./comparison-view";
 import styles from "./search.module.css";
 
 const spendOptions = [
@@ -142,6 +144,7 @@ export default function SearchPrototype({
   );
   const [freeFeeOnly, setFreeFeeOnly] = useState(false);
   const [compareIds, setCompareIds] = useState<PrototypeCardId[]>(initialCompareIds);
+  const [compareLimitMessage, setCompareLimitMessage] = useState("");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [saveSummary, setSaveSummary] = useState("");
   const [saveError, setSaveError] = useState("");
@@ -150,10 +153,32 @@ export default function SearchPrototype({
   const [failNextSave, setFailNextSave] = useState(false);
   const saveTriggerRef = useRef<HTMLButtonElement>(null);
   const saveInputRef = useRef<HTMLInputElement>(null);
+  const resultsTitleRef = useRef<HTMLHeadingElement>(null);
+  const focusResultsAfterTransitionRef = useRef(false);
 
   useEffect(() => {
     if (saveDialogOpen) saveInputRef.current?.focus();
   }, [saveDialogOpen]);
+
+  useEffect(() => {
+    document.title =
+      view === "compare"
+        ? "選んだカードを比較｜カードみっけ"
+        : view === "results"
+          ? "カード検索結果｜カードみっけ"
+          : "条件からカードを探す｜カードみっけ";
+  }, [view]);
+
+  useEffect(() => {
+    if (view !== "results" || !focusResultsAfterTransitionRef.current) return;
+    focusResultsAfterTransitionRef.current = false;
+    resultsTitleRef.current?.focus({ preventScroll: true });
+  }, [view]);
+
+  const showResultsAndFocus = () => {
+    focusResultsAfterTransitionRef.current = true;
+    setView("results");
+  };
 
   const detailedAnnualSpend = annualSpend ?? 0;
   const periodMultiplier = spendPeriod === "monthly" ? 12 : 1;
@@ -162,6 +187,9 @@ export default function SearchPrototype({
     [amounts],
   );
   const invalid = allocated > detailedAnnualSpend;
+  const usesComparisonDensityFixtures = initialCompareIds.some(
+    (id) => !featuredCards.some((card) => card.id === id),
+  );
 
   const currentScenario = useMemo<PrototypeSearchScenario | null>(() => {
     if (!annualSpend) return null;
@@ -185,7 +213,7 @@ export default function SearchPrototype({
   }, [amounts, annualSpend, profile, selectedCategories, services]);
 
   const rankedCards = useMemo(() => {
-    return [...featuredCards]
+    return [...(usesComparisonDensityFixtures ? prototypeSearchCards : featuredCards)]
       .filter((card) => !freeFeeOnly || card.annualFeeLabel.includes("無料"))
       .toSorted((a, b) => {
         if (!currentScenario) return 0;
@@ -199,10 +227,13 @@ export default function SearchPrototype({
         ).regularNetYen;
         return bValue - aValue;
       });
-  }, [currentScenario, freeFeeOnly]);
+  }, [currentScenario, freeFeeOnly, usesComparisonDensityFixtures]);
 
   const selectedProfile = profiles.find((item) => item.id === profile);
-  const comparedCards = featuredCards.filter((card) => compareIds.includes(card.id));
+  const comparedCards = useMemo(
+    () => buildPrototypeComparisonCards(compareIds, currentScenario),
+    [compareIds, currentScenario],
+  );
 
   function selectSpend(id: string, value: number) {
     setSelectedSpendId(id);
@@ -246,13 +277,20 @@ export default function SearchPrototype({
   }
 
   function toggleCompare(id: PrototypeCardId) {
-    setCompareIds((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : current.length < 5
-          ? [...current, id]
-          : current,
-    );
+    setCompareIds((current) => {
+      if (current.includes(id)) {
+        setCompareLimitMessage("");
+        return current.filter((item) => item !== id);
+      }
+      if (current.length >= 5) {
+        setCompareLimitMessage(
+          "比較できるのは最大5枚です。選択中のカードを1枚外してから追加してください。",
+        );
+        return current;
+      }
+      setCompareLimitMessage("");
+      return [...current, id];
+    });
   }
 
   function showResults() {
@@ -716,7 +754,9 @@ export default function SearchPrototype({
           <section className={styles.resultsPage} aria-labelledby="results-title">
             <div className={styles.resultsHero}>
               <p>あなたの条件に合わせて判定しました</p>
-              <h1 id="results-title">おすすめカードは、この3枚！</h1>
+              <h1 id="results-title" ref={resultsTitleRef} tabIndex={-1}>
+                おすすめカードは、この{rankedCards.length}枚！
+              </h1>
               <div>
                 <span>
                   年間利用額{" "}
@@ -768,6 +808,11 @@ export default function SearchPrototype({
               </button>
             </div>
 
+            {compareLimitMessage && (
+              <p className={styles.resultNotice} role="alert">
+                {compareLimitMessage}
+              </p>
+            )}
             <div className={styles.resultList} aria-live="polite">
               {rankedCards.map((card, index) => {
                 const selected = compareIds.includes(card.id);
@@ -844,77 +889,22 @@ export default function SearchPrototype({
         )}
 
         {view === "compare" && (
-          <section className={styles.comparePage} aria-labelledby="compare-title">
-            <p>選んだカードを同じ条件で比較</p>
-            <h1 id="compare-title">カードの違いをチェック</h1>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={() => setView("results")}
-            >
-              ← 検索結果へ戻る
-            </button>
-            <div className={styles.compareTableWrap}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>比較項目</th>
-                    {comparedCards.map((card) => (
-                      <th key={card.id}>{card.name}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>通常年のおトク目安</th>
-                    {comparedCards.map((card) => (
-                      <td key={card.id}>
-                        <strong>
-                          {yen.format(
-                            currentScenario
-                              ? calculatePrototypeCard(
-                                  redesignedCardDetails[card.id],
-                                  currentScenario,
-                                ).regularNetYen
-                              : card.regularYearValue,
-                          )}
-                          円
-                        </strong>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>初年度のおトク目安</th>
-                    {comparedCards.map((card) => (
-                      <td key={card.id}>
-                        {yen.format(
-                          currentScenario
-                            ? calculatePrototypeCard(
-                                redesignedCardDetails[card.id],
-                                currentScenario,
-                              ).firstYearNetYen
-                            : card.firstYearValue,
-                        )}
-                        円
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>年会費</th>
-                    {comparedCards.map((card) => (
-                      <td key={card.id}>{card.annualFeeLabel}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>基本還元</th>
-                    {comparedCards.map((card) => (
-                      <td key={card.id}>{card.baseRewardLabel}</td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <ComparisonView
+            cards={comparedCards}
+            scenario={currentScenario}
+            onBack={showResultsAndFocus}
+            onRemove={(id) =>
+              setCompareIds((current) => {
+                setCompareLimitMessage("");
+                return current.filter((item) => item !== id);
+              })
+            }
+            onClear={() => {
+              setCompareLimitMessage("");
+              setCompareIds([]);
+              showResultsAndFocus();
+            }}
+          />
         )}
       </main>
 
@@ -938,7 +928,13 @@ export default function SearchPrototype({
             <strong>{compareIds.length}枚</strong>
             <span>選択中（最大5枚）</span>
           </div>
-          <button type="button" onClick={() => setCompareIds([])}>
+          <button
+            type="button"
+            onClick={() => {
+              setCompareLimitMessage("");
+              setCompareIds([]);
+            }}
+          >
             全解除
           </button>
           <button

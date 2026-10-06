@@ -1,8 +1,8 @@
 # UI Scope
 
-Status: Account history / data management v0.4 and Operations v0.3 implemented; human UI approvals pending
+Status: Comparison v0.7, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
-Last updated: 2026-08-13
+Last updated: 2026-10-05
 
 ## Purpose
 
@@ -26,6 +26,7 @@ Last updated: 2026-08-13
 - 年間正味還元額、初年度・通常年、内訳、仮定の表示
 - 完全、算定不完全、変更確認中の区別
 - 検索、必須Filter、0件、最大5枚の比較
+- 同一条件による比較表、Mobile縦表示、差分表示、候補解除、算定内訳とEvidence
 - カード詳細、Evidence、確認日、適用期間、Disclosure Status
 - お気に入りの一時保存・Account保存の区別
 - 用途別記事と単一カード特集記事

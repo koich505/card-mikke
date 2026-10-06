@@ -1207,6 +1207,67 @@ const smart: PrototypeCardDetailViewModel = {
   ],
 };
 
+const dailyLight: PrototypeCardDetailViewModel = {
+  ...everyday,
+  id: "daily-light",
+  name: "デイリーライトカード",
+  issuer: "くらしライト（架空）",
+  state: "complete",
+  stateLabel: "合成条件を確認済み",
+  cardFaces: everyday.cardFaces.slice(0, 2).map((face) => ({
+    ...face,
+    id: `daily-light-${face.id}`,
+    name: `ライト${face.name}`,
+  })),
+};
+
+const journeyFlex: PrototypeCardDetailViewModel = {
+  ...travel,
+  id: "journey-flex",
+  name: "ジャーニーフレックスカード",
+  issuer: "そらいろフレックス（架空）",
+  state: "under_review",
+  stateLabel: "交通還元の一部を変更確認中",
+  cardFaces: travel.cardFaces.map((face) => ({
+    ...face,
+    id: `journey-flex-${face.id}`,
+    name: `フレックス${face.name}`,
+  })),
+  applicationRoutes: travel.applicationRoutes.map((route, index) =>
+    index === 0
+      ? {
+          ...route,
+          eligibility: "受付対象は案内されていますが、審査基準の詳細は非公開（合成）",
+          disclosureStatus: "undisclosed",
+        }
+      : { ...route },
+  ),
+};
+
+const simpleChoice: PrototypeCardDetailViewModel = {
+  ...smart,
+  id: "simple-choice",
+  name: "シンプルチョイスカード",
+  issuer: "みらいチョイス（架空）",
+  cardFaces: smart.cardFaces.map((face) => ({
+    ...face,
+    id: `simple-choice-${face.id}`,
+    name: `チョイス${face.name}`,
+  })),
+};
+
+const longNameEdge: PrototypeCardDetailViewModel = {
+  ...everyday,
+  id: "long-name-edge",
+  name: "毎日の買い物と移動をまとめて確認するロングネームカード",
+  issuer: "長い名称の表示検証フィナンシャルサービス（架空）",
+  cardFaces: everyday.cardFaces.slice(0, 1).map((face) => ({
+    ...face,
+    id: `long-name-edge-${face.id}`,
+    name: "期間限定ロングネーム券面バリエーション",
+  })),
+};
+
 export const redesignedCardDetails: Record<
   PrototypeCardId,
   PrototypeCardDetailViewModel
@@ -1214,4 +1275,8 @@ export const redesignedCardDetails: Record<
   "everyday-plus": everyday,
   "travel-step": travel,
   "smart-basic": smart,
+  "daily-light": dailyLight,
+  "journey-flex": journeyFlex,
+  "simple-choice": simpleChoice,
+  "long-name-edge": longNameEdge,
 };

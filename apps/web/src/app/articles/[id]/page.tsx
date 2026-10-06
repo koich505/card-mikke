@@ -18,6 +18,10 @@ const mockPointPrograms: Record<
   "everyday-plus": { name: "PayPayポイント風（仮）", mark: "P", tone: "pay" },
   "travel-step": { name: "マイルポイント風（仮）", mark: "M", tone: "mile" },
   "smart-basic": { name: "Vポイント風（仮）", mark: "V", tone: "vpoint" },
+  "daily-light": { name: "PayPayポイント風（仮）", mark: "P", tone: "pay" },
+  "journey-flex": { name: "マイルポイント風（仮）", mark: "M", tone: "mile" },
+  "simple-choice": { name: "Vポイント風（仮）", mark: "V", tone: "vpoint" },
+  "long-name-edge": { name: "PayPayポイント風（仮）", mark: "P", tone: "pay" },
 };
 
 export function generateStaticParams() {

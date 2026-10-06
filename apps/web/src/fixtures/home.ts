@@ -79,6 +79,87 @@ export const featuredCards: PrototypeFeaturedCard[] = [
   },
 ];
 
+/** Search / comparison density検証を含むUI-only候補。Homeの注目カードには使用しない。 */
+export const prototypeSearchCards: PrototypeFeaturedCard[] = [
+  ...featuredCards,
+  {
+    id: "daily-light",
+    name: "デイリーライトカード",
+    issuer: "くらしライト（架空）",
+    issuerEvidenceClaimId: "everyday-plus-actor-roles",
+    label: "5枚比較の密度確認用",
+    reason: "複数カードを同時比較するUI検証用の合成例",
+    regularYearValue: 22_800,
+    firstYearValue: 22_800,
+    annualFeeLabel: "年会費 無料",
+    annualFeeEvidenceClaimId: "everyday-plus-annual-fee",
+    baseRewardLabel: "基本還元 1.0%（合成）",
+    baseRewardEvidenceClaimId: "everyday-plus-base-reward",
+    valueEvidenceClaimIds: ["everyday-plus-base-reward", "everyday-plus-annual-fee"],
+    confirmedOn: "2026-08-08",
+    state: "incomplete",
+    stateLabel: "合成条件による算定例",
+    accent: "red",
+  },
+  {
+    id: "journey-flex",
+    name: "ジャーニーフレックスカード",
+    issuer: "そらいろフレックス（架空）",
+    issuerEvidenceClaimId: "travel-step-actor-roles",
+    label: "旅行比較の密度確認用",
+    reason: "変更確認中のカードを複数列で確認するUI検証用の合成例",
+    regularYearValue: 18_400,
+    firstYearValue: 18_400,
+    annualFeeLabel: "年会費 2,200円（合成）",
+    annualFeeEvidenceClaimId: "travel-step-annual-fee",
+    baseRewardLabel: "基本還元 0.8%（合成）",
+    baseRewardEvidenceClaimId: "travel-step-base-reward",
+    valueEvidenceClaimIds: ["travel-step-base-reward", "travel-step-annual-fee"],
+    confirmedOn: "2026-08-07",
+    state: "under_review",
+    stateLabel: "一部条件を変更確認中",
+    accent: "teal",
+  },
+  {
+    id: "simple-choice",
+    name: "シンプルチョイスカード",
+    issuer: "みらいチョイス（架空）",
+    issuerEvidenceClaimId: "smart-basic-actor-roles",
+    label: "上限操作の確認用",
+    reason: "6枚目を追加した場合の案内を確認するUI検証用の合成例",
+    regularYearValue: 7_920,
+    firstYearValue: 7_920,
+    annualFeeLabel: "年会費 無料",
+    annualFeeEvidenceClaimId: "smart-basic-annual-fee",
+    baseRewardLabel: "基本還元 0.7%（合成）",
+    baseRewardEvidenceClaimId: "smart-basic-base-reward",
+    valueEvidenceClaimIds: ["smart-basic-base-reward", "smart-basic-annual-fee"],
+    confirmedOn: "2026-08-06",
+    state: "incomplete",
+    stateLabel: "算定不完全",
+    accent: "navy",
+  },
+  {
+    id: "long-name-edge",
+    name: "毎日の買い物と移動をまとめて確認するロングネームカード",
+    issuer: "長い名称の表示検証フィナンシャルサービス（架空）",
+    issuerEvidenceClaimId: "everyday-plus-actor-roles",
+    label: "長文表示の確認用",
+    reason: "長い商品名・発行者名でも操作と情報が欠けないか確認する合成例",
+    regularYearValue: 22_800,
+    firstYearValue: 22_800,
+    annualFeeLabel: "年会費 無料",
+    annualFeeEvidenceClaimId: "everyday-plus-annual-fee",
+    baseRewardLabel: "基本還元 1.0%（合成）",
+    baseRewardEvidenceClaimId: "everyday-plus-base-reward",
+    valueEvidenceClaimIds: ["everyday-plus-base-reward", "everyday-plus-annual-fee"],
+    confirmedOn: "2026-08-08",
+    state: "incomplete",
+    stateLabel: "合成条件による算定例",
+    accent: "red",
+  },
+];
+
 const syntheticResearchCoverage = (
   slug: PrototypeCardId,
   issuer: string,
@@ -466,7 +547,7 @@ const milestoneConditionLabels = [
   "重複条件",
 ];
 
-export const cardDetails: Record<PrototypeCardId, PrototypeCardDetail> = {
+export const cardDetails = {
   "everyday-plus": {
     catchCopy: "毎日の買い物が、そのままおトクにつながる1枚。",
     summary:
@@ -2165,6 +2246,27 @@ export const cardDetails: Record<PrototypeCardId, PrototypeCardDetail> = {
     ],
     cautionsEvidenceClaimId: "smart-basic-unknown",
   },
+} as unknown as Record<PrototypeCardId, PrototypeCardDetail>;
+
+cardDetails["daily-light"] = {
+  ...cardDetails["everyday-plus"],
+  officialUrl: "https://example.invalid/daily-light/",
+  termsUrl: "https://example.invalid/daily-light/terms/",
+};
+cardDetails["journey-flex"] = {
+  ...cardDetails["travel-step"],
+  officialUrl: "https://example.invalid/journey-flex/",
+  termsUrl: "https://example.invalid/journey-flex/terms/",
+};
+cardDetails["simple-choice"] = {
+  ...cardDetails["smart-basic"],
+  officialUrl: "https://example.invalid/simple-choice/",
+  termsUrl: "https://example.invalid/simple-choice/terms/",
+};
+cardDetails["long-name-edge"] = {
+  ...cardDetails["everyday-plus"],
+  officialUrl: "https://example.invalid/long-name-edge/",
+  termsUrl: "https://example.invalid/long-name-edge/terms/",
 };
 
 const setKnownCondition = (

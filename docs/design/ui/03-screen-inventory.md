@@ -1,8 +1,8 @@
 # Screen Inventory
 
-Status: Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Status: Comparison v0.7, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
-Last updated: 2026-08-13
+Last updated: 2026-10-05
 
 ## Inventory policy
 
@@ -17,7 +17,7 @@ Last updated: 2026-08-13
 | SCR-PUB-001 | ホーム | 条件検索、注目カード、特集記事、新着情報から探索を始める | Primary mock | FR-004, FR-007–FR-010, FR-019, FR-031, AC-001, AC-015, AC-016, AC-020 |
 | SCR-PUB-002 | 条件入力 | 年間利用額、利用先カテゴリ、企業Serviceを段階的に指定する | Primary mock | FR-003, FR-004, FR-010, FR-012, AC-001, AC-002, AC-005, AC-006 |
 | SCR-PUB-003 | 検索結果 | 順位、算定状態、Filterを確認し比較候補を選び、概要を付けて明示保存する | Primary mock extended in v0.5 | FR-005, FR-006, FR-011, FR-013, FR-014, FR-023, NFR-SEC-004, AC-007, AC-009–AC-011, AC-022 |
-| SCR-PUB-004 | カード比較 | 最大5枚を同一条件で比較する | Primary mock | FR-016, FR-029, AC-012 |
+| SCR-PUB-004 | カード比較 | 最大5枚を同一条件で比較する | Primary mock implemented in v0.7 | FR-016, FR-029, AC-012 |
 | SCR-PUB-005 | カード詳細 | 券面、費用、還元、Campaign、年間利用特典、追加Card、Benefit、Insurance、Review、Evidence、確認日、申込前確認を理解する | Primary mock implemented in v0.2 | FR-017–FR-020, FR-035, AC-014, AC-015 |
 | SCR-PUB-006 | 記事一覧 | 公開済み記事をフリーワード、複数タグ（すべて含む）、記事種別、新着／更新順で探し、更新確認中の旧記事を識別する | Primary mock implemented in v0.6 | FR-007, FR-031, FR-041, AC-043 |
 | SCR-PUB-007 | 用途別記事 | 対象読者、選定理由、候補、根拠を理解する | Supporting mock | FR-007–FR-009, FR-019, AC-015, AC-016 |
@@ -63,9 +63,9 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | OVL-001 | Mobile Global Menu | Header Menuから全Navigationを操作する | Primary mock |
 | OVL-002 | Mobile Filter Dialog | Filterの適用、取消、全解除を行う | Primary mock |
 | OVL-003 | Comparison Action Bar | 選択枚数、最大5枚、比較開始、解除を扱う | Primary mock |
-| OVL-004 | Calculation Detail | 算定内訳、対象外、仮定を追加確認する | Primary mock |
-| OVL-005 | Evidence Detail | Source、確認日、適用期間、Disclosure Statusを確認する | Primary mock |
-| OVL-006 | Clear Comparison Confirmation | 比較候補の全解除を確認する | Primary mock |
+| OVL-004 | Calculation Detail | 算定内訳、対象外、仮定を追加確認する | Primary mock implemented in v0.7 |
+| OVL-005 | Evidence Detail | Source、確認日、適用期間、Disclosure Statusを確認する | Primary mock implemented in v0.7 |
+| OVL-006 | Clear Comparison Confirmation | 比較候補の全解除を確認する | Primary mock implemented in v0.7 |
 | OVL-007 | Save / Account Prompt | 一時操作とAccount保存の違いを説明する | Supporting mock |
 | OVL-008 | 検索条件保存Dialog | 概要、保存対象、Validation、保存中・失敗・再試行を確認する | Primary mock implemented in v0.5 |
 | OVL-OPS-001 | Mobile Operations Navigation | 管理画面の開閉式Side Navigationを操作する | Primary mock v0.3 |

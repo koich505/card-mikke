@@ -7,6 +7,10 @@ const prototypeCardIds: PrototypeCardId[] = [
   "everyday-plus",
   "travel-step",
   "smart-basic",
+  "daily-light",
+  "journey-flex",
+  "simple-choice",
+  "long-name-edge",
 ];
 const prototypeCardIdSet = new Set(prototypeCardIds);
 

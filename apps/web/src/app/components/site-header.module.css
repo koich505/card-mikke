@@ -128,10 +128,26 @@
 @media (max-width: 520px) {
   .headerInner {
     width: calc(100% - 1rem);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-block: 0.5rem;
   }
 
   .brand {
-    font-size: 1.2rem;
+    min-width: 0;
+    font-size: 1rem;
+  }
+
+  .primaryNav {
+    width: 100%;
+  }
+
+  .primaryNav .navSearch,
+  .primaryNav .navAccount {
+    min-width: 0;
+    flex: 1;
+    justify-content: center;
+    text-align: center;
   }
 
   .primaryNav .navSearch {
