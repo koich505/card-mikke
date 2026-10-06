@@ -8,9 +8,17 @@ import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards } from "@/fixtures/home";
 import type { PrototypeFeatureArticle } from "@/types/article-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
+import AffiliateMockAction from "./affiliate-mock-action";
 import styles from "./article.module.css";
 
 const yen = new Intl.NumberFormat("ja-JP");
+
+const disclosureLabels = {
+  unknown: "未確認",
+  undisclosed: "非開示",
+  partially_disclosed: "一部開示",
+  disclosed: "開示済み",
+} as const;
 
 const mockPointPrograms: Record<
   PrototypeCardId,
@@ -88,6 +96,10 @@ function PatternContent({ article }: { article: PrototypeFeatureArticle }) {
       <section className={styles.patternPanel} aria-labelledby="feature-title">
         <p className={styles.panelKicker}>CARD FEATURE</p>
         <h2 id="feature-title">{target.name}の確認ポイント</h2>
+        <p className={styles.targetCardLead}>
+          対象カード：<strong>{target.name}</strong>（{target.issuer}）
+          <Link href={`/cards/${target.id}`}>カード詳細で条件を確認</Link>
+        </p>
         <div className={styles.tripleGrid}>
           <div>
             <h3>特徴</h3>
@@ -217,6 +229,40 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
                   。申込前には公式情報を確認してください。
                 </p>
               ) : null}
+              <aside className={styles.adDisclosure} aria-label="広告・Affiliate情報">
+                <strong>
+                  {article.affiliateDisclosure.hasRelationship
+                    ? "広告を含む想定の記事です"
+                    : "広告報酬を選定に使用していません"}
+                </strong>
+                <p>{article.affiliateDisclosure.note}</p>
+                {article.affiliateDisclosure.hasRelationship ? (
+                  <div className={styles.applicationRouteList}>
+                    {article.affiliateDisclosure.applicationActions.map((action) => {
+                      const target = cardById(action.cardId);
+
+                      return (
+                        <div className={styles.applicationRoute} key={action.cardId}>
+                          <strong>{target.name}</strong>
+                          <span>申込経路：{action.applicationRouteLabel}</span>
+                          <span>
+                            申込条件差：
+                            {action.conditionDifference === "unknown"
+                              ? "未確認"
+                              : "合成Fixture上はありません"}
+                          </span>
+                          <small>{action.conditionDifferenceNote}</small>
+                          <AffiliateMockAction
+                            label={`${target.name}・${action.applicationRouteLabel}の申込先へ進む（UI-only）`}
+                            cardName={target.name}
+                            applicationRouteLabel={action.applicationRouteLabel}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </aside>
             </div>
             <div
               className={styles.visual}
@@ -260,6 +306,9 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
                 </li>
                 <li>
                   <a href="#related-cards">カード詳細</a>
+                </li>
+                <li>
+                  <a href="#evidence">確認に使用した情報</a>
                 </li>
               </ol>
             </aside>
@@ -405,6 +454,67 @@ export default async function ArticlePage({ params }: PageProps<"/articles/[id]"
                   >
                     カードの詳細を見る <span>→</span>
                   </Link>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className={styles.evidence}
+            id="evidence"
+            aria-labelledby="evidence-title"
+          >
+            <div className={styles.sectionHeading}>
+              <p>ARTICLE EVIDENCE</p>
+              <h2 id="evidence-title">確認に使用した公式Source</h2>
+              <span>すべてUI確認用の合成Sourceです。実在サイトへは遷移しません。</span>
+            </div>
+            <div className={styles.evidenceGrid}>
+              {article.officialSources.map((source) => (
+                <article key={source.id}>
+                  <div className={styles.evidenceHeading}>
+                    <h3>{source.title}</h3>
+                  </div>
+                  <p>{source.publisher}</p>
+                  <dl>
+                    <div>
+                      <dt>確認したclaimと開示状態</dt>
+                      <dd>
+                        <ul className={styles.claimList}>
+                          {source.claims.map((claim) => (
+                            <li key={claim.id}>
+                              <div>
+                                <span>{claim.label}</span>
+                                <small>
+                                  確認日：
+                                  <time
+                                    dateTime={
+                                      claim.confirmedOn ??
+                                      source.defaultClaimConfirmedOn
+                                    }
+                                  >
+                                    {claim.confirmedOn ??
+                                      source.defaultClaimConfirmedOn}
+                                  </time>
+                                  ／適用期間：
+                                  {claim.effectivePeriod ??
+                                    source.defaultClaimEffectivePeriod}
+                                </small>
+                              </div>
+                              <strong data-status={claim.disclosureStatus}>
+                                {disclosureLabels[claim.disclosureStatus]}
+                              </strong>
+                            </li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
+                  {source.reviewState === "change-under-review" ? (
+                    <p className={styles.sourceReviewState}>
+                      変更確認中：差分候補は公開済み記事へ未反映です。
+                    </p>
+                  ) : null}
                 </article>
               ))}
             </div>

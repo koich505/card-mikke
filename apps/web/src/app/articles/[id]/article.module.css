@@ -59,7 +59,7 @@
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
   color: white;
-  background: #ec304d;
+  background: #c92745;
 }
 .audience {
   margin-top: 1.2rem;
@@ -92,6 +92,62 @@
   font-weight: 800;
   line-height: 1.7;
 }
+.adDisclosure {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 2px solid #09254c;
+  border-radius: 14px;
+  background: white;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+.adDisclosure strong,
+.adDisclosure span {
+  display: block;
+}
+.adDisclosure p {
+  margin-top: 0.35rem;
+  color: #45546a;
+}
+.adDisclosure span {
+  margin-top: 0.45rem;
+  color: #8a3d22;
+  font-weight: 900;
+}
+.applicationRouteList {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+.applicationRoute {
+  padding: 0.75rem;
+  border: 1px solid #ccd5e1;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+.applicationRoute small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #45546a;
+}
+.applicationMock {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #ccd5e1;
+}
+.applicationMock button {
+  width: fit-content;
+  cursor: pointer;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #09254c;
+  border-radius: 999px;
+  color: white;
+  background: #09254c;
+  font-weight: 900;
+}
+.applicationMock p {
+  margin-top: 0.55rem;
+}
 .visual {
   position: relative;
   min-height: 315px;
@@ -109,7 +165,7 @@
 }
 .visual[data-theme="single-card"] {
   color: white;
-  background: #ec304d;
+  background: #c92745;
 }
 .visual[data-theme="positioning"] {
   color: white;
@@ -220,7 +276,7 @@
 }
 .panelKicker,
 .sectionHeading > p {
-  color: #ec304d;
+  color: #a61f39;
   font-size: 0.72rem;
   font-weight: 1000;
   letter-spacing: 0.12em;
@@ -285,6 +341,25 @@
   color: #45546a;
   font-size: 0.78rem;
   line-height: 1.75;
+}
+.targetCardLead {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: #fff3c4;
+  color: #344054;
+}
+.targetCardLead a {
+  color: #09254c;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .axisDefinition {
   margin-top: 1rem;
@@ -472,10 +547,102 @@
   line-height: 1.8;
 }
 .comparison,
-.related {
+.related,
+.evidence {
   width: min(1160px, calc(100% - 3rem));
   margin: 5rem auto 0;
   scroll-margin-top: 1rem;
+}
+.evidenceGrid {
+  margin-top: 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.evidenceGrid > article {
+  padding: 1.15rem;
+  border: 2px solid #dce3ec;
+  border-radius: 16px;
+  background: white;
+}
+.evidenceHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.evidenceHeading h3 {
+  font-size: 1rem;
+}
+.claimList strong {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  color: white;
+  background: #176b72;
+  font-size: 0.67rem;
+  font-weight: 900;
+}
+.claimList strong[data-status="partially_disclosed"] {
+  color: #5f3900;
+  background: #ffd978;
+}
+.claimList strong[data-status="unknown"],
+.claimList strong[data-status="undisclosed"] {
+  background: #687386;
+}
+.evidenceGrid article > p {
+  margin-top: 0.45rem;
+  color: #667085;
+  font-size: 0.75rem;
+}
+.evidenceGrid dl {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.7rem;
+}
+.evidenceGrid dt {
+  color: #667085;
+  font-size: 0.67rem;
+  font-weight: 800;
+}
+.evidenceGrid dd {
+  margin-top: 0.15rem;
+  color: #344054;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+.claimList {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+}
+.claimList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.claimList li > div {
+  min-width: 0;
+}
+.claimList small {
+  margin-top: 0.2rem;
+  display: block;
+  color: #667085;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.sourceReviewState {
+  margin-top: 0.9rem;
+  padding: 0.65rem 0.75rem;
+  border-left: 3px solid #a65316;
+  border-radius: 6px;
+  color: #654021 !important;
+  background: #fff2e2;
+  font-weight: 800;
 }
 .sectionHeading span {
   margin-top: 0.5rem;
@@ -588,7 +755,7 @@
   border: 3px solid #09254c;
   border-radius: 16px;
   color: white;
-  background: #ec304d;
+  background: #c92745;
   box-shadow: 5px 5px 0 #09254c;
 }
 .miniCard[data-accent="teal"] {
@@ -646,7 +813,7 @@
   font-weight: 1000;
 }
 .card > a span {
-  color: #ec304d;
+  color: #a61f39;
 }
 .articleFooter {
   width: min(1040px, calc(100% - 3rem));
@@ -717,7 +884,7 @@
   place-items: center;
   border-radius: 50%;
   color: white;
-  background: #ec304d;
+  background: #c92745;
   font-weight: 1000;
 }
 .siteFooter nav {
@@ -736,7 +903,7 @@
   text-align: center;
 }
 .notFound > span {
-  color: #ec304d;
+  color: #a61f39;
   font-size: 0.75rem;
   font-weight: 1000;
   letter-spacing: 0.1em;
@@ -765,7 +932,7 @@
   padding: 0.8rem 1.2rem;
   border-radius: 999px;
   color: white;
-  background: #ec304d;
+  background: #c92745;
   font-weight: 900;
 }
 @media (max-width: 800px) {
@@ -785,7 +952,8 @@
   }
   .reasonGrid,
   .tripleGrid,
-  .cardGrid {
+  .cardGrid,
+  .evidenceGrid {
     grid-template-columns: 1fr;
   }
   .axisDefinition {
@@ -811,6 +979,7 @@
   .contentLayout,
   .comparison,
   .related,
+  .evidence,
   .articleFooter,
   .siteFooter {
     width: min(100% - 2rem, 1160px);

@@ -11,7 +11,7 @@ export default function ArticleNotFound() {
         <strong aria-hidden="true">?</strong>
         <h1>記事が見つかりませんでした</h1>
         <p>指定された記事は、このUI-onlyモックの合成Fixtureにありません。</p>
-        <Link href="/#articles">特集記事を選び直す →</Link>
+        <Link href="/articles">特集記事を選び直す →</Link>
       </main>
     </div>
   );

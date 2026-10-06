@@ -57,6 +57,104 @@ export const featureArticles: PrototypeFeatureArticle[] = [
       "表示額は合成条件による算定例です。",
       "実際の申込前には公式情報を確認してください。",
     ],
+    officialSources: [
+      {
+        id: "daily-shopping-everyday-plus",
+        title: "まいにちプラスカード商品・ポイント案内（合成）",
+        publisher: "くらしフィナンシャル（架空）",
+        defaultClaimConfirmedOn: "2026-08-09",
+        defaultClaimEffectivePeriod: "2026-08-01〜UIモック終了まで（合成）",
+        claims: [
+          {
+            id: "everyday-plus-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-base-reward",
+            label: "基本還元率",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-reward-exclusions",
+            label: "ポイント対象外利用",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+      {
+        id: "daily-shopping-smart-basic",
+        title: "スマートベーシックカード商品・ポイント案内（合成）",
+        publisher: "みらいペイメント（架空）",
+        defaultClaimConfirmedOn: "2026-08-09",
+        defaultClaimEffectivePeriod: "UIモック期間のみ",
+        claims: [
+          {
+            id: "smart-basic-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "smart-basic-base-reward",
+            label: "基本還元率",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "smart-basic-reward-exclusions",
+            label: "ポイント対象外利用",
+            disclosureStatus: "partially_disclosed",
+          },
+        ],
+      },
+      {
+        id: "daily-shopping-travel-step",
+        title: "トラベルステップカード商品・ポイント案内（合成）",
+        publisher: "そらいろカード（架空）",
+        defaultClaimConfirmedOn: "2026-08-09",
+        defaultClaimEffectivePeriod: "UIモック期間のみ",
+        claims: [
+          {
+            id: "travel-step-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "travel-step-base-reward",
+            label: "基本還元率",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "travel-step-category-reward",
+            label: "旅行カテゴリ追加還元",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+    ],
+    affiliateDisclosure: {
+      hasRelationship: true,
+      note: "広告を含む想定ですが、報酬の有無・金額は候補の選定や掲載順に使用していません。申込条件差は候補カードと合成申込経路ごとに表示します。",
+      applicationActions: [
+        {
+          cardId: "everyday-plus",
+          applicationRouteLabel: "新規Web申込（合成）",
+          conditionDifference: "unknown",
+          conditionDifferenceNote: "通常申込との差異は未確認です。",
+        },
+        {
+          cardId: "smart-basic",
+          applicationRouteLabel: "デジタルカード申込（合成）",
+          conditionDifference: "unknown",
+          conditionDifferenceNote: "通常申込との差異は未確認です。",
+        },
+        {
+          cardId: "travel-step",
+          applicationRouteLabel: "新規Web申込（合成）",
+          conditionDifference: "unknown",
+          conditionDifferenceNote: "通常申込との差異は未確認です。",
+        },
+      ],
+    },
   },
   {
     slug: "everyday-plus-feature",
@@ -85,8 +183,8 @@ export const featureArticles: PrototypeFeatureArticle[] = [
       "通常年の条件で比較する",
     ],
     changes: [
-      "公開後の条件変更はありません（UIモック時点）",
-      "公式Evidenceは未接続です",
+      "合成Sourceでカテゴリ追加還元の対象外条件に差分候補を検知しています",
+      "差分は未確認のため、この記事には反映せず公開済み旧版を表示しています",
     ],
     sections: [
       {
@@ -114,6 +212,69 @@ export const featureArticles: PrototypeFeatureArticle[] = [
       "カード名、会社名、条件はすべて架空です。",
       "広告報酬は記事の選定理由や掲載順に影響しません。",
     ],
+    officialSources: [
+      {
+        id: "everyday-plus-product",
+        title: "まいにちプラスカード商品概要（合成）",
+        publisher: "くらしフィナンシャル（架空）",
+        defaultClaimConfirmedOn: "2026-08-08",
+        defaultClaimEffectivePeriod: "2026-08-01〜条件変更まで（合成）",
+        claims: [
+          {
+            id: "everyday-plus-application-route",
+            label: "対象カードと申込経路",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-base-reward",
+            label: "基本還元率",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+      {
+        id: "everyday-plus-category-reward",
+        title: "カテゴリ追加還元の適用条件（合成）",
+        publisher: "くらしフィナンシャル（架空）",
+        defaultClaimConfirmedOn: "2026-08-08",
+        defaultClaimEffectivePeriod: "2026-08-01〜2026-10-31（合成）",
+        reviewState: "change-under-review",
+        claims: [
+          {
+            id: "everyday-plus-category-eligible-spend",
+            label: "対象利用",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-category-monthly-cap",
+            label: "月間付与上限",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "everyday-plus-category-exclusions",
+            label: "対象外利用",
+            disclosureStatus: "partially_disclosed",
+          },
+        ],
+      },
+    ],
+    affiliateDisclosure: {
+      hasRelationship: true,
+      note: "広告を含む想定です。合成Sourceの変更確認中のため、Affiliate経由と通常申込で条件差があるかは未確認です。申込Actionは外部へ遷移しません。",
+      applicationActions: [
+        {
+          cardId: "everyday-plus",
+          applicationRouteLabel: "新規Web申込（合成）",
+          conditionDifference: "unknown",
+          conditionDifferenceNote: "通常申込との差異は未確認です。",
+        },
+      ],
+    },
   },
   {
     slug: "card-balance-map",
@@ -194,6 +355,79 @@ export const featureArticles: PrototypeFeatureArticle[] = [
       "マップは総合順位ではありません。",
       "情報不足を推測して配置していません。",
     ],
+    officialSources: [
+      {
+        id: "balance-map-everyday-plus-fee",
+        title: "まいにちプラスカード年会費案内（合成）",
+        publisher: "くらしフィナンシャル（架空）",
+        defaultClaimConfirmedOn: "2026-08-10",
+        defaultClaimEffectivePeriod: "UIモック期間のみ",
+        claims: [
+          {
+            id: "everyday-plus-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+      {
+        id: "balance-map-smart-basic-fee",
+        title: "スマートベーシックカード年会費案内（合成）",
+        publisher: "みらいペイメント（架空）",
+        defaultClaimConfirmedOn: "2026-08-10",
+        defaultClaimEffectivePeriod: "UIモック期間のみ",
+        claims: [
+          {
+            id: "smart-basic-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+      {
+        id: "balance-map-travel-step-fee",
+        title: "トラベルステップカード年会費案内（合成）",
+        publisher: "そらいろカード（架空）",
+        defaultClaimConfirmedOn: "2026-08-10",
+        defaultClaimEffectivePeriod: "UIモック期間のみ",
+        claims: [
+          {
+            id: "travel-step-annual-fee",
+            label: "本会員年会費",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+      {
+        id: "balance-map-calculation",
+        title: "通常年のおトク目安算定根拠（合成）",
+        publisher: "カードみっけ編集部（架空）",
+        defaultClaimConfirmedOn: "2026-08-10",
+        defaultClaimEffectivePeriod: "2026-08-10時点の合成条件",
+        claims: [
+          {
+            id: "balance-map-calculation-condition",
+            label: "縦軸の算定条件",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "balance-map-calculation-scope",
+            label: "算定対象範囲",
+            disclosureStatus: "disclosed",
+          },
+          {
+            id: "balance-map-calculation-exclusions",
+            label: "算定除外項目",
+            disclosureStatus: "disclosed",
+          },
+        ],
+      },
+    ],
+    affiliateDisclosure: {
+      hasRelationship: false,
+      note: "この記事の比較軸・配置・掲載順に広告報酬は使用していません。",
+      applicationActions: [],
+    },
   },
 ];
 

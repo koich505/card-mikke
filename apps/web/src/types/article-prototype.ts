@@ -27,6 +27,32 @@ type PrototypeArticleBase = {
     reason: string;
   }>;
   cautions: string[];
+  /** UI-only表示用。実在URLへ遷移しない合成の公式Source参照。 */
+  officialSources: Array<{
+    id: string;
+    title: string;
+    publisher: string;
+    defaultClaimConfirmedOn: string;
+    defaultClaimEffectivePeriod: string;
+    reviewState?: "change-under-review";
+    claims: Array<{
+      id: string;
+      label: string;
+      confirmedOn?: string;
+      effectivePeriod?: string;
+      disclosureStatus: "unknown" | "undisclosed" | "partially_disclosed" | "disclosed";
+    }>;
+  }>;
+  affiliateDisclosure: {
+    hasRelationship: boolean;
+    note: string;
+    applicationActions: Array<{
+      cardId: PrototypeCardId;
+      applicationRouteLabel: string;
+      conditionDifference: "none" | "unknown";
+      conditionDifferenceNote: string;
+    }>;
+  };
 };
 
 export type PrototypePurposeArticle = PrototypeArticleBase & {

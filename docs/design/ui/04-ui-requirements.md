@@ -1,8 +1,8 @@
 # UI Requirements
 
-Status: Card detail v0.2, Profile v0.3 and Operations v0.3 implemented; human approvals tracked separately
+Status: Article detail v0.8 implemented; earlier UI mock approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
-Last updated: 2026-08-13
+Last updated: 2026-10-06
 
 ## Purpose and boundary
 
@@ -190,6 +190,29 @@ Last updated: 2026-08-13
 - 記事一覧の検索語、Filter変更、結果件数、0件は支援技術へ通知する。タグ、記事種別、並び順、全解除はKeyboardだけで操作できる。
 - DesktopではCard Grid、Mobileでは1列で表示し、Filter操作や重要な状態を横ScrollやHoverへ依存させない。
 - Traceability: FR-031, FR-041, NFR-A11Y-001, AC-043
+
+## Feature article detail
+
+### UIR-ARTICLE-DETAIL-001: 用途・読者像別記事
+
+- 対象読者、選定基準、候補カード、おすすめする理由を同一画面で確認できる。
+- 通常年と初年度、年会費と還元、基本還元と追加還元を混同しない選び方を説明する。
+- 各候補からカード詳細へ進み、表示条件と根拠を追加確認できる。
+- Traceability: FR-007, AC-016
+
+### UIR-ARTICLE-DETAIL-002: 単一カード特集
+
+- 対象カード、特徴、適用条件、変更点を明示し、複数カードの客観的な順位として表現しない。
+- 更新確認中は公開済み旧記事であること、最終確認日、未反映の差分候補を示し、確定した変更と誤認させない。
+- 対象カード詳細への導線を用意し、記事だけで申込判断が完結するように見せない。
+- Traceability: FR-007, FR-031, AC-016
+
+### UIR-ARTICLE-DETAIL-003: Evidence and advertising
+
+- 記事ごとに、確認に使用した合成公式Source、Publisher、claim単位のDisclosure Status、確認日、適用期間を表示する。Source全体へ単一のDisclosure Statusを付けない。
+- 広告・Affiliate関係と申込条件差の確認状態を記事上部で識別でき、報酬の有無・金額を選定理由や掲載順へ使用しないことを示す。複数候補を扱う記事では、対象カード、Application Route、条件差の対応を候補ごとに識別できるようにする。
+- UI-only Mockでは開示の近傍に模擬申込Actionを置き、Sourceおよび申込Actionから外部へ遷移しない。
+- Traceability: FR-019, NFR-EDIT-001, AC-015, AC-016
 
 ## Card detail and trust
 
@@ -435,7 +458,7 @@ Last updated: 2026-08-13
 - Traceability: NFR-COMPAT-001, AC-039
 
 ## Open UI requirements
-- 記事一覧の分類・Filterと、用途別記事／単一カード特集の視覚的区別
+
 - Account・Profile・履歴Flowの詳細
 - 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 - RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
