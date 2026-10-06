@@ -1,6 +1,6 @@
 # UI Requirements
 
-Status: Article detail v0.8 implemented; earlier UI mock approvals tracked separately
+Status: Favorites v0.9 and Article detail v0.8 implemented; earlier UI mock approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
 Last updated: 2026-10-06
 
@@ -213,6 +213,29 @@ Last updated: 2026-10-06
 - 広告・Affiliate関係と申込条件差の確認状態を記事上部で識別でき、報酬の有無・金額を選定理由や掲載順へ使用しないことを示す。複数候補を扱う記事では、対象カード、Application Route、条件差の対応を候補ごとに識別できるようにする。
 - UI-only Mockでは開示の近傍に模擬申込Actionを置き、Sourceおよび申込Actionから外部へ遷移しない。
 - Traceability: FR-019, NFR-EDIT-001, AC-015, AC-016
+
+## Favorites
+
+### UIR-FAVORITE-001: Add, list and remove
+
+- 検索結果とカード詳細から対象カードを識別してお気に入りへ追加し、`/favorites`で候補、保存区分、カード状態、確認日を一覧できる。
+- 一覧から解除でき、直前の解除は取り消せる。0件ではEmpty状態とカード探索への導線を表示する。
+- 登録・未登録とも上限50枚を明示し、50枚を超える追加を行わない。
+- Traceability: FR-030, AC-013
+
+### UIR-FAVORITE-002: Temporary and Account storage
+
+- 未登録時はAccount保存ではない一時お気に入りであること、最終利用から30日間の保持、利用環境側の削除や端末変更による早期消失可能性を同一画面で明示する。
+- Account保存では一時保存の期限表示を使用せず、解除するまで継続保持する想定であることを示す。
+- UI-only MockではBrowser storage、API、認証、外部送信、永続化を使用しない。
+- Traceability: FR-030, AC-013
+
+### UIR-FAVORITE-003: Registration transfer consent
+
+- 一時お気に入りがある状態でAccount登録を想定する場合、引継ぎは自動で行わず、対象枚数と保存先をDialogで示す。
+- `同意して引き継ぐ`、`引き継がずAccountを利用`、`キャンセル`を区別し、同意した場合だけ一時分をAccount保存へ移す。
+- Dialogは初期Focus、Focus trap、Escapeでの取消、起点へのFocus復帰を備える。
+- Traceability: FR-030, AC-013, NFR-A11Y-001
 
 ## Card detail and trust
 

@@ -870,6 +870,12 @@ export default function SearchPrototype({
                       <Link href={detailHref} className={styles.cardDetailLink}>
                         詳細を見る <span>→</span>
                       </Link>
+                      <Link
+                        href={`/favorites?add=${card.id}`}
+                        className={styles.favoriteLink}
+                      >
+                        ☆ 一時お気に入りに追加
+                      </Link>
                       <button
                         type="button"
                         className={selected ? styles.compareSelected : ""}

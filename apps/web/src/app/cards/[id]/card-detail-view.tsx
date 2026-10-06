@@ -500,6 +500,12 @@ export default function CardDetailView({
             <h1 id="card-title">{detail.name}</h1>
             <h2>{detail.catchCopy}</h2>
             <p className={styles.summary}>{detail.summary}</p>
+            <Link
+              href={`/favorites?add=${detail.id}`}
+              className={styles.favoriteAction}
+            >
+              ☆ このカードを一時お気に入りに追加
+            </Link>
 
             <ul className={styles.quickFacts}>
               <li>

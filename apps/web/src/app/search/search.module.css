@@ -1809,6 +1809,19 @@
   color: var(--yellow);
 }
 
+.favoriteLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.62rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  color: var(--navy);
+  background: white;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
 .resultActions > button {
   border: 2px solid var(--navy);
   border-radius: 999px;
@@ -2030,7 +2043,7 @@
 
   .resultActions {
     grid-column: 3 / -1;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 180px 220px 1fr;
     align-items: center;
   }
 }

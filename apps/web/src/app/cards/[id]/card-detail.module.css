@@ -544,6 +544,19 @@
   line-height: 1.8;
 }
 
+.favoriteAction {
+  width: fit-content;
+  margin-top: 0.9rem;
+  display: inline-flex;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  color: var(--navy);
+  background: white;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .quickFacts {
   margin-top: 1.2rem;
   display: grid;

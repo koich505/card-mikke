@@ -1,0 +1,588 @@
+.page {
+  --navy: #09254c;
+  --navy-2: #123b6d;
+  --yellow: #ffd943;
+  --red: #a61f39;
+  --ink-soft: #526076;
+  --line: #d9e0e9;
+  min-height: 100vh;
+  color: var(--navy);
+  background:
+    radial-gradient(circle at 95% 8%, rgb(255 217 67 / 25%), transparent 24rem), #f7f5ef;
+}
+
+.skipLink {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  color: white;
+  background: var(--navy);
+  transform: translateY(-180%);
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
+.breadcrumbs,
+.hero,
+.statusRow,
+.storagePanel,
+.listSection,
+.suggestion {
+  width: min(1180px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.breadcrumbs {
+  padding-block: 1.2rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  gap: 0.55rem;
+  list-style: none;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  margin-left: 0.55rem;
+  color: #8994a4;
+  content: "/";
+}
+
+.breadcrumbs a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 3px solid var(--navy);
+  border-radius: 28px;
+  background: linear-gradient(125deg, white 0 62%, #fff0a8 100%);
+  box-shadow: 8px 8px 0 #d9d3c5;
+}
+
+.kicker,
+.sectionHeading p,
+.suggestion > div > p,
+.transferDialog > p:first-child {
+  color: var(--red);
+  font-size: 0.74rem;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+}
+
+.hero h1 {
+  max-width: 740px;
+  margin-top: 0.5rem;
+  font-size: clamp(2rem, 5vw, 4.1rem);
+  letter-spacing: -0.06em;
+  line-height: 1.08;
+}
+
+.hero > div:first-child > p:last-child {
+  max-width: 700px;
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.countPanel {
+  min-width: 170px;
+  padding: 1.1rem;
+  border-radius: 20px;
+  color: white;
+  background: var(--navy);
+  text-align: center;
+}
+
+.countPanel strong {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.countPanel span {
+  font-weight: 900;
+}
+
+.countPanel small {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--yellow);
+  font-weight: 900;
+}
+
+.statusRow {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  background: white;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.statusRow button {
+  flex: none;
+  padding: 0.55rem 0.8rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  background: var(--yellow);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.storagePanel {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr) auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.4rem;
+  border: 2px solid var(--navy);
+  border-radius: 18px;
+  background: #fff9df;
+}
+
+.storagePanel[data-mode="account"] {
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  background: #eaf4ff;
+}
+
+.storagePanel > div > p {
+  color: var(--red);
+  font-size: 0.7rem;
+  font-weight: 1000;
+}
+
+.storagePanel h2 {
+  margin-top: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.storagePanel ul {
+  padding-left: 1.1rem;
+  color: #354760;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.75;
+}
+
+.storagePanel > p {
+  color: #354760;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.storagePanel > button,
+.suggestion > button {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  color: white;
+  background: var(--navy);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.listSection {
+  padding-block: clamp(2.5rem, 6vw, 5rem);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.sectionHeading h2 {
+  margin-top: 0.25rem;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+}
+
+.sectionHeading > a {
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.favoriteGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.favoriteCard {
+  min-width: 0;
+  padding: 1rem;
+  border: 2px solid var(--navy);
+  border-radius: 18px;
+  background: white;
+  box-shadow: 4px 4px 0 #ded8cb;
+}
+
+.cardTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cardTopline > span {
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  color: white;
+  background: var(--red);
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.cardTopline button {
+  border: 0;
+  color: var(--navy-2);
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.cardVisual {
+  aspect-ratio: 1.586 / 1;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 14px;
+  color: white;
+  background: linear-gradient(135deg, #0d315f, #46698e);
+  box-shadow: 0 8px 18px rgb(9 37 76 / 18%);
+}
+
+.cardVisual[data-accent="red"] {
+  background: linear-gradient(135deg, #9c1731, #e04a63);
+}
+
+.cardVisual[data-accent="teal"] {
+  background: linear-gradient(135deg, #075c66, #2e9ca1);
+}
+
+.cardVisual small {
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.cardVisual strong {
+  font-size: 1rem;
+}
+
+.favoriteCard h3 {
+  margin-top: 1rem;
+  font-size: 1.15rem;
+}
+
+.favoriteCard > p {
+  margin-top: 0.2rem;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.favoriteCard dl {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.favoriteCard dl > div {
+  padding: 0.65rem;
+  border-radius: 10px;
+  background: #f1f4f8;
+}
+
+.favoriteCard dt {
+  color: var(--ink-soft);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.favoriteCard dd {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.cardState {
+  margin-top: 0.75rem;
+  padding: 0.65rem;
+  border-left: 4px solid #2d6f66;
+  background: #e8f6f2;
+}
+
+.cardState[data-state="under_review"] {
+  border-color: #b6672d;
+  background: #fff0df;
+}
+
+.cardState strong,
+.cardState small {
+  display: block;
+  font-size: 0.66rem;
+}
+
+.cardState small {
+  margin-top: 0.25rem;
+  color: var(--ink-soft);
+}
+
+.favoriteCard > a {
+  margin-top: 0.85rem;
+  display: block;
+  padding: 0.65rem;
+  border-radius: 999px;
+  color: white;
+  background: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.emptyState {
+  padding: 3rem 1rem;
+  border: 2px dashed #9eaabc;
+  border-radius: 18px;
+  background: white;
+  text-align: center;
+}
+
+.emptyState > span {
+  font-size: 3rem;
+}
+
+.emptyState h3 {
+  margin-top: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.emptyState p {
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+}
+
+.emptyState a {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  color: white;
+  background: var(--navy);
+  font-weight: 900;
+}
+
+.representativeState {
+  padding: 2rem 1rem;
+  border: 2px dashed #9eaabc;
+  border-radius: 18px;
+  background: white;
+  text-align: center;
+}
+
+.representativeState strong {
+  font-size: 1.1rem;
+}
+
+.representativeState p {
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fixtureNote {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.suggestion {
+  margin-bottom: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem;
+  border: 2px solid var(--navy);
+  border-radius: 18px;
+  background: var(--yellow);
+}
+
+.suggestion h2 {
+  margin-top: 0.25rem;
+  font-size: 1.3rem;
+}
+
+.suggestion span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem max(1rem, calc((100% - 1180px) / 2));
+  border-top: 2px solid #d5a900;
+  background: linear-gradient(100deg, #fff8d6, var(--yellow));
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.footer > a {
+  font-size: 1rem;
+  font-weight: 1000;
+}
+
+.footer nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.dialogBackdrop {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(9 37 76 / 68%);
+}
+
+.transferDialog {
+  width: min(560px, 100%);
+  padding: clamp(1.2rem, 4vw, 2rem);
+  border: 3px solid var(--navy);
+  border-radius: 20px;
+  background: white;
+  box-shadow: 10px 10px 0 rgb(255 217 67 / 85%);
+}
+
+.transferDialog h2 {
+  margin-top: 0.4rem;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+}
+
+.transferDialog > p:not(:first-child) {
+  margin-top: 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.dialogActions {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.dialogActions button {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  color: var(--navy);
+  background: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.dialogActions button:first-child {
+  color: white;
+  background: var(--navy);
+}
+
+@media (max-width: 820px) {
+  .hero,
+  .storagePanel,
+  .storagePanel[data-mode="account"] {
+    grid-template-columns: 1fr;
+  }
+
+  .countPanel {
+    justify-self: start;
+  }
+
+  .favoriteGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .breadcrumbs,
+  .hero,
+  .statusRow,
+  .storagePanel,
+  .listSection,
+  .suggestion {
+    width: calc(100% - 1rem);
+  }
+
+  .hero {
+    padding: 1.25rem;
+    border-radius: 20px;
+    box-shadow: 4px 4px 0 #d9d3c5;
+  }
+
+  .hero h1 {
+    font-size: 2.15rem;
+  }
+
+  .countPanel {
+    width: 100%;
+  }
+
+  .statusRow,
+  .sectionHeading,
+  .suggestion {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .favoriteGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestion > button {
+    width: 100%;
+  }
+
+  .footer nav {
+    flex-wrap: wrap;
+  }
+}

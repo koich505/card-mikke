@@ -1,6 +1,6 @@
 # Screen Inventory
 
-Status: Article detail v0.8, Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Status: Favorites v0.9, Article detail v0.8, Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -22,7 +22,7 @@ Last updated: 2026-10-06
 | SCR-PUB-006 | 記事一覧 | 公開済み記事をフリーワード、複数タグ（すべて含む）、記事種別、新着／更新順で探し、更新確認中の旧記事を識別する | Primary mock implemented in v0.6 | FR-007, FR-031, FR-041, AC-043 |
 | SCR-PUB-007 | 用途別記事 | 対象読者、選定理由、候補、根拠を理解する | Supporting mock implemented in v0.8 | FR-007–FR-009, FR-019, AC-015, AC-016 |
 | SCR-PUB-008 | 単一カード特集 | 特徴、変更点、条件、確認時点、Sourceを理解する | Supporting mock implemented in v0.8 | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |
-| SCR-PUB-009 | お気に入り | 一時お気に入りとAccount保存を区別して候補へ戻る | Supporting mock | FR-030, AC-013 |
+| SCR-PUB-009 | お気に入り | 一時お気に入りとAccount保存を区別して候補へ戻る | Supporting mock implemented in v0.9 | FR-030, AC-013 |
 | SCR-PUB-010 | 掲載範囲・サイト方針 | Coverage、算定方法、更新、広告・Affiliate方針を確認する | Supporting mock | FR-019, FR-027, AC-015, AC-019, AC-038 |
 | SCR-PUB-011 | 誤情報指摘Form | Loginなしで対象と根拠を安全に送信するUIを検証する | Supporting mock implemented in v0.6 | FR-026, NFR-SEC-004, AC-023 |
 | SCR-PUB-012 | 誤情報指摘受付完了 | 合成受付番号と連絡条件を確認する | Supporting mock implemented in v0.6 | FR-026, AC-023 |
@@ -98,6 +98,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 
 ## Current open screen decisions
 
+- お気に入りは未登録時の一時保存とAccount保存を同一画面で明示的に分離し、Account登録時はDialogで同意した場合だけ引き継ぐ方針をv0.9で採用した。
 - 用途別記事と単一カード特集は記事一覧の独立した記事種別として分類し、記事詳細では対象読者／対象カードを先頭で明示する方針をv0.8で採用した。
 - 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 
