@@ -9,7 +9,8 @@ import styles from "./ops.module.css";
 const navigation = [
   { href: "/ops", label: "運営Dashboard", active: true },
   { href: "/ops/changes", label: "カード情報差分", active: true },
-  { href: "", label: "記事Draft", active: false },
+  { href: "/ops/card-images", label: "券面画像", active: true },
+  { href: "/ops/articles", label: "記事Draft", active: true },
   { href: "", label: "Review Moderation", active: false },
   { href: "", label: "誤情報指摘", active: false },
   { href: "", label: "業務情報", active: false },
@@ -22,11 +23,13 @@ export function OpsShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuCloseRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!menuOpen) return;
+    window.setTimeout(() => menuCloseRef.current?.focus(), 0);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -42,6 +45,7 @@ export function OpsShell({ children }: { children: ReactNode }) {
         return;
       }
       setMenuOpen(false);
+      window.setTimeout(() => menuButtonRef.current?.focus(), 0);
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -106,7 +110,10 @@ export function OpsShell({ children }: { children: ReactNode }) {
             key={item.label}
             aria-current={
               pathname === item.href ||
-              (item.href === "/ops/changes" && pathname.startsWith("/ops/changes/"))
+              (item.href === "/ops/changes" && pathname.startsWith("/ops/changes/")) ||
+              (item.href === "/ops/card-images" &&
+                pathname.startsWith("/ops/card-images")) ||
+              (item.href === "/ops/articles" && pathname.startsWith("/ops/articles"))
                 ? "page"
                 : undefined
             }
@@ -187,7 +194,9 @@ export function OpsShell({ children }: { children: ReactNode }) {
         >
           <div className={styles.dialogHeader}>
             <strong id="mobile-ops-menu-heading">運営管理メニュー</strong>
-            <button onClick={() => closeMobileMenu()}>閉じる</button>
+            <button ref={menuCloseRef} onClick={() => closeMobileMenu()}>
+              閉じる
+            </button>
           </div>
           {navItems}
           <div className={styles.mobileScenarioActions}>

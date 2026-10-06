@@ -3,7 +3,14 @@ import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
   currentPage:
-    "home" | "search" | "card" | "article" | "favorite" | "account" | "report";
+    | "home"
+    | "search"
+    | "card"
+    | "article"
+    | "favorite"
+    | "policy"
+    | "account"
+    | "report";
 };
 
 export default function SiteHeader({ currentPage }: SiteHeaderProps) {
@@ -44,7 +51,14 @@ export default function SiteHeader({ currentPage }: SiteHeaderProps) {
             お気に入り
           </Link>
           <Link
-            href="/account/profile"
+            href="/policy"
+            className={styles.navPolicy}
+            aria-current={currentPage === "policy" ? "page" : undefined}
+          >
+            掲載方針
+          </Link>
+          <Link
+            href="/account/login"
             className={styles.navAccount}
             aria-current={currentPage === "account" ? "page" : undefined}
           >

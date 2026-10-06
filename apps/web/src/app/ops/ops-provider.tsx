@@ -15,7 +15,8 @@ import type {
   PrototypeOpsSourceChange,
 } from "@/types/ops-prototype";
 
-type LoginResult = { ok: true } | { ok: false; message: string };
+type LoginResult =
+  { ok: true } | { ok: false; message: string; field?: "email" | "password" | "code" };
 
 type OpsContextValue = {
   authState: PrototypeOpsAuthState;
@@ -172,10 +173,18 @@ export function OpsProvider({ children }: { children: ReactNode }) {
 
   const reauthenticate = (password: string, code: string): LoginResult => {
     if (password.length < 12) {
-      return { ok: false, message: "Passwordは12文字以上で入力してください。" };
+      return {
+        ok: false,
+        message: "Passwordは12文字以上で入力してください。",
+        field: "password",
+      };
     }
     if (!/^\d{6}$/.test(code)) {
-      return { ok: false, message: "6桁の合成MFAコードを入力してください。" };
+      return {
+        ok: false,
+        message: "6桁の合成MFAコードを入力してください。",
+        field: "code",
+      };
     }
     setLastReauthenticatedAt(timestamp());
     setReauthenticationState("fresh");

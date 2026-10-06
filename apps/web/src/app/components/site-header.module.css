@@ -93,8 +93,14 @@
   background: rgb(255 255 255 / 35%);
 }
 
+.primaryNav .navPolicy {
+  border: 1px solid rgb(9 37 76 / 28%);
+  background: rgb(255 255 255 / 35%);
+}
+
 .navAccount[aria-current="page"],
-.navFavorite[aria-current="page"] {
+.navFavorite[aria-current="page"],
+.navPolicy[aria-current="page"] {
   color: white;
   border-color: #09254c;
   background: #09254c;
@@ -110,7 +116,7 @@
 }
 
 @media (max-width: 980px) {
-  .primaryNav > a:not(.navSearch):not(.navFavorite):not(.navAccount) {
+  .primaryNav > a:not(.navSearch):not(.navFavorite):not(.navPolicy):not(.navAccount) {
     display: none;
   }
 }
@@ -146,30 +152,39 @@
 
   .primaryNav {
     width: 100%;
+    min-width: 0;
+    gap: 0.15rem;
   }
 
   .primaryNav .navSearch,
   .primaryNav .navFavorite,
+  .primaryNav .navPolicy,
   .primaryNav .navAccount {
     min-width: 0;
     flex: 1;
+    padding-inline: 0.3rem;
     justify-content: center;
     text-align: center;
   }
 
   .primaryNav .navSearch {
-    padding: 0.6rem 0.75rem;
+    padding: 0.6rem 0.55rem;
     font-size: 0.66rem;
   }
 
   .primaryNav .navAccount {
-    padding: 0.55rem 0.65rem;
+    padding: 0.55rem 0.45rem;
     font-size: 0.66rem;
   }
 
   .primaryNav .navFavorite {
-    padding: 0.55rem 0.45rem;
+    padding: 0.55rem 0.35rem;
     font-size: 0.66rem;
+  }
+
+  .primaryNav .navPolicy {
+    padding: 0.55rem 0.35rem;
+    font-size: 0.62rem;
   }
 
   .navSearch span {

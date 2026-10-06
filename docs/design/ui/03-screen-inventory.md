@@ -1,6 +1,6 @@
 # Screen Inventory
 
-Status: Favorites v0.9, Article detail v0.8, Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -23,7 +23,7 @@ Last updated: 2026-10-06
 | SCR-PUB-007 | 用途別記事 | 対象読者、選定理由、候補、根拠を理解する | Supporting mock implemented in v0.8 | FR-007–FR-009, FR-019, AC-015, AC-016 |
 | SCR-PUB-008 | 単一カード特集 | 特徴、変更点、条件、確認時点、Sourceを理解する | Supporting mock implemented in v0.8 | FR-007–FR-009, FR-019, FR-031, AC-015, AC-016 |
 | SCR-PUB-009 | お気に入り | 一時お気に入りとAccount保存を区別して候補へ戻る | Supporting mock implemented in v0.9 | FR-030, AC-013 |
-| SCR-PUB-010 | 掲載範囲・サイト方針 | Coverage、算定方法、更新、広告・Affiliate方針を確認する | Supporting mock | FR-019, FR-027, AC-015, AC-019, AC-038 |
+| SCR-PUB-010 | 掲載範囲・サイト方針 | Coverage、算定方法、更新、広告・Affiliate方針を確認する | Supporting mock implemented in v1.0 | FR-019, FR-027, AC-015, AC-019, AC-038 |
 | SCR-PUB-011 | 誤情報指摘Form | Loginなしで対象と根拠を安全に送信するUIを検証する | Supporting mock implemented in v0.6 | FR-026, NFR-SEC-004, AC-023 |
 | SCR-PUB-012 | 誤情報指摘受付完了 | 合成受付番号と連絡条件を確認する | Supporting mock implemented in v0.6 | FR-026, AC-023 |
 
@@ -31,7 +31,7 @@ Last updated: 2026-10-06
 
 | ID | Screen | Purpose | Mock priority | Primary traceability |
 |---|---|---|---|---|
-| SCR-ACC-001 | Login・登録 | 保存・履歴の価値を理解して任意にAccountを利用する | Inventory only | FR-001, AC-003 |
+| SCR-ACC-001 | Login・登録 | 保存・履歴の価値を理解して任意にAccountを利用する | Supporting mock implemented in v1.0 | FR-001, AC-003 |
 | SCR-ACC-002 | Profile | 年間利用額、利用先、必要最小限の属性を章ごとに保存・更新する | Primary mock implemented in v0.3 | FR-002, FR-003, AC-002 |
 | SCR-ACC-003 | 検索・比較履歴 | 当時の結果と最新再計算を区別して確認する | Primary mock implemented in v0.4 | FR-011, AC-022 |
 | SCR-ACC-004 | Account・データ管理 | Profile、履歴、Account削除と保持例外を確認する | Primary mock implemented in v0.4 | FR-025, NFR-PRIV-003, NFR-PRIV-004, AC-004 |
@@ -46,8 +46,8 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | SCR-OPS-013 | 公式Source差分一覧 | Source変更Revisionと対象カードごとに未処理・処理中・完了・確認不能を検索、絞り込みする | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
 | SCR-OPS-002 | カード情報差分の確認・編集 | 前回値、候補、Evidenceを確認し、同一画面で編集・Draft保存・判断確定する | Primary mock v0.3 | FR-022, FR-032, FR-033, FR-034 |
 | SCR-OPS-003 | カード情報編集・承認 | SCR-OPS-002へ統合 | Integrated into SCR-OPS-002 | FR-022, FR-032 |
-| SCR-OPS-004 | 券面画像確認・承認 | Source、条件、代替Text、履歴、状態を確認する | Inventory only | FR-035, AC-027 |
-| SCR-OPS-005 | 記事Draft編集・承認 | AI Draftを確認・編集し、人間承認後だけ公開する | Inventory only | FR-008, FR-009, FR-031 |
+| SCR-OPS-004 | 券面画像確認・承認 | Source、条件、代替Text、履歴、状態を確認する | Supporting mock implemented in v1.0 | FR-035, AC-027 |
+| SCR-OPS-005 | 記事Draft編集・承認 | AI Draftを確認・編集し、人間承認後だけ公開する | Supporting mock implemented in v1.0 | FR-008, FR-009, FR-031 |
 | SCR-OPS-006 | Review Moderation | Review本文、AI検査、状態を確認し承認・却下する | Inventory only | FR-036, FR-037, AC-028, AC-029 |
 | SCR-OPS-007 | 誤情報指摘管理 | 指摘、公式Source、状態、判断理由を管理する | Inventory only | FR-026, AC-023 |
 | SCR-OPS-008 | 業務情報管理 | カテゴリ、企業Service、換算基準、Campaign等を管理する | Inventory only | FR-032, AC-018 |
@@ -99,6 +99,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 ## Current open screen decisions
 
 - お気に入りは未登録時の一時保存とAccount保存を同一画面で明示的に分離し、Account登録時はDialogで同意した場合だけ引き継ぐ方針をv0.9で採用した。
+- 掲載方針、利用者認証、券面画像、記事Draftの詳細Flowをv1.0でUI-only Mock化した。実数値、実認証、実Asset、公開・永続化は対象外とする。
 - 用途別記事と単一カード特集は記事一覧の独立した記事種別として分類し、記事詳細では対象読者／対象カードを先頭で明示する方針をv0.8で採用した。
 - 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 

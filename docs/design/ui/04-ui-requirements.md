@@ -1,6 +1,6 @@
 # UI Requirements
 
-Status: Favorites v0.9 and Article detail v0.8 implemented; earlier UI mock approvals tracked separately
+Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented; approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
 Last updated: 2026-10-06
 
@@ -325,6 +325,24 @@ Last updated: 2026-10-06
 - 月間入力は年額へ換算し、使い道合計が総利用額を超える場合は適用を停止して修正理由を表示する。
 - 詳細内のカスタム条件はBrowser Memory内だけで扱い、プロフィール更新、保存、外部送信を行わない。
 
+## Coverage and user authentication
+
+### UIR-COVERAGE-001: 掲載範囲・Policy
+
+- 掲載会社、Product / Offering単位の掲載カード、一般申込Route確認済み候補を、集計単位・対象範囲・未対応範囲・最終確認日とともに示す。
+- 全件網羅を断定せず、算定の入力・公式Source・対象外・仮定、更新確認、訂正導線を説明する。
+- 広告・PR、Affiliate報酬と順位・選定の分離、申込条件差、非保証、申込前の公式確認を明示する。
+- 合成数値を実Coverageとして扱わず、UI-onlyであることを示す。
+- Traceability: FR-019, FR-027, AC-015, AC-019, AC-038
+
+### UIR-AUTH-001: 利用者Login・登録
+
+- Accountは任意で、未登録の検索・比較導線と、Profile・明示保存・お気に入り継続保存の価値を同時に示す。
+- メール・PasswordのLogin／登録、メール確認、Password再設定、Google認証の合成状態を操作できる。
+- 同一メールのGoogle Accountを自動統合せず、既存Account Loginと本人確認を求める。唯一のLogin方法を失うGoogle連携解除は拒否する説明を示す。
+- Passwordは12文字以上、合成`.invalid`メールだけを受け付け、認証・メール送信・Credential保存・外部通信を行わない。
+- Traceability: FR-001, FR-010, NFR-SEC-001, AC-001, AC-003
+
 ## Operations
 
 ### UIR-OPS-001: 管理者認証とSession
@@ -382,6 +400,23 @@ Last updated: 2026-10-06
 - 全管理Routeへ一意なTitleと`noindex, nofollow`を設定する。
 - KeyboardだけでLogin、MFA、Navigation、Draft保存、再認証、承認、Session失効を完了できる。
 - Traceability: NFR-A11Y-001, NFR-SEO-001, NFR-COMPAT-001, AC-039
+
+### UIR-OPS-006: 券面画像確認・承認
+
+- AI取得画像は未公開Draftとし、CSS合成券面、カード名称、Brand・Variant、Source、取得日、利用条件、適用期間、代替Text、既存との差分を確認する。
+- 利用許諾／公式利用条件または代替Textが未確認なら公開承認をBlockする。Draft保存と公開承認を分け、公開承認はPassword＋MFA再認証後だけ完了する。
+- 差替え・無効化で旧画像を上書きせず履歴を表示する。画像変更からProduct等の同一性を推論しない。
+- 却下理由を必須とし、画像本体30日、Source・取得日・理由metadata 3年の保持境界を示す。
+- Traceability: FR-035, NFR-SEC-003, NFR-SEC-007, AC-027, AC-040
+
+### UIR-OPS-007: 記事Draft編集・承認
+
+- AI Service / Model / Version、Template Revision、入力Revision、Evidence、生成時点を未承認Draftに表示し、公開中旧版を自動更新しない。
+- 本文編集・Draft保存と、二軸の評価基準・対象／除外・配置理由の確認を分ける。基準編集後は全配置の再検証まで承認をBlockする。
+- Script、Event Handler、危険URL、外部埋込を公開前Validationで拒否する。
+- 本文と二軸配置の明示確認、Draft保存、Validation、Password＋MFA再認証のすべてが揃った場合だけUI-only承認を完了する。
+- 編集、保存、再検証、承認を別Eventとして合成監査Timelineへ示し、外部公開・永続化しない。
+- Traceability: FR-008, FR-009, FR-031, FR-039, NFR-SEC-003, NFR-SEC-007, NFR-SEC-008, AC-016, AC-040
 
 ## Correction report
 

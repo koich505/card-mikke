@@ -1,6 +1,6 @@
 # UI Scope
 
-Status: Favorites v0.9, Article detail v0.8, Comparison v0.7, Correction report v0.6, Article list v0.6 and Operations v0.3 implemented in UI-only mode; human UI approvals pending
+Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -33,9 +33,13 @@ Last updated: 2026-10-06
 - 特集記事一覧、フリーワード検索、複数タグ（すべて含む）・記事種別による絞り込み、新着／更新順、0件と更新確認中
 - 広告・Affiliate関係と申込前の公式確認
 - Login不要の誤情報指摘Form
+- 掲載範囲・算定・更新・広告／Affiliate方針
+- 任意の利用者Login・登録・メール確認・再設定・Google連携境界
 - Loading、Empty、Error、Partial等の一般画面状態
 - Desktop / Mobile、Keyboard、Focus、Semantic HTML、WCAG 2.2 AA目標
 - 運営者のLogin、MFA、Session確認・失効、および高Risk操作前の再認証
+- 券面画像Draftの許諾・条件・代替Text・履歴確認と承認／却下
+- 記事Draftの本文・二軸配置編集、再検証、承認
 - 運営Dashboardから、公式Source差分をclaim単位で確認・編集・承認する主要業務Flow
 - AI・Source・利用者入力を未信頼Dataとして扱い、承認前Draftと公開済み情報を分離する表示
 

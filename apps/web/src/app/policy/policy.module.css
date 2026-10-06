@@ -1,0 +1,236 @@
+.page {
+  min-height: 100vh;
+  background: #f8f6ef;
+  color: var(--color-navy);
+}
+.skipLink {
+  position: fixed;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  background: var(--color-navy);
+  transform: translateY(-160%);
+}
+.skipLink:focus {
+  transform: none;
+}
+.breadcrumbs,
+.page main > section,
+.hero,
+.localNav {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+.breadcrumbs {
+  display: flex;
+  gap: 0.55rem;
+  padding: 1.2rem 0;
+  font-weight: 700;
+}
+.hero {
+  padding: clamp(2rem, 6vw, 5rem);
+  background: #fff;
+  border: 3px solid var(--color-navy);
+  border-radius: 1.5rem;
+  box-shadow: 8px 8px 0 #ffd83d;
+}
+.hero > p:first-child,
+.heading > p {
+  color: #a82643;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+.hero h1 {
+  max-width: 16ch;
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  line-height: 1.05;
+}
+.hero > p:not(:first-child) {
+  max-width: 48rem;
+  color: #56657b;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+.hero > span {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.45rem 0.7rem;
+  background: #fff6cd;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.localNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 1.5rem 0;
+}
+.localNav a {
+  padding: 0.65rem 0.9rem;
+  background: #092f61;
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 800;
+}
+.section {
+  scroll-margin-top: 1rem;
+  margin-top: 1rem !important;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  background: #fff;
+  border: 2px solid #12355e;
+  border-radius: 1.25rem;
+}
+.heading {
+  margin-bottom: 1.25rem;
+}
+.heading h2 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+.metrics article {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.2rem;
+  background: #eef3f8;
+  border-radius: 1rem;
+}
+.metrics strong {
+  font-size: 2.1rem;
+}
+.metrics small,
+.subtle {
+  color: #617087;
+  line-height: 1.6;
+}
+.notice {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #fff3d0;
+  border-left: 5px solid #d99d00;
+}
+.notice p {
+  margin-top: 0.35rem;
+  line-height: 1.7;
+}
+.definitionList > div {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #dce2ea;
+}
+.definitionList dt {
+  font-weight: 800;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+}
+.steps li {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f2f6fa;
+  border: 1px solid #d7e0ea;
+  border-radius: 0.8rem;
+  line-height: 1.6;
+}
+.steps span,
+.twoColumns p {
+  color: #5d6b7d;
+}
+.twoColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.twoColumns article {
+  padding: 1.1rem;
+  background: #f6f7f9;
+  border-radius: 0.8rem;
+}
+.twoColumns p {
+  margin-top: 0.4rem;
+  line-height: 1.7;
+}
+.action {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  color: #fff;
+  background: #092f61;
+  border-radius: 0.7rem;
+  font-weight: 800;
+}
+.checkList {
+  display: grid;
+  gap: 0.8rem;
+  list-style: none;
+}
+.checkList li {
+  padding-left: 2rem;
+  line-height: 1.7;
+}
+.checkList li:before {
+  content: "✓";
+  margin-left: -2rem;
+  margin-right: 0.7rem;
+  color: #14745a;
+  font-weight: 900;
+}
+.disclaimer {
+  margin-bottom: 4rem !important;
+  background: #092f61;
+  color: #fff;
+}
+.disclaimer .heading > p {
+  color: #ffda43;
+}
+.disclaimer p {
+  line-height: 1.8;
+}
+.footer {
+  display: grid;
+  gap: 0.7rem;
+  padding: 2rem clamp(1rem, 6vw, 5rem);
+  background: #ffe477;
+  border-top: 2px solid #cda400;
+}
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-weight: 800;
+}
+@media (max-width: 760px) {
+  .metrics,
+  .steps,
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+  .definitionList > div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+  .hero {
+    padding: 1.5rem;
+  }
+  .localNav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .localNav a {
+    text-align: center;
+    font-size: 0.82rem;
+  }
+}
