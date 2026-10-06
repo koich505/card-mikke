@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import SiteHeader from "@/app/components/site-header";
-import { resolveCorrectionReportTarget } from "@/fixtures/correction-report";
-import CorrectionReportForm from "./correction-report-form";
+import CorrectionReportContent from "./correction-report-content";
 import styles from "./correction-report.module.css";
 
 export const metadata: Metadata = {
@@ -12,24 +12,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-
-const singleValue = (value: string | string[] | undefined) =>
-  typeof value === "string" ? value : undefined;
-
-export default async function CorrectionReportPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const query = await searchParams;
-  const target = resolveCorrectionReportTarget(
-    singleValue(query.targetType),
-    singleValue(query.targetId),
-  );
-  const requestedItem = singleValue(query.item)?.trim();
-  const initialItem = (requestedItem || target?.defaultItem || "").slice(0, 100);
-
+export default function CorrectionReportPage() {
   return (
     <div className={styles.page}>
       <a className={styles.skipLink} href="#correction-report-main">
@@ -47,19 +30,9 @@ export default async function CorrectionReportPage({
           </ol>
         </nav>
 
-        {target ? (
-          <CorrectionReportForm target={target} initialItem={initialItem} />
-        ) : (
-          <section className={styles.invalidTarget} aria-labelledby="invalid-title">
-            <span aria-hidden="true">?</span>
-            <p>REPORT TARGET</p>
-            <h1 id="invalid-title">対象の掲載情報を確認できませんでした</h1>
-            <p>
-              指摘したいカード・記事・公開ページへ戻り、その画面の「誤情報を指摘」からもう一度お進みください。
-            </p>
-            <Link href="/">トップページへ戻る</Link>
-          </section>
-        )}
+        <Suspense fallback={null}>
+          <CorrectionReportContent />
+        </Suspense>
       </main>
 
       <footer className={styles.footer}>

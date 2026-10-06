@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import SiteHeader from "@/app/components/site-header";
 import { prototypeSearchCards } from "@/fixtures/home";
@@ -14,7 +15,24 @@ type RemovedFavorite = {
   index: number;
 };
 
-export default function FavoritesView({
+export default function FavoritesView() {
+  const searchParams = useSearchParams();
+  const add = searchParams.get("add");
+  const initialAddId = prototypeSearchCards.some((card) => card.id === add)
+    ? (add as PrototypeCardId)
+    : null;
+
+  return (
+    <FavoritesViewContent
+      key={searchParams.toString()}
+      initialAddId={initialAddId}
+      initialLimitScenario={searchParams.get("scenario") === "limit"}
+      initialTransferOpen={searchParams.get("dialog") === "transfer"}
+    />
+  );
+}
+
+function FavoritesViewContent({
   initialAddId,
   initialLimitScenario,
   initialTransferOpen,

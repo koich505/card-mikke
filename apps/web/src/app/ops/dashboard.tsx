@@ -6,7 +6,7 @@ import { OpsShell } from "./ops-shell";
 import { useOps } from "./ops-provider";
 import styles from "./ops.module.css";
 
-type DashboardScenario = "default" | "loading" | "empty" | "error";
+export type DashboardScenario = "default" | "loading" | "empty" | "error";
 
 const kindLabel = {
   source_change: "Source差分",
@@ -15,7 +15,13 @@ const kindLabel = {
   article: "記事",
 } as const;
 
-export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
+export function OpsDashboard({
+  scenario,
+  onScenarioChange,
+}: {
+  scenario: DashboardScenario;
+  onScenarioChange?: (scenario: DashboardScenario) => void;
+}) {
   const { changes } = useOps();
   const queue = prototypeOpsQueue.filter(
     (item) => !item.actionable || changes[item.id]?.status !== "approved",
@@ -49,10 +55,21 @@ export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
         </div>
 
         <nav className={styles.scenarioLinks} aria-label="Dashboard状態確認">
-          <Link href="/ops">通常</Link>
-          <Link href="/ops?scenario=loading">Loading</Link>
-          <Link href="/ops?scenario=empty">Empty</Link>
-          <Link href="/ops?scenario=error">Error</Link>
+          <Link href="/ops" onClick={() => onScenarioChange?.("default")}>
+            通常
+          </Link>
+          <Link
+            href="/ops?scenario=loading"
+            onClick={() => onScenarioChange?.("loading")}
+          >
+            Loading
+          </Link>
+          <Link href="/ops?scenario=empty" onClick={() => onScenarioChange?.("empty")}>
+            Empty
+          </Link>
+          <Link href="/ops?scenario=error" onClick={() => onScenarioChange?.("error")}>
+            Error
+          </Link>
         </nav>
 
         {scenario === "loading" && (
@@ -70,7 +87,11 @@ export function OpsDashboard({ scenario }: { scenario: DashboardScenario }) {
             </span>
             <h2>作業キューを取得できませんでした</h2>
             <p>承認済み情報や公開内容は変更されていません。</p>
-            <Link className={styles.secondaryButton} href="/ops">
+            <Link
+              className={styles.secondaryButton}
+              href="/ops"
+              onClick={() => onScenarioChange?.("default")}
+            >
               再試行
             </Link>
           </section>

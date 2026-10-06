@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import type {
   PrototypeClaimDecision,
   PrototypeOpsClaimDiff,
@@ -17,14 +17,23 @@ const decisionLabel: Record<PrototypeClaimDecision, string> = {
   reject: "却下",
 };
 
-export function OpsChangeReview({
-  changeId,
-  returnQuery = "",
-}: {
-  changeId: string;
-  returnQuery?: string;
-}) {
+const subscribeToLocation = (onStoreChange: () => void) => {
+  window.addEventListener("popstate", onStoreChange);
+  return () => window.removeEventListener("popstate", onStoreChange);
+};
+
+const getReturnQuery = () =>
+  new URLSearchParams(window.location.search).get("return") ?? "";
+
+const getServerReturnQuery = () => "";
+
+export function OpsChangeReview({ changeId }: { changeId: string }) {
   const { changes, auditEvents, resolveClaim } = useOps();
+  const returnQuery = useSyncExternalStore(
+    subscribeToLocation,
+    getReturnQuery,
+    getServerReturnQuery,
+  );
   const change = changes[changeId];
   const [claims, setClaims] = useState<PrototypeOpsClaimDiff[]>(() =>
     structuredClone(change?.claims ?? []),

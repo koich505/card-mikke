@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { prototypeOpsQueue } from "@/fixtures/ops";
 import type { PrototypeOpsSourceChange } from "@/types/ops-prototype";
@@ -33,29 +33,28 @@ const statusLabel = {
   blocked: "確認不能",
 } as const;
 
-export function OpsChangesList({
-  initialParams,
-}: {
-  initialParams: Record<string, string | string[] | undefined>;
-}) {
+export function OpsChangesList() {
   const { changes } = useOps();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const filter = (
-    ["pending", "completed", "blocked", "all"].includes(String(initialParams.status))
-      ? initialParams.status
+    ["pending", "completed", "blocked", "all"].includes(
+      searchParams.get("status") ?? "",
+    )
+      ? searchParams.get("status")
       : "pending"
   ) as Filter;
   const sort = (
-    ["newest", "oldest", "priority"].includes(String(initialParams.sort))
-      ? initialParams.sort
+    ["newest", "oldest", "priority"].includes(searchParams.get("sort") ?? "")
+      ? searchParams.get("sort")
       : "newest"
   ) as Sort;
   const scenario = (
-    ["loading", "error", "empty"].includes(String(initialParams.scenario))
-      ? initialParams.scenario
+    ["loading", "error", "empty"].includes(searchParams.get("scenario") ?? "")
+      ? searchParams.get("scenario")
       : "default"
   ) as Scenario;
-  const query = typeof initialParams.q === "string" ? initialParams.q : "";
+  const query = searchParams.get("q") ?? "";
 
   const setParams = (patch: Record<string, string>) => {
     const next = new URLSearchParams();

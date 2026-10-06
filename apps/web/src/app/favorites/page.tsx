@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { prototypeSearchCards } from "@/fixtures/home";
-import type { PrototypeCardId } from "@/types/ui-prototype";
+import { Suspense } from "react";
 import FavoritesView from "./favorites-view";
 
 export const metadata: Metadata = {
@@ -11,19 +10,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function FavoritesPage({ searchParams }: PageProps<"/favorites">) {
-  const rawSearchParams = await searchParams;
-  const rawAdd = rawSearchParams.add;
-  const add = Array.isArray(rawAdd) ? rawAdd[0] : rawAdd;
-  const initialAddId = prototypeSearchCards.some((card) => card.id === add)
-    ? (add as PrototypeCardId)
-    : null;
-
+export default function FavoritesPage() {
   return (
-    <FavoritesView
-      initialAddId={initialAddId}
-      initialLimitScenario={rawSearchParams.scenario === "limit"}
-      initialTransferOpen={rawSearchParams.dialog === "transfer"}
-    />
+    <Suspense fallback={null}>
+      <FavoritesView />
+    </Suspense>
   );
 }
