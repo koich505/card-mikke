@@ -266,6 +266,82 @@
 .dialog::backdrop {
   background: rgb(8 27 52 / 55%);
 }
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+.metrics > div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  background: #eef3f8;
+  border-radius: 0.6rem;
+}
+.metrics strong {
+  font-size: 1.25rem;
+}
+.metrics small {
+  color: #617087;
+}
+.reviewBody {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #d6dee8;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  line-height: 1.75;
+}
+.signalList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.7rem 0;
+  padding: 0;
+  list-style: none;
+}
+.signalList li {
+  padding: 0.3rem 0.55rem;
+  color: #753b0d;
+  background: #fff4df;
+  border: 1px solid #e3bd88;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.radioGroup {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0;
+  border: 0;
+}
+.radioGroup label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.7rem;
+  border: 1px solid #d3dbe5;
+  border-radius: 0.55rem;
+  background: #f8fafc;
+  font-weight: 700;
+}
+.notice {
+  margin: 0.8rem 0;
+  padding: 0.8rem;
+  border: 1px solid #b9cae0;
+  border-radius: 0.55rem;
+  background: #edf5ff;
+  line-height: 1.6;
+}
+.notice strong,
+.notice small {
+  display: block;
+}
+.notice small {
+  margin-top: 0.25rem;
+  color: #58677a;
+}
 @media (max-width: 900px) {
   .grid,
   .layout,
@@ -273,6 +349,9 @@
     grid-template-columns: 1fr;
   }
   .metaCards {
+    grid-template-columns: 1fr 1fr;
+  }
+  .metrics {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -286,6 +365,9 @@
     gap: 0.2rem;
   }
   .metaCards {
+    grid-template-columns: 1fr;
+  }
+  .metrics {
     grid-template-columns: 1fr;
   }
   .actions > * {

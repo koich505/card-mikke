@@ -1,5 +1,15 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+const openSaveDialog = async (page: Page) => {
+  await page.getByRole("button", { name: "検索条件を保存" }).click();
+  const prompt = page.getByRole("dialog", {
+    name: "保存するにはAccountが必要です",
+  });
+  await expect(prompt.getByRole("button", { name: "今回は保存しない" })).toBeFocused();
+  await prompt.getByRole("button", { name: /登録済みとして保存Flowを確認/ }).click();
+  return page.getByRole("dialog", { name: "検索条件を保存" });
+};
 
 test.describe("検索・比較の明示保存UIモック", () => {
   test.beforeEach(async ({ page }) => {
@@ -10,9 +20,7 @@ test.describe("検索・比較の明示保存UIモック", () => {
   });
 
   test("概要を入力して検索条件を保存する", async ({ page }) => {
-    const openButton = page.getByRole("button", { name: "検索条件を保存" });
-    await openButton.click();
-    const dialog = page.getByRole("dialog", { name: "検索条件を保存" });
+    const dialog = await openSaveDialog(page);
     const summary = dialog.getByRole("textbox", { name: /概要/ });
     await expect(summary).toBeFocused();
 
@@ -28,8 +36,7 @@ test.describe("検索・比較の明示保存UIモック", () => {
   });
 
   test("過大入力を拒否し、保存失敗後に再試行する", async ({ page }) => {
-    await page.getByRole("button", { name: "検索条件を保存" }).click();
-    const dialog = page.getByRole("dialog", { name: "検索条件を保存" });
+    const dialog = await openSaveDialog(page);
     const summary = dialog.getByRole("textbox", { name: /概要/ });
     await summary.fill("あ".repeat(51));
     await dialog.getByRole("button", { name: "この内容で保存" }).click();
@@ -49,12 +56,16 @@ test.describe("検索・比較の明示保存UIモック", () => {
   test("取消時に起点へFocusを戻し、重大なAccessibility違反がない", async ({ page }) => {
     const openButton = page.getByRole("button", { name: "検索条件を保存" });
     await openButton.click();
-    const dialog = page.getByRole("dialog", { name: "検索条件を保存" });
+    const prompt = page.getByRole("dialog", { name: "保存するにはAccountが必要です" });
+    await prompt.getByRole("button", { name: "今回は保存しない" }).click();
+    await expect(openButton).toBeFocused();
+
+    const dialog = await openSaveDialog(page);
     await dialog.getByRole("button", { name: "キャンセル" }).click();
     await expect(openButton).toBeFocused();
 
     await openButton.click();
-    const results = await new AxeBuilder({ page }).include('[role="dialog"]').analyze();
+    const results = await new AxeBuilder({ page }).include("dialog").analyze();
     expect(results.violations).toEqual([]);
   });
 });

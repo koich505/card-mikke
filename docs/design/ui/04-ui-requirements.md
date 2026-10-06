@@ -418,6 +418,38 @@ Last updated: 2026-10-06
 - 編集、保存、再検証、承認を別Eventとして合成監査Timelineへ示し、外部公開・永続化しない。
 - Traceability: FR-008, FR-009, FR-031, FR-039, NFR-SEC-003, NFR-SEC-007, NFR-SEC-008, AC-016, AC-040
 
+### UIR-OPS-008: Review Moderation
+
+- 確認候補は非公開、公開後通報は公開中として区別し、自動判定の候補、Review本文、星評価、投稿・通報時点を確認する。
+- Content判定失敗時は現在の公開状態を維持して再試行可能とし、未確認Reviewを自動公開・自動削除しない。
+- 通報件数だけでReviewを虚偽確定または自動非公開にせず、掲載継続、一時非公開、削除を人間が判断する。
+- 判断理由を必須とし、Password＋MFA再認証後に状態をterminal化して監査Eventを表示する。投稿者や一般利用者へ判定方式・理由カテゴリ・通報者情報を表示しない。
+- Traceability: FR-036, FR-037, FR-038, FR-039, NFR-SEC-003, NFR-SEC-004, NFR-EDIT-002, AC-028, AC-029, AC-030, AC-031, AC-040
+
+### UIR-OPS-009: 誤情報指摘管理
+
+- Login不要Formから受け付けた対象、掲載項目、指摘内容、利用者提示の根拠、受付時点、3営業日の着手目標、公式Source候補を確認する。
+- 未確認、確認中、判断Draft、修正対応、却下、完了を区別し、公式Sourceの対象・適用時期・Rule version確認と判断理由を必須にする。
+- 指摘だけで公開情報を変更せず、修正案はFR-022の差分確認・明示承認へ送り、却下時もSourceと理由を記録する。
+- 最終判断はPassword＋MFA再認証後だけ確定し、実在連絡先、外部送信、公開反映、永続化を行わない。
+- Traceability: FR-022, FR-026, NFR-SEC-003, NFR-SEC-004, AC-017, AC-023, AC-040
+
+### UIR-OPS-010: 業務情報管理
+
+- 利用先カテゴリ、企業・Service、ポイント換算基準等の追加・訂正・無効化候補を、Domain上の対象・関係・Rule versionとともに表示する。
+- 値・条件、公式Source識別子、適用時期、変更理由をPlain Textで編集し、Draft保存と承認を分離する。
+- 承認または無効化はPassword＋MFA再認証後だけ確定し、追加候補の無効化、無効化による履歴削除、編集と承認の統合を行わない。
+- 変更前後、編集者・承認者Event、過去の計算・記事・Evidenceとの追跡関係を表示し、Application code、本番Data、外部Serviceを変更しない。
+- Traceability: FR-032, NFR-SEC-003, NFR-MAINT-001, AC-018, AC-040
+
+### UIR-ACCOUNT-PROMPT-001: Save / Account Prompt
+
+- 未登録利用者が検索・比較の保存を選んだ時点だけAccountの価値を説明し、検索・比較の開始前には登録を求めない。
+- 保存対象が自動保存されていないこと、Account登録時も一時Dataを自動移行しないことを表示する。
+- `今回は保存しない`、`Login・登録へ進む`、UIモック専用の`登録済みとして保存Flowを確認`を区別する。
+- Native Dialogの初期Focus、Escape、取消後の起点Focus復帰を備え、Cookie、Browser storage、外部通信、認証、永続化を使用しない。
+- Traceability: FR-001, FR-010, FR-011, NFR-PRIV-001, AC-001, AC-022, OVL-007
+
 ## Correction report
 
 ### UIR-REPORT-001: Input and receipt
@@ -518,6 +550,5 @@ Last updated: 2026-10-06
 ## Open UI requirements
 
 - Account・Profile・履歴Flowの詳細
-- 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
 - RQ-011の理解可能性は、算定不完全カードを順位から除外せず、未確認項目、理由、過小評価可能性を試算Panelで理解できるかをUI Mock Approval時に観測する。
 - RQ-017の変更確認中表示は、Heroの全体Iconに加え、影響する個別Rule/effectのIconへ限定して示し、影響外のClaimへ伝播させない。

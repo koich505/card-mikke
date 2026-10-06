@@ -21,6 +21,7 @@ import { featuredCards, prototypeSearchCards } from "@/fixtures/home";
 import type { PrototypeSearchScenario } from "@/types/card-detail-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
 import ComparisonView from "./comparison-view";
+import AccountSavePrompt from "./account-save-prompt";
 import styles from "./search.module.css";
 
 const spendOptions = [
@@ -147,6 +148,8 @@ export default function SearchPrototype({
   const [compareIds, setCompareIds] = useState<PrototypeCardId[]>(initialCompareIds);
   const [compareLimitMessage, setCompareLimitMessage] = useState("");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [accountPromptOpen, setAccountPromptOpen] = useState(false);
+  const [registeredMock, setRegisteredMock] = useState(false);
   const [saveSummary, setSaveSummary] = useState("");
   const [saveError, setSaveError] = useState("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
@@ -154,11 +157,17 @@ export default function SearchPrototype({
   const [failNextSave, setFailNextSave] = useState(false);
   const saveTriggerRef = useRef<HTMLButtonElement>(null);
   const saveInputRef = useRef<HTMLInputElement>(null);
+  const saveDialogRef = useRef<HTMLDialogElement>(null);
   const resultsTitleRef = useRef<HTMLHeadingElement>(null);
   const focusResultsAfterTransitionRef = useRef(false);
 
   useEffect(() => {
-    if (saveDialogOpen) saveInputRef.current?.focus();
+    const dialog = saveDialogRef.current;
+    if (saveDialogOpen && dialog && !dialog.open) {
+      dialog.showModal();
+      saveInputRef.current?.focus();
+    }
+    if (!saveDialogOpen && dialog?.open) dialog.close();
   }, [saveDialogOpen]);
 
   useEffect(() => {
@@ -309,11 +318,16 @@ export default function SearchPrototype({
   function openSaveDialog() {
     setSaveError("");
     setSaveState("idle");
+    if (!registeredMock) {
+      setAccountPromptOpen(true);
+      return;
+    }
     setSaveDialogOpen(true);
   }
 
   function closeSaveDialog() {
     if (saveState === "saving") return;
+    saveDialogRef.current?.close();
     setSaveDialogOpen(false);
     window.setTimeout(() => saveTriggerRef.current?.focus(), 0);
   }
@@ -346,6 +360,7 @@ export default function SearchPrototype({
       }
       setSavedSummary(normalizedSummary);
       setSaveState("saved");
+      saveDialogRef.current?.close();
       setSaveDialogOpen(false);
       window.setTimeout(() => saveTriggerRef.current?.focus(), 0);
     }, 450);
@@ -955,111 +970,139 @@ export default function SearchPrototype({
       )}
 
       {saveDialogOpen && (
-        <div className={styles.dialogBackdrop}>
-          <section
-            className={styles.saveDialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="save-dialog-title"
-            aria-describedby="save-dialog-description"
-            onKeyDown={(event) => {
-              if (event.key === "Escape") closeSaveDialog();
-            }}
-          >
-            <div className={styles.dialogHeading}>
-              <span aria-hidden="true">保</span>
+        <dialog
+          ref={saveDialogRef}
+          className={styles.saveDialog}
+          aria-labelledby="save-dialog-title"
+          aria-describedby="save-dialog-description"
+          onCancel={(event) => {
+            event.preventDefault();
+            closeSaveDialog();
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "Tab") return;
+            const focusable = Array.from(
+              event.currentTarget.querySelectorAll<HTMLElement>(
+                'button:not(:disabled), input:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
+              ),
+            );
+            const first = focusable[0];
+            const last = focusable.at(-1);
+            if (!first || !last) return;
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }}
+          onClose={() => {
+            if (saveDialogOpen) setSaveDialogOpen(false);
+          }}
+        >
+          <div className={styles.dialogHeading}>
+            <span aria-hidden="true">保</span>
+            <div>
+              <p>SAVE SEARCH</p>
+              <h2 id="save-dialog-title">検索条件を保存</h2>
+            </div>
+          </div>
+          <p id="save-dialog-description" className={styles.dialogDescription}>
+            後から見つけやすい概要を入力してください。検索条件と現在の合成結果をまとめて保存します。
+          </p>
+          <form onSubmit={saveSearch} noValidate>
+            <label htmlFor="search-summary">
+              概要 <span>必須</span>
+            </label>
+            <input
+              ref={saveInputRef}
+              id="search-summary"
+              type="text"
+              value={saveSummary}
+              aria-invalid={saveError ? "true" : undefined}
+              aria-describedby={saveError ? "save-summary-error" : "summary-count"}
+              placeholder="例：日常の買い物用に比較"
+              disabled={saveState === "saving"}
+              onChange={(event) => {
+                setSaveSummary(event.target.value);
+                if (saveError) setSaveError("");
+                if (saveState === "failed") setSaveState("idle");
+              }}
+            />
+            <div className={styles.summaryMeta}>
+              <small>同じ概要でも保存できます（UIモック暫定）。</small>
+              <span
+                id="summary-count"
+                className={
+                  saveSummary.length > summaryMaxLength ? styles.countError : ""
+                }
+              >
+                {saveSummary.length}／{summaryMaxLength}文字
+              </span>
+            </div>
+            {saveError && (
+              <p id="save-summary-error" className={styles.saveError} role="alert">
+                {saveError}
+              </p>
+            )}
+            <div className={styles.savePreview} aria-label="保存する内容">
               <div>
-                <p>SAVE SEARCH</p>
-                <h2 id="save-dialog-title">検索条件を保存</h2>
+                <span>年間利用額</span>
+                <strong>{yen.format(annualSpend ?? detailedAnnualSpend)}円</strong>
+              </div>
+              <div>
+                <span>検索条件</span>
+                <strong>
+                  {profile === "custom"
+                    ? `${selectedCategories.length}カテゴリを詳細入力`
+                    : (selectedProfile?.badge ?? "かんたん検索")}
+                </strong>
+              </div>
+              <div>
+                <span>現在の結果</span>
+                <strong>{rankedCards.length}件</strong>
               </div>
             </div>
-            <p id="save-dialog-description" className={styles.dialogDescription}>
-              後から見つけやすい概要を入力してください。検索条件と現在の合成結果をまとめて保存します。
-            </p>
-            <form onSubmit={saveSearch} noValidate>
-              <label htmlFor="search-summary">
-                概要 <span>必須</span>
-              </label>
+            <label className={styles.mockFailureToggle}>
               <input
-                ref={saveInputRef}
-                id="search-summary"
-                type="text"
-                value={saveSummary}
-                aria-invalid={saveError ? "true" : undefined}
-                aria-describedby={saveError ? "save-summary-error" : "summary-count"}
-                placeholder="例：日常の買い物用に比較"
+                type="checkbox"
+                checked={failNextSave}
                 disabled={saveState === "saving"}
-                onChange={(event) => {
-                  setSaveSummary(event.target.value);
-                  if (saveError) setSaveError("");
-                  if (saveState === "failed") setSaveState("idle");
-                }}
+                onChange={(event) => setFailNextSave(event.target.checked)}
               />
-              <div className={styles.summaryMeta}>
-                <small>同じ概要でも保存できます（UIモック暫定）。</small>
-                <span
-                  id="summary-count"
-                  className={
-                    saveSummary.length > summaryMaxLength ? styles.countError : ""
-                  }
-                >
-                  {saveSummary.length}／{summaryMaxLength}文字
-                </span>
-              </div>
-              {saveError && (
-                <p id="save-summary-error" className={styles.saveError} role="alert">
-                  {saveError}
-                </p>
-              )}
-              <div className={styles.savePreview} aria-label="保存する内容">
-                <div>
-                  <span>年間利用額</span>
-                  <strong>{yen.format(annualSpend ?? detailedAnnualSpend)}円</strong>
-                </div>
-                <div>
-                  <span>検索条件</span>
-                  <strong>
-                    {profile === "custom"
-                      ? `${selectedCategories.length}カテゴリを詳細入力`
-                      : (selectedProfile?.badge ?? "かんたん検索")}
-                  </strong>
-                </div>
-                <div>
-                  <span>現在の結果</span>
-                  <strong>{rankedCards.length}件</strong>
-                </div>
-              </div>
-              <label className={styles.mockFailureToggle}>
-                <input
-                  type="checkbox"
-                  checked={failNextSave}
-                  disabled={saveState === "saving"}
-                  onChange={(event) => setFailNextSave(event.target.checked)}
-                />
-                <span>
-                  次の保存を失敗させる <small>UIモック確認用</small>
-                </span>
-              </label>
-              <div className={styles.dialogActions}>
-                <button
-                  type="button"
-                  disabled={saveState === "saving"}
-                  onClick={closeSaveDialog}
-                >
-                  キャンセル
-                </button>
-                <button type="submit" disabled={saveState === "saving"}>
-                  {saveState === "saving"
-                    ? "保存中…"
-                    : saveState === "failed"
-                      ? "もう一度保存"
-                      : "この内容で保存"}
-                </button>
-              </div>
-            </form>
-          </section>
-        </div>
+              <span>
+                次の保存を失敗させる <small>UIモック確認用</small>
+              </span>
+            </label>
+            <div className={styles.dialogActions}>
+              <button
+                type="button"
+                disabled={saveState === "saving"}
+                onClick={closeSaveDialog}
+              >
+                キャンセル
+              </button>
+              <button type="submit" disabled={saveState === "saving"}>
+                {saveState === "saving"
+                  ? "保存中…"
+                  : saveState === "failed"
+                    ? "もう一度保存"
+                    : "この内容で保存"}
+              </button>
+            </div>
+          </form>
+        </dialog>
       )}
+      <AccountSavePrompt
+        open={accountPromptOpen}
+        onCancel={() => setAccountPromptOpen(false)}
+        onContinue={() => {
+          setRegisteredMock(true);
+          setAccountPromptOpen(false);
+          setSaveDialogOpen(true);
+        }}
+      />
     </div>
   );
 }

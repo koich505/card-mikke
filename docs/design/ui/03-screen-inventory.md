@@ -1,6 +1,6 @@
 # Screen Inventory
 
-Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented in UI-only mode; human UI approvals pending
+Status: Operations and Account Prompt v1.1 and earlier mocks implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -48,9 +48,9 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | SCR-OPS-003 | カード情報編集・承認 | SCR-OPS-002へ統合 | Integrated into SCR-OPS-002 | FR-022, FR-032 |
 | SCR-OPS-004 | 券面画像確認・承認 | Source、条件、代替Text、履歴、状態を確認する | Supporting mock implemented in v1.0 | FR-035, AC-027 |
 | SCR-OPS-005 | 記事Draft編集・承認 | AI Draftを確認・編集し、人間承認後だけ公開する | Supporting mock implemented in v1.0 | FR-008, FR-009, FR-031 |
-| SCR-OPS-006 | Review Moderation | Review本文、AI検査、状態を確認し承認・却下する | Inventory only | FR-036, FR-037, AC-028, AC-029 |
-| SCR-OPS-007 | 誤情報指摘管理 | 指摘、公式Source、状態、判断理由を管理する | Inventory only | FR-026, AC-023 |
-| SCR-OPS-008 | 業務情報管理 | カテゴリ、企業Service、換算基準、Campaign等を管理する | Inventory only | FR-032, AC-018 |
+| SCR-OPS-006 | Review Moderation | Review本文、AI検査、状態を確認し承認・却下する | Supporting mock implemented in v1.1 | FR-036–FR-038, AC-028–AC-030 |
+| SCR-OPS-007 | 誤情報指摘管理 | 指摘、公式Source、状態、判断理由を管理する | Supporting mock implemented in v1.1 | FR-026, AC-023 |
+| SCR-OPS-008 | 業務情報管理 | カテゴリ、企業Service、換算基準、Campaign等を管理する | Supporting mock implemented in v1.1 | FR-032, AC-018 |
 | SCR-OPS-009 | 管理者Login | 専用AccountとPasswordによる一次認証を確認する | Primary mock v0.3 | NFR-SEC-001, NFR-SEC-003, AC-040 |
 | SCR-OPS-010 | 管理者MFA | 一次認証と異なる要素による確認を行う | Primary mock v0.3 | NFR-SEC-001, NFR-SEC-003, AC-040 |
 | SCR-OPS-011 | MFA回復手続き | 本人確認、認証要素変更、監査、通知の境界を理解する | Supporting mock v0.3 | NFR-SEC-001, AC-040 |
@@ -66,7 +66,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | OVL-004 | Calculation Detail | 算定内訳、対象外、仮定を追加確認する | Primary mock implemented in v0.7 |
 | OVL-005 | Evidence Detail | Source、確認日、適用期間、Disclosure Statusを確認する | Primary mock implemented in v0.7 |
 | OVL-006 | Clear Comparison Confirmation | 比較候補の全解除を確認する | Primary mock implemented in v0.7 |
-| OVL-007 | Save / Account Prompt | 一時操作とAccount保存の違いを説明する | Supporting mock |
+| OVL-007 | Save / Account Prompt | 一時操作とAccount保存の違いを説明する | Supporting mock implemented in v1.1 |
 | OVL-008 | 検索条件保存Dialog | 概要、保存対象、Validation、保存中・失敗・再試行を確認する | Primary mock implemented in v0.5 |
 | OVL-OPS-001 | Mobile Operations Navigation | 管理画面の開閉式Side Navigationを操作する | Primary mock v0.3 |
 | OVL-OPS-002 | 管理者再認証 | 承認・却下・Session失効前にPasswordとMFAを再確認する | Primary mock v0.3 |
@@ -101,7 +101,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 - お気に入りは未登録時の一時保存とAccount保存を同一画面で明示的に分離し、Account登録時はDialogで同意した場合だけ引き継ぐ方針をv0.9で採用した。
 - 掲載方針、利用者認証、券面画像、記事Draftの詳細Flowをv1.0でUI-only Mock化した。実数値、実認証、実Asset、公開・永続化は対象外とする。
 - 用途別記事と単一カード特集は記事一覧の独立した記事種別として分類し、記事詳細では対象読者／対象カードを先頭で明示する方針をv0.8で採用した。
-- 運営画面の後続領域（記事、Review、訂正、業務情報）の詳細Flow
+- Review、訂正、業務情報、Save / Account Promptの詳細Flowをv1.1でUI-only Mock化した。
 
 ## Approved comparison screen decisions
 

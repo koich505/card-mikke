@@ -1,6 +1,6 @@
 # UI Scope
 
-Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented in UI-only mode; human UI approvals pending
+Status: Moderation/Correction/Business Data/Account Prompt v1.1 and earlier mocks implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -40,6 +40,10 @@ Last updated: 2026-10-06
 - 運営者のLogin、MFA、Session確認・失効、および高Risk操作前の再認証
 - 券面画像Draftの許諾・条件・代替Text・履歴確認と承認／却下
 - 記事Draftの本文・二軸配置編集、再検証、承認
+- Review確認候補・公開後通報のModeration、判定失敗、判断理由、公開状態変更
+- 誤情報指摘の公式Source確認、修正対応・却下、差分承認への引渡し
+- 業務情報の追加・訂正・無効化、Domain関係・Rule version・履歴の追跡
+- 未登録利用者が保存を選んだ時点のSave / Account Prompt
 - 運営Dashboardから、公式Source差分をclaim単位で確認・編集・承認する主要業務Flow
 - AI・Source・利用者入力を未信頼Dataとして扱い、承認前Draftと公開済み情報を分離する表示
 
@@ -63,6 +67,9 @@ Last updated: 2026-10-06
 - `追加・変更・削除候補・抽出不能`はclaimごとの判断を要求し、すべて`変更なし`の場合だけ一括確認を許可する。
 - 却下は候補を確定Factへ昇格しない判断であり、前回承認値の扱いを`根拠付き維持・変更確認中・利用除外・再収集`から別途選ぶ。
 - 影響範囲不明、一部抽出失敗、Revision競合では判断確定へ進めず、Draft保存後に再収集・再確認へ戻す。
+- Review通報件数だけで虚偽確定・自動非公開にせず、判断理由と再認証を必須にする。
+- 訂正指摘だけで公開情報を変更せず、修正案は既存の差分確認・明示承認へ送る。
+- 業務情報の編集・Draft保存・承認を分離し、無効化で過去履歴を削除しない。
 
 ## Adopted UI-stage decisions
 

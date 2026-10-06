@@ -11,9 +11,9 @@ const navigation = [
   { href: "/ops/changes", label: "カード情報差分", active: true },
   { href: "/ops/card-images", label: "券面画像", active: true },
   { href: "/ops/articles", label: "記事Draft", active: true },
-  { href: "", label: "Review Moderation", active: false },
-  { href: "", label: "誤情報指摘", active: false },
-  { href: "", label: "業務情報", active: false },
+  { href: "/ops/reviews", label: "Review Moderation", active: true },
+  { href: "/ops/corrections", label: "誤情報指摘", active: true },
+  { href: "/ops/business-data", label: "業務情報", active: true },
   { href: "/ops/account/sessions", label: "Session管理", active: true },
 ] as const;
 
@@ -113,7 +113,12 @@ export function OpsShell({ children }: { children: ReactNode }) {
               (item.href === "/ops/changes" && pathname.startsWith("/ops/changes/")) ||
               (item.href === "/ops/card-images" &&
                 pathname.startsWith("/ops/card-images")) ||
-              (item.href === "/ops/articles" && pathname.startsWith("/ops/articles"))
+              (item.href === "/ops/articles" && pathname.startsWith("/ops/articles")) ||
+              (item.href === "/ops/reviews" && pathname.startsWith("/ops/reviews")) ||
+              (item.href === "/ops/corrections" &&
+                pathname.startsWith("/ops/corrections")) ||
+              (item.href === "/ops/business-data" &&
+                pathname.startsWith("/ops/business-data"))
                 ? "page"
                 : undefined
             }

@@ -1,6 +1,6 @@
 # Information Architecture
 
-Status: Approved direction; correction report v0.6 implemented; details under UI dialogue
+Status: Approved direction; operations and Account Prompt v1.1 implemented in UI-only mode
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved baseline; RQ-037 disposition pending baseline reapproval）
 Decision date: 2026-08-10
 Last updated: 2026-10-06
@@ -38,8 +38,7 @@ Last updated: 2026-10-06
 
 ### Desktop
 
-- 左Sidebarに`運営Dashboard`、`カード情報差分`、`Session管理`を置く。
-- 記事Draft、Review Moderation、誤情報指摘、業務情報は後続Mockとして識別し、空Routeへ遷移させない。
+- 左Sidebarに`運営Dashboard`、`カード情報差分`、`券面画像`、`記事Draft`、`Review Moderation`、`誤情報指摘`、`業務情報`、`Session管理`を置く。
 - Headerに管理者Account、Session状態確認、Logoutを置く。
 
 ### Mobile
@@ -55,6 +54,9 @@ Last updated: 2026-10-06
     └── 運営Dashboard
         ├── 公式Source差分一覧
         │   └── カード情報差分の確認・編集 → 提案単位の最終確認
+        ├── Review Moderation → 確認候補／公開後通報 → 再認証判断
+        ├── 誤情報指摘管理 → 公式Source確認 → 修正対応／却下
+        ├── 業務情報管理 → 追加／訂正／無効化Draft → 再認証承認
         └── Session管理
             └── 再認証 → 個別または一括失効
 ```
@@ -123,6 +125,12 @@ Last updated: 2026-10-06
 └── Account
     ├── Profile
     └── 検索・比較履歴
+
+検索結果／比較の保存Action
+└── Save / Account Prompt
+    ├── 今回は保存しない
+    ├── Login・登録
+    └── 登録済みの保存Flow（UIモック専用）
 ```
 
 ## Home content order
