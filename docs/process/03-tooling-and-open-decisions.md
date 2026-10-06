@@ -2,6 +2,7 @@
 
 Status: Adopted tools with deferred configuration  
 Decision date: 2026-08-08
+Last updated: 2026-10-06（Codex Local Committer例外と全AIのRemote接続禁止を追加）
 
 ## Adopted Tool Roles
 
@@ -21,10 +22,10 @@ Spec Kitは実装主体ではない。Spec Kitの成果物とコマンドをOpen
 
 - Implementation Orchestrator、実装用Agent、Review Orchestrator、専門Reviewerを分離する。
 - Implementerは計画済みApplication code、Test、実装文書だけを編集可能とし、採用VersionでPath permissionを検証する。表現できない場合はpre / post manifest Guardを必須とする。Implementation OrchestratorはReviewerではない別Roleとして`tasks.md`の`Parallel Execution`項目と`implementation-log.md`だけを更新可能とする。Review OrchestratorとすべてのReviewerは例外なくread-onlyとし、編集・修正は禁止する。
-- ShellはWF-12で検証した固定allowlistだけを許可し、git write、破壊的操作、Package install、Network、Credential / environment dumpを禁止する。
+- OpenCodeのShellはWF-12で検証した固定allowlistだけを許可し、git write、破壊的操作、Package install、Network、Credential / environment dumpを禁止する。Codex Local Committerのローカルcommit例外は`docs/process/01-responsibility-boundaries.md`に限定し、OpenCode Roleへは継承しない。
 - Implementation OrchestratorはTask実行直前に依存、予定変更範囲、Worker競合、共有Contract、Test、Local resourceを再確認し、Parallel Candidateを`Approved`または`No`へ確定する。
 - Correctness Reviewerは原則常時実行し、その他の専門Reviewerは差分とリスクに応じて選択する。
-- すべてのAgentでcommit、push、PR作成、mergeを禁止する。
+- OpenCodeのImplementation Orchestrator、Implementer、Review Orchestrator、Reviewerはcommit、push、PR作成、mergeを禁止する。CodexはFinal Reviewer中はread-onlyで、Local Committer Phaseだけ通常のローカルcommitを許可する。すべてのAI RoleでGit remote接続、push、fetch、pull、PR作成、mergeを禁止する。
 - OpenCodeで実用的な長文Contextを扱うため、まず64k tokens以上を候補条件とし、実機Benchmarkで確定する。
 - 初期のローカル同時実行数は1とする。
 - Spec Kitや各ToolのVersionは導入時に固定し、更新手順を記録する。

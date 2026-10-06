@@ -2,6 +2,7 @@
 
 Status: Adopted working decision  
 Decision date: 2026-08-09
+Last updated: 2026-10-06（Delivery ready後のCodexローカルcommit境界を追加）
 
 ## Purpose
 
@@ -58,7 +59,7 @@ Implementation Orchestratorだけが`implementation-log.md`を書き、更新を
 - 最大3 Review AttemptsでCritical / Majorが解消しない
 - 同一Critical / Majorが修正後に再発する
 - 入力解決、Path Guard、diff Collector、Artifact鮮度確認の失敗
-- commit、push、PR作成、mergeが必要
+- OpenCode Roleによるcommit、またはAIによるGit remote接続、push、fetch、pull、PR作成、mergeが必要
 
 停止時は理由、影響Task、必要な人間判断、再開条件を`implementation-log.md`へ記録する。
 
@@ -75,6 +76,8 @@ Human判断SourceはHumanだけが`docs/reviews/features/<feature-id>/human-deci
 全TaskのLocal Gate後にFeature全体の決定論的検査と、WF-4 / WF-12で固定した検証済み収束手段を実行する。採用Spec Kitに専用Commandがなければ、全Acceptance CriteriaからTask / Test / 差分への代替traceability reviewを固定し、Human承認と実行結果を`implementation-log.md`へ記録する。不足TaskはPlanningへ戻す。
 
 収束後、状態を`Codex final review pending`と記録する。Codexはread-onlyでImmutable Artifactをレビューして結果を返し、Humanが`docs/reviews/features/`へ保存・承認する。Implementation Orchestratorだけが結果をLogへ転記する。Critical / Majorがあれば新RunでLocal Loopへ戻し、再びPendingへ進む。Critical / Majorが0で残存FindingのHuman判断が完了すれば`Codex review passed -> Delivery ready`へ進む。Human delivery後は任意の終端`Human delivered`を記録できる。
+
+`Delivery ready`後、CodexはFinal Reviewerとは別のLocal Committer Phaseで、Review済みSource fingerprintと現在差分が一致する場合だけ通常のローカルcommitを作成できる。CodexはGit remoteへ接続せず、push、fetch、pull、PR作成、mergeをHumanへ引き渡す。commit後に実質的変更が生じた場合は旧Reviewをstaleとし、fresh Reviewを要求する。
 
 ## OpenCode Use
 

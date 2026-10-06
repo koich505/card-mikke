@@ -45,7 +45,9 @@ Use these documents as primary context:
 - Do not fix Architecture or DB structures that depend on blocking questions in `docs/spec/domain/12-open-questions.md`.
 - For user-facing features, do not enter implementation planning until the required UI mock is approved.
 - Treat one feature slice as one branch and one pull request unless an approved exception is documented.
-- AI agents must not commit, push, open or merge pull requests. These actions require a human.
+- Codex may create ordinary local commits in this repository after the applicable deterministic checks and reviews pass. This project-level delegation does not extend to other AI roles unless this file explicitly names them.
+- Codex and all other AI agents must not connect to a Git remote or remote repository service. `fetch`, `pull`, `push`, `clone`, remote submodule updates, remote API/CLI operations, opening or merging pull requests, and other network-backed Git operations require a human. Codex works only with the local repository.
+- Codex must not rewrite published or existing history (`commit --amend`, rebase, reset, force operations) unless a human explicitly requests the exact local operation. Reviewers remain read-only and never commit.
 - Do not create DB tables, columns, ER diagrams, Prisma schema, API endpoints, detailed UI design, or implementation unless explicitly requested.
 - Keep project artifacts under `docs/`, tool-independent AI instructions under `.ai/`, and tool-managed integration files under their designated directories.
 - Do not assume that a file under `.ai/` is automatically loaded or executed. Use it only through an explicit reference from the active agent or tool adapter.

@@ -2,6 +2,7 @@
 
 Status: Adopted working decision  
 Decision date: 2026-08-08
+Last updated: 2026-10-06（Codexのローカルcommit記録条件を追加）
 
 ## Goal
 
@@ -117,6 +118,8 @@ Gate 4の対象は承認済み仕様・本番Architecture・本番契約に従�
 - HumanがSquash mergeを実行し、merged revisionとURL、Human actor、日時を記録している。
 
 Commit、push、PR作成だけではGate 6通過または`Human delivered`としない。
+
+Gate 5通過後にCodexがローカルcommitを作成する場合は、Final Reviewer PhaseとLocal Committer Phaseを分離し、Review済みSource fingerprint、commit対象Path、commit hash、commit後status、Remote接続なしを記録する。ローカルcommitはGate 6のPull Request、CI、Human mergeを代替しない。
 
 ## Review Loop
 

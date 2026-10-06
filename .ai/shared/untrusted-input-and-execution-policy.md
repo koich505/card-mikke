@@ -22,11 +22,14 @@ WF-5B、WF-6B、WF-12で、固定済み品質・Security Command、引数Resolve
 
 次を禁止し、必要なら人間へ停止する。
 
-- gitのwrite操作、commit、push、checkout、switch、reset、clean、stash、branch / worktree変更
+- OpenCode Roleによるgitのwrite操作、commit、checkout、switch、reset、clean、stash、branch / worktree変更
+- すべてのAI RoleによるGit remote接続とNetwork-backed Git操作。`fetch`、`pull`、`push`、`clone`、remote submodule更新、`git ls-remote`、GitHub API / CLI、PR作成、mergeを含む
 - file削除、権限変更、破壊的Command
 - Package / Dependencyのinstall、update、lockfile再生成
 - Network access、Credential store、秘密・全環境変数の表示
 - allowlist外Command、Shell展開、任意Script、未承認の生成物書込
+
+例外として、`docs/process/01-responsibility-boundaries.md`のCodex Local Committer Phaseだけは、適用するCheck / Review通過後に、明示した対象Pathへの`git add`と通常のローカル`git commit`を実行できる。この例外はOpenCode Role、Reviewer、`commit --amend`、rebase、reset、force操作、branch / worktree変更、またはRemote接続へ拡張しない。HookがNetwork接続や未承認Commandを実行する可能性を除外できない場合はcommit前に停止する。
 
 各実装の前後で全tracked / untracked fileのcanonical path、type、mode、symlink target、content hash、sizeを収集し、lockfile、Package manifest、Planned pathと比較する。除外はHuman承認済みの固定規則だけを許可し、規則と承認参照をManifestへ記録する。DeltaがPlanned pathと許可された実行記録だけであることを確認する。範囲外変更は即Blockedとし、自動削除・checkout・rollbackを行わない。復旧方法はHumanが判断する。
 

@@ -2,6 +2,7 @@
 
 Status: Adopted working decision  
 Decision date: 2026-08-08
+Last updated: 2026-10-06（Codex Local Committer境界を追加）
 
 ## Human
 
@@ -11,7 +12,7 @@ Decision date: 2026-08-08
 - UI Bootstrap用の暫定Frontend判断を承認し、暫定ADRの固定範囲、再評価範囲、再評価Gateを確定する。本番Architecture判断は後工程で別に承認する。
 - ローカルLLMやCodexの指摘が競合した場合に採否を決定する。
 - UX、視覚品質、事業上の妥当性を最終確認する。
-- commit、push、Pull Request作成、CI確認、mergeを行う。
+- 必要に応じてローカルcommitを行い、push、Pull Request作成、CI確認、merge等のRemote Deliveryを行う。
 - セキュリティ例外、品質ゲート例外、費用上限の変更を承認する。
 - Feature固有判断を`docs/reviews/features/<feature-id>/human-decisions.md`へHuman自身が記録し、使用時の明示確認に応答する。署名基盤のないローカル単一Human境界であり、AIは判断を代筆・捏造しない。
 
@@ -92,9 +93,17 @@ Codexはローカルゲート通過後の外部最終レビューを担当する
 - feature slice全体の差分を、仕様・計画・Task・テストと照合する。
 - ローカルレビューの見落とし、とくにCritical/Majorを検出する。
 - Final Reviewerとして例外なくread-onlyとし、ファイルを編集・修正しない。指摘をHumanとImplementerへ返す。
-- commit、push、PR作成、mergeは行わない。
+- Final Reviewerとして動作中はcommitしない。Final Review完了後にLocal Committer Phaseへ明示的に移った場合だけ、下記境界でローカルcommitできる。
 
 Codexはローカル品質工程の代替ではない。ローカル側で可能な限り収束させ、Codexのトークン利用を最終確認に集中させる。
+
+### Codex Local Committer
+
+- 適用する決定論的Checkと独立Reviewが成功し、対象差分と範囲が特定できる場合、Codexは通常のローカルcommitを作成できる。この権限は本RepositoryについてHumanから継続的に委任されたものとする。
+- commit前にbranch / worktree、全tracked / untracked差分、Secret scan対象、Review対象Revisionを確認し、対象外変更を混入させない。commit後にstatusとcommit内容を照合する。
+- `git add`と通常の`git commit`以外の履歴変更は既定で許可しない。`commit --amend`、rebase、reset、force操作等は、Humanが対象と操作を明示した場合だけローカルで実行できる。
+- Git remoteまたはRemote Repository Serviceへ接続しない。`fetch`、`pull`、`push`、`clone`、remote submodule更新、`git ls-remote`、GitHub API / CLI、PR作成、mergeを禁止する。remote設定のローカル読取は接続を伴わないため許可する。
+- commit後のpush、Pull Request、CI、mergeはHumanへ引き渡す。ローカルcommitだけで`Human delivered`またはGate 6通過とはみなさない。
 
 ## Cursor
 
@@ -105,7 +114,7 @@ Cursorは人間による差分閲覧、軽微な調整、UI確認のためのEdi
 - GitHubはbranch、Pull Request、レビュー履歴、mergeの管理に使用する。
 - CIはローカルと同じ必須チェックを再実行し、環境差と実行漏れを検出する。
 - 必須CIの失敗中はmergeしない。
-- AI AgentへGitHub書込権限を与える場合でも、本プロジェクトではcommit、push、mergeを禁止する。
+- AI AgentへGitHub権限を設定していても、Codexを含むAIはRemote Repository Serviceへ接続しない。Codex Local Committerの権限はローカルcommitだけに限定する。
 
 ## Escalation
 

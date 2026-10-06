@@ -48,11 +48,12 @@
 - [ ] RoutingとIntegrationを別RO Invocationで実行し、routing / ordered result hashを照合した
 - [ ] First-party / Vendored / Third-party / Toolchain / EvidenceのTier別Closureが完全である
 - [ ] `implementation-log.md`へ要約を記録した
-- [ ] commit / push / PR / mergeを行っていない
+- [ ] OpenCode Roleがcommitしておらず、すべてのAI RoleがGit remote接続、push、fetch、pull、PR作成、mergeを行っていない
 
 ## Delivery Transition
 
 - [ ] Humanが最終差分、動作、UI、Minor / Open Questionを確認した
+- [ ] Codexがローカルcommitを作成する場合、Final Reviewer PhaseとLocal Committer Phaseが分離され、Review済みfingerprint、対象Path、commit後statusを照合した
 - [ ] PR URL、対象Revision、必須CI成功を確認した
 - [ ] 未承認のScope変更とSecurity / Privacy例外がない
 - [ ] HumanのSquash merge、merged revision / URL、Actor、日時がある

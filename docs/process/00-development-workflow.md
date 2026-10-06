@@ -2,6 +2,7 @@
 
 Status: Adopted working decision  
 Decision date: 2026-08-08
+Last updated: 2026-10-06（Codexのローカルcommit権限とRemote接続禁止を追加）
 
 ## Purpose
 
@@ -74,15 +75,17 @@ Spec Kit、OpenCode、Ollama等の導入手順ではなく、導入後も維持�
    - CriticalまたはMajorがあれば、指摘をローカルループへ戻す。
    - Critical / Major修正後はローカルゲートを再実行し、WF-11解決までは例外なくCodexも再レビューする。
    - 合格記録と対象Revisionを確認後、`Delivery ready`へ進む。
-10. **Human Delivery**
+10. **Local Commit and Human Delivery**
     - 人間がCursor等で差分、動作、UIを最終確認する。
-    - 人間がcommit、push、Pull Request作成、CI確認、Squash mergeを行う。
+    - 適用する決定論的Checkと独立Reviewが通過した後、Codexは明示した対象差分だけをローカルRepositoryへ通常commitできる。Reviewerとして動作中のCodexはread-onlyとし、Committer Phaseを分離する。
+    - CodexはGit remoteへ接続しない。`fetch`、`pull`、`push`、`clone`、remote submodule更新、GitHub API / CLI、Pull Request作成、mergeを行わない。
+    - 人間は必要に応じてローカルcommitを作成でき、push、Pull Request作成、CI確認、Squash merge等のRemote Deliveryを担当する。
 
 ## Delivery Unit
 
 - **1 feature slice = 1 branch = 1 Pull Request**を標準とする。
 - Spec Kitの個別Taskは、機能スライス内部の作業単位であり、原則として個別PRにはしない。
-- 人間は必要に応じてTask単位で論理的な途中commitを作成できる。
+- 人間またはCodex Local Committerは、Review可能性を壊さない範囲でTask単位の論理的なローカル途中commitを作成できる。
 - 大きすぎる機能は、独立して受入可能な複数のfeature sliceへ分割する。
 - Codexの最終レビュー対象は、原則としてfeature slice全体の差分とする。
 

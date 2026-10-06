@@ -128,6 +128,9 @@ Critical / MajorはHuman dispositionでResolvedにせず、後続Artifact / revi
 - Codex review record path / reviewed revision / Artifact binding hash:
 - Codex re-review required: Yes（WF-11解決まではCritical / Major修正後常にYes）
 - Codex handoff status:
+- Codex local commit used: Yes / No
+- Local commit reviewed fingerprint / explicit paths / commit hash:
+- Committer phase / post-commit status / remote connection: `Codex Local Committer` / `<status>` / `None`
 - Gate 6 Human final diff / UI / OQ check:
 - Pull Request URL / reviewed revision:
 - Required CI jobs / result / revision:
