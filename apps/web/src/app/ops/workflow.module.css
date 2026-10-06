@@ -338,6 +338,37 @@
 .notice small {
   display: block;
 }
+.conditionFieldset {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.65rem;
+}
+.conditionFieldset legend {
+  padding: 0 0.35rem;
+  font-weight: 900;
+}
+.conditionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+}
+.conditionItem {
+  display: grid;
+  gap: 0.35rem;
+}
+.conditionItem label {
+  min-width: 0;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
 .notice small {
   margin-top: 0.25rem;
   color: #58677a;
@@ -354,6 +385,9 @@
   .metrics {
     grid-template-columns: 1fr 1fr;
   }
+  .conditionGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 @media (max-width: 600px) {
   .heading {
@@ -368,6 +402,9 @@
     grid-template-columns: 1fr;
   }
   .metrics {
+    grid-template-columns: 1fr;
+  }
+  .conditionGrid {
     grid-template-columns: 1fr;
   }
   .actions > * {

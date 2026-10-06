@@ -14,6 +14,7 @@ const navigation = [
   { href: "/ops/reviews", label: "Review Moderation", active: true },
   { href: "/ops/corrections", label: "誤情報指摘", active: true },
   { href: "/ops/business-data", label: "業務情報", active: true },
+  { href: "/ops/themes", label: "テーマ管理", active: true },
   { href: "/ops/account/sessions", label: "Session管理", active: true },
 ] as const;
 
@@ -118,7 +119,8 @@ export function OpsShell({ children }: { children: ReactNode }) {
               (item.href === "/ops/corrections" &&
                 pathname.startsWith("/ops/corrections")) ||
               (item.href === "/ops/business-data" &&
-                pathname.startsWith("/ops/business-data"))
+                pathname.startsWith("/ops/business-data")) ||
+              (item.href === "/ops/themes" && pathname.startsWith("/ops/themes"))
                 ? "page"
                 : undefined
             }

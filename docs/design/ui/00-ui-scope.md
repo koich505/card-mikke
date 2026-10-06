@@ -1,6 +1,6 @@
 # UI Scope
 
-Status: Moderation/Correction/Business Data/Account Prompt v1.1 and earlier mocks implemented in UI-only mode; human UI approvals pending
+Status: Theme Presets v1.2 and earlier mocks implemented in UI-only mode; human UI approvals pending
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む。RQ-037 dispositionはbaseline再承認待ち）
 Last updated: 2026-10-06
 
@@ -44,6 +44,8 @@ Last updated: 2026-10-06
 - 誤情報指摘の公式Source確認、修正対応・却下、差分承認への引渡し
 - 業務情報の追加・訂正・無効化、Domain関係・Rule version・履歴の追跡
 - 未登録利用者が保存を選んだ時点のSave / Account Prompt
+- 公開中テーマのワンクリック検索、適用条件の確認・変更、Profile非更新
+- 運営者によるテーマの追加・編集・表示順・条件一式・公開／非公開管理と履歴非上書き
 - 運営Dashboardから、公式Source差分をclaim単位で確認・編集・承認する主要業務Flow
 - AI・Source・利用者入力を未信頼Dataとして扱い、承認前Draftと公開済み情報を分離する表示
 
@@ -55,6 +57,7 @@ Last updated: 2026-10-06
 - Hosting、Infrastructure、本番Data Contract
 - 実在する個人情報、Credential、Secretを含むFixture
 - 本人確認を保証する本番認証、実際の管理権限、監査Log永続化、公開反映
+- テーマ設定のRoute間同期、DB保存、本番検索条件配信、保存済み履歴の実永続化
 
 ## Operations UI v0.3 decisions
 

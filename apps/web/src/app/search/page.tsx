@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { parsePrototypeScenario } from "@/features/card-detail/prototype-scenario";
 import { parsePrototypeSearchLaunch } from "@/features/search/prototype-launch";
+import { getPublishedThemePreset } from "@/fixtures/theme-presets";
 import SearchPrototype from "./search-prototype";
 
 export async function generateMetadata({
@@ -21,7 +22,11 @@ export async function generateMetadata({
 
 export default async function SearchPage({ searchParams }: PageProps<"/search">) {
   const rawSearchParams = await searchParams;
-  const scenario = parsePrototypeScenario(rawSearchParams);
+  const rawTheme = Array.isArray(rawSearchParams.theme)
+    ? rawSearchParams.theme[0]
+    : rawSearchParams.theme;
+  const theme = getPublishedThemePreset(rawTheme);
+  const scenario = theme?.scenario ?? parsePrototypeScenario(rawSearchParams);
   const launch = parsePrototypeSearchLaunch(rawSearchParams);
   return (
     <SearchPrototype
@@ -29,6 +34,8 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
       initialView={launch.initialView}
       initialCompareIds={launch.compareCardIds}
       initialFromHistory={launch.fromHistory}
+      initialTheme={theme}
+      invalidThemeRequested={Boolean(rawTheme && !theme)}
     />
   );
 }

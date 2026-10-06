@@ -1,6 +1,6 @@
 # Information Architecture
 
-Status: Approved direction; operations and Account Prompt v1.1 implemented in UI-only mode
+Status: Approved direction; Theme Presets v1.2 implemented in UI-only mode
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved baseline; RQ-037 disposition pending baseline reapproval）
 Decision date: 2026-08-10
 Last updated: 2026-10-06
@@ -20,7 +20,7 @@ Last updated: 2026-10-06
 
 | Area | User purpose | Primary Requirements |
 |---|---|---|
-| ホーム | サイトの価値を理解し、条件検索または注目カード・特集記事・新着情報から探索を開始する | FR-004, FR-007–FR-010, FR-019, FR-031, AC-001, AC-015, AC-016, AC-020 |
+| ホーム | サイトの価値を理解し、テーマ、条件検索、注目カード、特集記事、新着情報から探索を開始する | FR-004, FR-007–FR-010, FR-019, FR-031, FR-040, AC-001, AC-015, AC-016, AC-020, AC-041 |
 | カードを探す | 条件入力またはキーワードから候補を探す | FR-004, FR-028, AC-005, AC-006, AC-011 |
 | 検索結果 | 順位、算定状態、Filterを確認し、比較候補を選ぶ。登録利用者は概要を入力して結果を明示保存する | FR-011, FR-013, FR-014, FR-023, AC-009–AC-011, AC-022 |
 | 比較 | 同一条件で最大5枚の差を理解する | FR-029, AC-012 |
@@ -30,7 +30,7 @@ Last updated: 2026-10-06
 | 掲載範囲・サイト方針 | Coverage、算定方法、広告・Affiliate、情報更新方針を確認する | FR-019, FR-027, AC-015, AC-019, AC-038 |
 | 誤情報指摘 | 閲覧中のカード・記事・公開ページを対象に、Loginなしで誤りや変更を知らせる | FR-026, NFR-SEC-004, AC-023 |
 | Account | Profileと明示的に保存した検索・比較を継続利用する | FR-001–FR-003, FR-011, FR-025 |
-| 運営管理 | Source差分、Evidence、未承認Draftを確認し、明示承認後だけ公開反映可能な状態へ進める | FR-021, FR-022, FR-032–FR-034, NFR-SEC-001, NFR-SEC-003, AC-017, AC-018, AC-025, AC-026, AC-040 |
+| 運営管理 | Source差分、Evidence、未承認Draft、テーマ設定を確認し、明示承認後だけ公開反映可能な状態へ進める | FR-021, FR-022, FR-032–FR-034, FR-040, NFR-SEC-001, NFR-SEC-003, AC-017, AC-018, AC-025, AC-026, AC-040, AC-042 |
 
 運営管理のSource差分は、Dashboardの要約から`/ops/changes`の一覧へ進み、`Source変更Revision × 対象カード`単位の`/ops/changes/[id]`で提案を処理する。
 
@@ -38,7 +38,7 @@ Last updated: 2026-10-06
 
 ### Desktop
 
-- 左Sidebarに`運営Dashboard`、`カード情報差分`、`券面画像`、`記事Draft`、`Review Moderation`、`誤情報指摘`、`業務情報`、`Session管理`を置く。
+- 左Sidebarに`運営Dashboard`、`カード情報差分`、`券面画像`、`記事Draft`、`Review Moderation`、`誤情報指摘`、`業務情報`、`テーマ管理`、`Session管理`を置く。
 - Headerに管理者Account、Session状態確認、Logoutを置く。
 
 ### Mobile
@@ -57,6 +57,7 @@ Last updated: 2026-10-06
         ├── Review Moderation → 確認候補／公開後通報 → 再認証判断
         ├── 誤情報指摘管理 → 公式Source確認 → 修正対応／却下
         ├── 業務情報管理 → 追加／訂正／無効化Draft → 再認証承認
+        ├── テーマ管理 → 追加／編集／並び替え → 再認証公開・非公開
         └── Session管理
             └── 再認証 → 個別または一括失効
 ```
@@ -84,6 +85,9 @@ Last updated: 2026-10-06
 
 ```text
 ホーム
+├── 公開中テーマを選ぶ
+│   └── テーマ条件を適用した検索結果
+│       └── 条件を変更して再検索
 ├── 条件からカードを探す
 │   └── 検索結果
 │       ├── 条件を変更
@@ -136,11 +140,12 @@ Last updated: 2026-10-06
 ## Home content order
 
 1. サイトの価値と`条件からカードを探す`主要Action
-2. 年間利用額を起点とする条件入力の開始領域
-3. 注目のカード
-4. おすすめ特集記事
-5. 新着情報
-6. Coverage、算定方法、情報更新、広告・Affiliateに関するTrust情報
+2. 公開中テーマからワンクリックで検索する入口
+3. 年間利用額を起点とする条件入力の開始領域
+4. 注目のカード
+5. おすすめ特集記事
+6. 新着情報
+7. Coverage、算定方法、情報更新、広告・Affiliateに関するTrust情報
 
 ### 注目のカード
 

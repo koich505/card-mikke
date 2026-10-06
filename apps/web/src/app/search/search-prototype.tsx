@@ -19,6 +19,7 @@ import { redesignedCardDetails } from "@/fixtures/card-detail-v2";
 import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards, prototypeSearchCards } from "@/fixtures/home";
 import type { PrototypeSearchScenario } from "@/types/card-detail-prototype";
+import type { PrototypeThemePreset } from "@/types/theme-preset-prototype";
 import type { PrototypeCardId } from "@/types/ui-prototype";
 import ComparisonView from "./comparison-view";
 import AccountSavePrompt from "./account-save-prompt";
@@ -91,17 +92,26 @@ const summaryMaxLength = 50;
 
 const categoryMarks = prototypeCategoryMarkByLabel;
 const categoryIdByLabel = prototypeCategoryIdByLabel;
+const serviceConditionLabels = {
+  best: "カテゴリ内最良条件",
+  featured: "指定した架空Service",
+  other: "その他（通常還元のみ）",
+} as const;
 
 export default function SearchPrototype({
   initialScenario,
   initialView,
   initialCompareIds,
   initialFromHistory,
+  initialTheme,
+  invalidThemeRequested,
 }: {
   initialScenario: PrototypeSearchScenario | null;
   initialView: "results" | "compare";
   initialCompareIds: PrototypeCardId[];
   initialFromHistory: boolean;
+  initialTheme: PrototypeThemePreset | null;
+  invalidThemeRequested: boolean;
 }) {
   const initialCategories: Category[] = initialScenario
     ? categories.filter(
@@ -159,7 +169,9 @@ export default function SearchPrototype({
   const saveInputRef = useRef<HTMLInputElement>(null);
   const saveDialogRef = useRef<HTMLDialogElement>(null);
   const resultsTitleRef = useRef<HTMLHeadingElement>(null);
+  const searchTitleRef = useRef<HTMLHeadingElement>(null);
   const focusResultsAfterTransitionRef = useRef(false);
+  const focusSearchAfterTransitionRef = useRef(false);
 
   useEffect(() => {
     const dialog = saveDialogRef.current;
@@ -180,6 +192,12 @@ export default function SearchPrototype({
   }, [view]);
 
   useEffect(() => {
+    if (view !== "search" || !focusSearchAfterTransitionRef.current) return;
+    focusSearchAfterTransitionRef.current = false;
+    searchTitleRef.current?.focus({ preventScroll: true });
+  }, [view]);
+
+  useEffect(() => {
     if (view !== "results" || !focusResultsAfterTransitionRef.current) return;
     focusResultsAfterTransitionRef.current = false;
     resultsTitleRef.current?.focus({ preventScroll: true });
@@ -196,7 +214,10 @@ export default function SearchPrototype({
     () => Object.values(amounts).reduce((total, value) => total + (value ?? 0), 0),
     [amounts],
   );
-  const invalid = allocated > detailedAnnualSpend;
+  const hasInvalidAmounts = Object.values(amounts).some(
+    (value) => value !== undefined && (!Number.isInteger(value) || value < 0),
+  );
+  const invalid = hasInvalidAmounts || allocated > detailedAnnualSpend;
   const usesComparisonDensityFixtures = initialCompareIds.some(
     (id) => !featuredCards.some((card) => card.id === id),
   );
@@ -221,6 +242,23 @@ export default function SearchPrototype({
       source: "search",
     };
   }, [amounts, annualSpend, profile, selectedCategories, services]);
+
+  const themeConditionsChanged = useMemo(() => {
+    if (!initialTheme || !currentScenario) return false;
+    const original = initialTheme.scenario;
+    const categoryConditionsChanged = prototypeCategories.some(
+      (category) =>
+        (currentScenario.usageByCategory[category.id] ?? 0) !==
+          (original.usageByCategory[category.id] ?? 0) ||
+        (currentScenario.serviceByCategory?.[category.id] ?? "best") !==
+          (original.serviceByCategory?.[category.id] ?? "best"),
+    );
+    return (
+      currentScenario.annualSpend !== original.annualSpend ||
+      currentScenario.profileId !== original.profileId ||
+      categoryConditionsChanged
+    );
+  }, [currentScenario, initialTheme]);
 
   const rankedCards = useMemo(() => {
     return [...(usesComparisonDensityFixtures ? prototypeSearchCards : featuredCards)]
@@ -306,11 +344,12 @@ export default function SearchPrototype({
   function showResults() {
     setFreeFeeOnly(false);
     setCompareIds([]);
-    setView("results");
+    showResultsAndFocus();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function returnToSearch() {
+    focusSearchAfterTransitionRef.current = true;
     setView("search");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -375,6 +414,12 @@ export default function SearchPrototype({
       <SiteHeader currentPage="search" />
 
       <main id="search-main">
+        {invalidThemeRequested && view === "search" && (
+          <div className={styles.themeUnavailableNotice} role="status">
+            <strong>このテーマは現在選択できません</strong>
+            <p>公開中のテーマをホームから選ぶか、下の条件検索をご利用ください。</p>
+          </div>
+        )}
         {initialFromHistory && view !== "search" && (
           <div className={styles.historyLaunchNotice} role="status">
             <span aria-hidden="true">履</span>
@@ -411,7 +456,7 @@ export default function SearchPrototype({
                   <p className={styles.eyebrow}>
                     むずかしいカード選びを、もっと楽しく！
                   </p>
-                  <h1 id="hero-title">
+                  <h1 id="hero-title" ref={searchTitleRef} tabIndex={-1}>
                     いつもの使い方で
                     <span>どれがおトク？</span>
                   </h1>
@@ -703,9 +748,11 @@ export default function SearchPrototype({
                         <p>
                           {!annualSpend
                             ? "先に年間利用額を選択してください。"
-                            : invalid
-                              ? `年間利用額を ${yen.format(allocated - detailedAnnualSpend)}円 超えています。`
-                              : `残り ${yen.format(detailedAnnualSpend - allocated)}円は、その他の利用として判定します。`}
+                            : hasInvalidAmounts
+                              ? "利用先別金額は0以上の整数で入力してください。"
+                              : invalid
+                                ? `年間利用額を ${yen.format(allocated - detailedAnnualSpend)}円 超えています。`
+                                : `残り ${yen.format(detailedAnnualSpend - allocated)}円は、その他の利用として判定します。`}
                         </p>
                       </div>
                     </div>
@@ -768,6 +815,50 @@ export default function SearchPrototype({
 
         {view === "results" && (
           <section className={styles.resultsPage} aria-labelledby="results-title">
+            {initialTheme && currentScenario && (
+              <aside
+                className={styles.appliedTheme}
+                aria-labelledby="applied-theme-title"
+              >
+                <div>
+                  <p>選択したテーマ</p>
+                  <strong id="applied-theme-title" className={styles.appliedThemeName}>
+                    {initialTheme.name}
+                  </strong>
+                  <span>{initialTheme.description}</span>
+                </div>
+                <dl>
+                  <div>
+                    <dt>年間利用額</dt>
+                    <dd>{yen.format(currentScenario.annualSpend)}円</dd>
+                  </div>
+                  <div>
+                    <dt>検索タイプ</dt>
+                    <dd>{selectedProfile?.name ?? "条件指定"}</dd>
+                  </div>
+                  <div>
+                    <dt>利用先の内訳</dt>
+                    <dd>
+                      {selectedCategories
+                        .map(
+                          (category) =>
+                            `${category} ${yen.format(amounts[category] ?? 0)}円（${serviceConditionLabels[services[category] ?? "best"]}）`,
+                        )
+                        .join("・") || "指定なし"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>適用範囲</dt>
+                    <dd>今回の検索のみ（Profileは更新しません）</dd>
+                  </div>
+                </dl>
+                <p className={styles.themeEditState} role="status">
+                  {themeConditionsChanged
+                    ? "テーマを基に条件変更済み"
+                    : "公開中テーマの条件一式を適用中"}
+                </p>
+              </aside>
+            )}
             <div className={styles.resultsHero}>
               <p>あなたの条件に合わせて判定しました</p>
               <h1 id="results-title" ref={resultsTitleRef} tabIndex={-1}>

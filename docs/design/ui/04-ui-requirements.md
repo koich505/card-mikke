@@ -1,6 +1,6 @@
 # UI Requirements
 
-Status: Coverage/Auth/Image/Article operations v1.0 and earlier mocks implemented; approvals tracked separately
+Status: Theme Presets v1.2 and earlier mocks implemented; approvals tracked separately
 Requirements baseline: `docs/spec/requirements/07-approval.md`（2026-08-13 Approved、FR-041 / AC-043を含む）
 Last updated: 2026-10-06
 
@@ -441,6 +441,15 @@ Last updated: 2026-10-06
 - 承認または無効化はPassword＋MFA再認証後だけ確定し、追加候補の無効化、無効化による履歴削除、編集と承認の統合を行わない。
 - 変更前後、編集者・承認者Event、過去の計算・記事・Evidenceとの追跡関係を表示し、Application code、本番Data、外部Serviceを変更しない。
 - Traceability: FR-032, NFR-SEC-003, NFR-MAINT-001, AC-018, AC-040
+
+### UIR-OPS-011: テーマ別プリセット管理
+
+- 権限を持つ運営者向けに、テーマの名称、説明、表示順、年間利用額、11カテゴリの利用額、公開状態を追加・編集できる。
+- 編集と公開状態変更を分離し、Draft保存後の公開・非公開化はPassword＋MFA再認証を経るUI-only操作とする。
+- 公開中だけを表示順に並べた利用者向けプレビューを示し、非公開テーマは新規選択できない。
+- 現在設定と保存済み履歴Snapshotを分離し、変更・非公開化で当時条件と当時計算結果を上書きしない。
+- 合成FixtureとReact Memoryだけを使い、Route間同期、API、DB、本番公開、履歴永続化を行わない。
+- Traceability: FR-040, NFR-SEC-003, AC-041, AC-042
 
 ### UIR-ACCOUNT-PROMPT-001: Save / Account Prompt
 

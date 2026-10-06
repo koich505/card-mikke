@@ -14,9 +14,9 @@ Last updated: 2026-10-06
 
 | ID | Screen | Purpose | Mock priority | Primary traceability |
 |---|---|---|---|---|
-| SCR-PUB-001 | ホーム | 条件検索、注目カード、特集記事、新着情報から探索を始める | Primary mock | FR-004, FR-007–FR-010, FR-019, FR-031, AC-001, AC-015, AC-016, AC-020 |
+| SCR-PUB-001 | ホーム | 公開中テーマ、条件検索、注目カード、特集記事、新着情報から探索を始める | Primary mock v1.2 | FR-004, FR-007–FR-010, FR-019, FR-031, FR-040, AC-001, AC-015, AC-016, AC-020, AC-041 |
 | SCR-PUB-002 | 条件入力 | 年間利用額、利用先カテゴリ、企業Serviceを段階的に指定する | Primary mock | FR-003, FR-004, FR-010, FR-012, AC-001, AC-002, AC-005, AC-006 |
-| SCR-PUB-003 | 検索結果 | 順位、算定状態、Filterを確認し比較候補を選び、概要を付けて明示保存する | Primary mock extended in v0.5 | FR-005, FR-006, FR-011, FR-013, FR-014, FR-023, NFR-SEC-004, AC-007, AC-009–AC-011, AC-022 |
+| SCR-PUB-003 | 検索結果 | 順位、算定状態、テーマ・適用条件、Filterを確認し比較候補を選び、概要を付けて明示保存する | Primary mock extended in v1.2 | FR-005, FR-006, FR-011, FR-013, FR-014, FR-023, FR-040, NFR-SEC-004, AC-007, AC-009–AC-011, AC-022, AC-041 |
 | SCR-PUB-004 | カード比較 | 最大5枚を同一条件で比較する | Primary mock implemented in v0.7 | FR-016, FR-029, AC-012 |
 | SCR-PUB-005 | カード詳細 | 券面、費用、還元、Campaign、年間利用特典、追加Card、Benefit、Insurance、Review、Evidence、確認日、申込前確認を理解する | Primary mock implemented in v0.2 | FR-017–FR-020, FR-035, AC-014, AC-015 |
 | SCR-PUB-006 | 記事一覧 | 公開済み記事をフリーワード、複数タグ（すべて含む）、記事種別、新着／更新順で探し、更新確認中の旧記事を識別する | Primary mock implemented in v0.6 | FR-007, FR-031, FR-041, AC-043 |
@@ -55,6 +55,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 | SCR-OPS-010 | 管理者MFA | 一次認証と異なる要素による確認を行う | Primary mock v0.3 | NFR-SEC-001, NFR-SEC-003, AC-040 |
 | SCR-OPS-011 | MFA回復手続き | 本人確認、認証要素変更、監査、通知の境界を理解する | Supporting mock v0.3 | NFR-SEC-001, AC-040 |
 | SCR-OPS-012 | 管理者Session管理 | Sessionを確認し個別・一括失効する | Primary mock v0.3 | NFR-SEC-003, AC-040 |
+| SCR-OPS-014 | テーマ管理 | 名称、説明、表示順、年間利用額を含む条件一式、公開状態を追加・編集・非公開化する | Supporting mock implemented in v1.2 | FR-040, AC-041, AC-042 |
 
 ## Overlays and persistent UI
 
@@ -102,6 +103,7 @@ Requirementsに運営者向けUIを含むためInventoryから除外しない。
 - 掲載方針、利用者認証、券面画像、記事Draftの詳細Flowをv1.0でUI-only Mock化した。実数値、実認証、実Asset、公開・永続化は対象外とする。
 - 用途別記事と単一カード特集は記事一覧の独立した記事種別として分類し、記事詳細では対象読者／対象カードを先頭で明示する方針をv0.8で採用した。
 - Review、訂正、業務情報、Save / Account Promptの詳細Flowをv1.1でUI-only Mock化した。
+- 公開テーマのワンクリック検索とテーマ管理をv1.2でUI-only Mock化した。非公開テーマの直指定は適用せず、保存済み履歴Snapshotを現在設定から分離する。
 
 ## Approved comparison screen decisions
 

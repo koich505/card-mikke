@@ -30,6 +30,80 @@
   transform: translateY(0);
 }
 
+.themeSearch {
+  width: min(1200px, calc(100% - 3rem));
+  margin: 0 auto 5rem;
+  padding: clamp(2rem, 5vw, 4rem);
+  border: 2px solid var(--navy);
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 16px 0 rgb(9 37 76 / 7%);
+}
+
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.themeSearch .sectionIntro > p {
+  color: #981c37;
+}
+
+.themeCard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: 1.2rem;
+  border: 2px solid #d8e0ea;
+  border-radius: 18px;
+  color: var(--navy);
+  background: var(--cream);
+}
+
+.themeCard:hover,
+.themeCard:focus-visible {
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+
+.themeCard > span {
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--navy);
+  font-weight: 1000;
+}
+
+.themeCard h3 {
+  font-size: 1.1rem;
+}
+.themeCard p {
+  margin-top: 0.45rem;
+  line-height: 1.65;
+}
+.themeCard small {
+  display: block;
+  margin-top: 0.6rem;
+  color: #596b82;
+}
+.themeCard > strong {
+  grid-column: 1 / -1;
+  color: #b61f3d;
+  font-size: 0.82rem;
+}
+.themeDisclaimer {
+  margin-top: 1rem;
+  color: #596b82;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
 .hero {
   position: relative;
   min-height: 560px;
@@ -1046,6 +1120,9 @@
 }
 
 @media (max-width: 980px) {
+  .themeGrid {
+    grid-template-columns: 1fr;
+  }
   .heroInner {
     grid-template-columns: minmax(400px, 1.15fr) minmax(300px, 0.85fr);
     gap: 1.5rem;

@@ -329,6 +329,7 @@ test.describe("管理画面UIモック", () => {
     await page.getByRole("button", { name: "Passwordを確認" }).click();
     await expect(page).toHaveURL(/\/ops\/mfa$/);
     await expect(page.getByRole("heading", { name: "多要素認証" })).toBeVisible();
+    await expect(page).toHaveTitle(/多要素認証/);
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     await page.getByLabel("6桁の確認コード").fill("123456");
     await page.getByRole("button", { name: "確認してDashboardへ" }).click();

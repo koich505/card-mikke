@@ -2,6 +2,7 @@ import Link from "next/link";
 import SiteHeader from "@/app/components/site-header";
 import { correctionReportHref } from "@/fixtures/correction-report";
 import { featuredCards, newsItems, recommendedArticles } from "@/fixtures/home";
+import { publishedThemePresets } from "@/fixtures/theme-presets";
 import styles from "./page.module.css";
 
 const yen = new Intl.NumberFormat("ja-JP");
@@ -68,6 +69,39 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className={styles.themeSearch} aria-labelledby="theme-search-title">
+          <div className={styles.sectionIntro}>
+            <p>テーマから1回で検索</p>
+            <h2 id="theme-search-title">いつもの使い方に近いテーマを選ぶ</h2>
+            <span>
+              運営者が設定した条件例を今回の検索だけに適用します。Profileは更新されません。
+            </span>
+          </div>
+          <div className={styles.themeGrid} data-testid="published-theme-list">
+            {publishedThemePresets.map((theme, index) => (
+              <Link
+                className={styles.themeCard}
+                href={`/search?theme=${theme.id}`}
+                key={theme.id}
+                data-theme-order={theme.displayOrder}
+              >
+                <span aria-hidden="true">{index + 1}</span>
+                <div>
+                  <h3>{theme.name}</h3>
+                  <p>{theme.description}</p>
+                  <small>
+                    年間利用額 {yen.format(theme.scenario.annualSpend)}円の条件例
+                  </small>
+                </div>
+                <strong>このテーマで結果を見る →</strong>
+              </Link>
+            ))}
+          </div>
+          <p className={styles.themeDisclaimer}>
+            テーマ名は優位性や順位を保証しません。結果は表示中の条件と確認済み情報から算定します。
+          </p>
         </section>
 
         <section
